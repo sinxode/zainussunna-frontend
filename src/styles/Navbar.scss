@@ -1,327 +1,267 @@
 @import "./global.scss";
 
 header {
-  background-color: rgba($bg-white, 0.8);
-  color: $text-inverse;
-  backdrop-filter: blur(10px);
-  position: sticky;
+  background-color: transparent;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
-  transition: box-shadow 0.3s ease;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 24px 0;
 
   &.scrolled {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 12px 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    .container {
+      .logo {
+        img { filter: none; height: 50px; }
+        .academy-name {
+          h1 { color: $blue-deep; }
+          h2 { color: $blue-primary; }
+        }
+      }
+      nav.nav-menu ul li a { 
+        color: $blue-slate; 
+        
+        &:hover, &.active { 
+          color: $blue-deep; 
+          &::after {
+            width: 100%;
+            background-color: $gold-warm;
+          }
+        }
+      }
+      .mobile-menu-toggle {
+        background: rgba($blue-deep, 0.05);
+        color: $blue-deep;
+        border-color: rgba($blue-deep, 0.1);
+      }
+      .desktop-only { background-color: $blue-deep; color: white; }
+    }
   }
+
+  /* Initial State (White on Dark Hero) */
   .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    padding: 0 40px;
     margin: 0 auto;
 
     .logo {
       display: flex;
       align-items: center;
+      gap: 15px;
       cursor: pointer;
+
       img {
-        height: 70px;
+        height: 60px;
+        transition: all 0.3s ease;
+        filter: brightness(0) invert(1);
       }
+
       .academy-name {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
         h1 {
-          font-size: 24px;
-          color: $blue-primary;
-          font-family: "DMSans-Black";
-          height: 25px;
+          font-size: 1.5rem;
+          color: white;
+          font-family: $font-heading;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          line-height: 1;
+          transition: color 0.3s ease;
         }
+
         h2 {
-          font-size: 20px;
-          color: $blue-secondary;
-          height: -1px;
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.7);
+          font-weight: 500;
+          margin-top: 4px;
+          line-height: 1;
+          transition: color 0.3s ease;
         }
       }
     }
-    nav {
+
+    nav.nav-menu {
       ul {
         list-style: none;
         display: flex;
-        gap: 42px;
+        gap: 40px;
+        margin: 0;
+        padding: 0;
+
         li {
           a {
             text-decoration: none;
-            color: $text-primary;
-            font-weight: 550;
-            font-size: 16px;
-            transition: color 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 0.95rem;
+            font-family: $font-heading;
+            transition: all 0.3s ease;
+            position: relative;
 
-            &:hover {
-              color: $blue-accent;
+            &::after {
+              content: '';
+              position: absolute;
+              bottom: -6px;
+              left: 50%;
+              width: 0;
+              height: 2px;
+              background-color: $gold-warm;
+              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+              transform: translateX(-50%);
+            }
+
+            &:hover, &.active {
+              color: white;
+              &::after { 
+                width: 100%; 
+              }
+            }
+
+            &.active {
+              font-weight: 700;
             }
           }
         }
       }
     }
 
-    .btn {
-      .enquire-arrow {
-        margin-right: 6px;
-        height: 16px;
-        transform: rotate(180deg);
-      }
+    .desktop-only {
+      background-color: white;
+      color: $blue-deep;
+      padding: 12px 28px;
+      &:hover { background-color: $gold-warm; color: $blue-deep; }
     }
   }
-}
 
-/* ================================
-   MOBILE RESPONSIVE STYLES
-================================ */
-
-// Desktop only button
-.desktop-only {
-  display: inline-flex;
-}
-
-// Mobile Menu Toggle Button (Hamburger)
-.mobile-menu-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 110;
-  margin-left: auto;
-  margin-right: 8px;
-
-  .hamburger-line {
-    display: block;
-    width: 26px;
-    height: 2px;
-    background-color: $text-primary;
-    margin: 3px 0;
+  .mobile-menu-toggle {
+    display: none;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
     transition: all 0.3s ease;
-    border-radius: 2px;
-  }
 
-  &.active {
-    .line-1 {
-      transform: rotate(45deg) translate(5px, 6px);
-    }
-    .line-2 {
-      opacity: 0;
-    }
-    .line-3 {
-      transform: rotate(-45deg) translate(5px, -6px);
-    }
+    &:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
+    &:active { transform: scale(0.95); }
   }
 }
 
-// Mobile Menu Overlay
-.mobile-menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 95;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  &.active {
-    opacity: 1;
-  }
-}
-
-// Mobile Menu Panel
+/* Mobile Menu Panel */
 .mobile-menu-panel {
-  display: none;
   position: fixed;
   top: 0;
-  right: -280px;
-  width: 280px;
+  right: -100%;
+  width: 100%;
+  max-width: 380px;
   height: 100vh;
-  background-color: $bg-white;
-  z-index: 100;
-  transition: right 0.3s ease;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  padding: 80px 24px 30px;
-  overflow-y: auto;
+  background: white;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.15);
 
-  &.active {
-    right: 0;
+  &.active { transform: translateX(-100%); }
+
+  .mobile-menu-header {
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba($blue-slate, 0.05);
+
+    .logo img { height: 45px; }
+    .close-btn {
+      background: rgba($blue-deep, 0.05);
+      color: $blue-deep;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover { background: $error; color: white; transform: rotate(90deg); }
+    }
   }
 
   .mobile-nav {
-    margin-bottom: 30px;
-
+    flex: 1;
+    padding: 40px 20px;
     ul {
       list-style: none;
       padding: 0;
-      margin: 0;
-
       li {
-        margin-bottom: 0;
-        border-bottom: 1px solid rgba($border-light, 0.5);
-
-        &:last-child {
-          border-bottom: none;
-        }
-
+        margin-bottom: 10px;
         a {
+          font-size: 1.15rem;
+          font-family: $font-heading;
+          font-weight: 700;
+          color: $blue-slate;
           display: flex;
           align-items: center;
-          gap: 14px;
-          padding: 16px 0;
-          text-decoration: none;
-          color: $text-primary;
-          font-weight: 550;
-          font-size: 16px;
-          transition: all 0.2s ease;
-
-          .nav-icon {
-            color: $blue-accent;
-            flex-shrink: 0;
-          }
-
-          &:hover,
-          &.active {
-            color: $blue-accent;
-            padding-left: 8px;
-
-            .nav-icon {
-              transform: scale(1.1);
-            }
-          }
+          gap: 15px;
+          padding: 16px 20px;
+          border-radius: 16px;
+          transition: all 0.3s ease;
+          .nav-icon { color: rgba($blue-slate, 0.4); }
+          &:hover, &.active { background: rgba($gold-warm, 0.1); color: $blue-deep; .nav-icon { color: $gold-warm; } }
+          &.active { border-left: 5px solid $gold-warm; border-radius: 4px 16px 16px 4px; }
         }
       }
     }
   }
 
-  .mobile-enquire-btn {
-    width: 100%;
-    padding: 14px 22px;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    .btn-icon {
-      flex-shrink: 0;
-    }
+  .mobile-menu-footer {
+    padding: 30px;
+    background: $bg-section;
+    .btn { width: 100%; padding: 16px; }
   }
 }
 
-/* ================================
-   RESPONSIVE BREAKPOINTS
-================================ */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($blue-deep, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  &.active { opacity: 1; visibility: visible; }
+}
 
 @media (max-width: 1024px) {
-  header {
-    .container {
-      nav {
-        ul {
-          gap: 28px;
-        }
-      }
-    }
-  }
+  header .container { padding: 0 30px; nav.nav-menu ul { gap: 25px; } }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   header {
+    padding: 15px 0;
     .container {
-      padding: 12px 16px !important;
-      min-height: 70px;
-
-      .logo {
-        img {
-          height: 50px;
-        }
-        .academy-name {
-          h1 {
-            font-size: 18px;
-          }
-          h2 {
-            font-size: 14px;
-            margin-top: -5px;
-          }
-        }
-      }
-
-      nav.nav-menu {
-        display: none;
-      }
-
-      .desktop-only {
-        display: none;
-      }
-
-      .mobile-menu-toggle {
-        display: flex;
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        margin: 0;
-      }
+      padding: 0 20px;
+      .logo img { height: 50px; }
+      nav.nav-menu, .desktop-only { display: none; }
+      .mobile-menu-toggle { display: flex; }
     }
-  }
-
-  // Show mobile elements
-  .mobile-menu-overlay {
-    display: block;
-  }
-
-  .mobile-menu-panel {
-    display: block;
-  }
-}
-
-@media (max-width: 480px) {
-  header {
-    .container {
-      padding: 10px 12px !important;
-      min-height: 60px;
-
-      .logo {
-        img {
-          height: 42px;
-        }
-        .academy-name {
-          h1 {
-            font-size: 16px;
-          }
-          h2 {
-            font-size: 12px;
-          }
-        }
-      }
-
-      .mobile-menu-toggle {
-        right: 10px;
-        width: 38px;
-        height: 38px;
-
-        .hamburger-line {
-          width: 22px;
-        }
-      }
-    }
-  }
-
-  .mobile-menu-panel {
-    width: 100%;
-    right: -100%;
-    padding: 70px 20px 24px;
+    &.scrolled .container .logo img { height: 40px; }
   }
 }

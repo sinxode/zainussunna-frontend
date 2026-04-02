@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Home,
   BookOpen,
@@ -9,15 +9,16 @@ import {
   Phone,
   Info,
   MessageCircle,
+  ArrowRight,
+  Menu,
+  X
 } from "lucide-react";
 
 import "../styles/Navbar.scss";
 
 function Navbar() {
-  const [isHovered, setIsHovered] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const [menuInitialized, setMenuInitialized] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,47 +29,15 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Initialize menu state on first render
-  React.useEffect(() => {
-    setMenuInitialized(true);
-  }, []);
-
-  // Close mobile menu when route changes
-  React.useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  // Prevent body scroll when mobile menu is open
-  React.useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [mobileMenuOpen]);
-
   const navItems = [
     { name: "Home", path: "/", icon: Home },
-    { name: "About", path: "/About", icon: Info },
-    { name: "Programs", path: "/Programs", icon: BookOpen },
-    { name: "Achievements", path: "/Achievements", icon: Award },
-    { name: "Gallery", path: "/Gallery", icon: Image },
-    { name: "Admissions", path: "/Admissions", icon: GraduationCap },
-    { name: "Contact", path: "/Contact", icon: Phone },
+    { name: "About", path: "/about", icon: Info },
+    { name: "Programs", path: "/programs", icon: BookOpen },
+    { name: "Achievements", path: "/achievements", icon: Award },
+    { name: "Gallery", path: "/gallery", icon: Image },
+    { name: "Admissions", path: "/admissions", icon: GraduationCap },
+    { name: "Contact", path: "/contact", icon: Phone },
   ];
-
-  const toggleMobileMenu = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMobileMenuOpen((prev) => !prev);
-  };
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
 
   return (
     <header className={scrolled ? "scrolled" : ""}>
@@ -85,87 +54,87 @@ function Navbar() {
           <ul>
             {navItems.map((item) => (
               <li key={item.path}>
-                <a
+                <Link
                   className={`nav-a ${
-                    location.pathname === item.path ? "active" : ""
+                    item.path === "/" 
+                      ? location.pathname === "/" 
+                      : location.pathname.startsWith(item.path) 
+                        ? "active" 
+                        : ""
                   }`}
-                  href={item.path}
+                  to={item.path}
                 >
                   {item.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
 
-        <button
-          className="btn btn-primary desktop-only"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onClick={() => navigate("/Admissions")}
-        >
-          {isHovered ? (
-            <img
-              src={require("../assets/icons/arrow-pr.svg").default}
-              alt="Enquire Icon"
-              className="enquire-arrow"
-            />
-          ) : (
-            <img
-              src={require("../assets/icons/arrow-in.svg").default}
-              alt="Enquire Icon"
-              className="enquire-arrow"
-            />
-          )}
-          Enquire Now
+        <button className="btn btn-primary desktop-only" onClick={() => navigate("/admissions")}>
+          <span>Enquire Now</span>
+          <ArrowRight size={18} style={{ marginLeft: '8px' }} />
         </button>
 
-        {/* Mobile Menu Toggle Button */}
         <button
-          className={`mobile-menu-toggle ${menuInitialized && mobileMenuOpen ? "active" : ""}`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
+          className={`mobile-menu-toggle ${mobileMenuOpen ? "active" : ""}`}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle Menu"
         >
-          <span className="hamburger-line line-1"></span>
-          <span className="hamburger-line line-2"></span>
-          <span className="hamburger-line line-3"></span>
+          {mobileMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Menu size={28} strokeWidth={1.5} />}
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`mobile-menu-overlay ${menuInitialized && mobileMenuOpen ? "active" : ""}`}
-        onClick={closeMobileMenu}
-      ></div>
+      <div className={`mobile-menu-overlay ${mobileMenuOpen ? "active" : ""}`} onClick={() => setMobileMenuOpen(false)}></div>
 
-      {/* Mobile Menu Panel */}
-      <div
-        className={`mobile-menu-panel ${menuInitialized && mobileMenuOpen ? "active" : ""}`}
-      >
+      <div className={`mobile-menu-panel ${mobileMenuOpen ? "active" : ""}`}>
+        <div className="mobile-menu-header">
+          <div className="logo" onClick={() => { navigate("/"); setMobileMenuOpen(false); }}>
+            <img src={require("../assets/logos/logo.png")} alt="Logo" />
+          </div>
+          <button className="close-btn" onClick={() => setMobileMenuOpen(false)}>
+            <X size={28} strokeWidth={1.5} />
+          </button>
+        </div>
         <nav className="mobile-nav">
           <ul>
-            {navItems.map((item) => (
-              <li key={item.path}>
-                <a
+            {navItems.map((item, index) => (
+              <li 
+                key={item.path} 
+                style={{ 
+                  transitionDelay: mobileMenuOpen ? `${index * 50 + 100}ms` : "0ms",
+                  opacity: mobileMenuOpen ? 1 : 0,
+                  transform: mobileMenuOpen ? "translateX(0)" : "translateX(20px)"
+                }}
+              >
+                <Link
                   className={`nav-a ${
-                    location.pathname === item.path ? "active" : ""
+                    item.path === "/" 
+                      ? location.pathname === "/" 
+                      : location.pathname.startsWith(item.path) 
+                        ? "active" 
+                        : ""
                   }`}
-                  href={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.icon && <item.icon size={20} className="nav-icon" />}
+                  <item.icon size={22} className="nav-icon" strokeWidth={1.5} />
                   {item.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <button
-          className="btn btn-primary mobile-enquire-btn"
-          onClick={() => navigate("/Admissions")}
-        >
-          <MessageCircle size={18} className="btn-icon" />
-          Enquire Now
-        </button>
+        <div className="mobile-menu-footer" style={{ 
+          transitionDelay: mobileMenuOpen ? "500ms" : "0ms",
+          opacity: mobileMenuOpen ? 1 : 0,
+          transform: mobileMenuOpen ? "translateY(0)" : "translateY(20px)"
+        }}>
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => { navigate("/admissions"); setMobileMenuOpen(false); }}>
+            <MessageCircle size={20} style={{ marginRight: '10px' }} strokeWidth={1.5} />
+            <span>Enquire Now</span>
+          </button>
+        </div>
       </div>
     </header>
   );

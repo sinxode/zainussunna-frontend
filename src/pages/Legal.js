@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { api } from "../services/api";
 import "../styles/Legal.scss";
+import NotFound from "../components/NotFound";
+import Loading from "../components/Loading";
 
 function Legal() {
   const { slug } = useParams();
@@ -35,37 +37,14 @@ function Legal() {
     return (
       <>
         <Navbar />
-        <div className="legal-page">
-          <div className="container">
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading...</p>
-            </div>
-          </div>
-        </div>
+        <Loading message="Loading Policy..." />
         <Footer />
       </>
     );
   }
 
   if (error || !content) {
-    return (
-      <>
-        <Navbar />
-        <div className="legal-page">
-          <div className="container">
-            <div className="error-container">
-              <h1>Page Not Found</h1>
-              <p>The requested page could not be found.</p>
-              <Link to="/" className="btn btn-primary">
-                Go Home
-              </Link>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
+    return <NotFound />;
   }
 
   // Parse content blocks
@@ -113,7 +92,7 @@ function Legal() {
           {/* Back Link */}
           <div className="legal-back">
             <Link to="/" className="btn btn-secondary">
-              Back to Home
+              <span>Back to Home</span>
             </Link>
           </div>
         </div>

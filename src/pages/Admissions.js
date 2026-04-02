@@ -2,6 +2,26 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { api } from "../services/api";
+import Toast from "../components/Toast";
+import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import {
+  CheckCircle,
+  Smartphone,
+  MessageCircle,
+  Camera,
+  Upload,
+  Check,
+  GraduationCap,
+  BookOpen,
+  ArrowRight,
+  ArrowLeft,
+  FileText,
+  User,
+  Users,
+  Info,
+  ChevronRight
+} from "lucide-react";
+
 import "../styles/Admissions.scss";
 
 const STATES = ["Kerala", "Tamil Nadu", "Karnataka"];
@@ -115,6 +135,14 @@ const LANGUAGES = ["Arabic", "English", "Malayalam", "Hindi", "Urdu"];
 
 export default function Admission() {
   const [step, setStep] = useState(1);
+  const [headerRef, headerVisible] = useScrollAnimation({ threshold: 0.1 });
+  const [contentRef, contentVisible] = useScrollAnimation({ threshold: 0.15 });
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [program, setProgram] = useState(null);
   const [programs, setPrograms] = useState([]);
   const [toast, setToast] = useState(false);
@@ -140,21 +168,36 @@ export default function Admission() {
       try {
         setLoading(true);
         const data = await api.getPrograms();
-        // Handle both paginated (results), array, and other response formats
         let programList = [];
         if (Array.isArray(data)) {
           programList = data;
         } else if (data && Array.isArray(data.results)) {
           programList = data.results;
-        } else if (data && typeof data === "object") {
-          // Handle case where data might be an object with program-like properties
-          programList = [];
         }
         setPrograms(programList);
+        setError(null);
       } catch (err) {
         console.error("Failed to fetch programs:", err);
-        setError("Failed to load programs. Please try again.");
-        setPrograms([]); // Ensure programs is always an array
+        const fallbackPrograms = [
+          {
+            id: "bf59ccf2-bc09-4d9d-950c-abaccc60a9dc",
+            name: "Integrated Sharee'a",
+            slug: "shareea",
+            subtitle: "Da'wa Dars Program",
+            min_age: 10,
+            max_age: 18,
+          },
+          {
+            id: "10198060-b80c-40c2-abe3-1b1f4ab8c2aa",
+            name: "Thahfīẓ-ul-Qur'an",
+            slug: "thahfeez",
+            subtitle: "Thahfeel-ul-Qu'ran Program",
+            min_age: 9,
+            max_age: 18,
+          },
+        ];
+        setPrograms(fallbackPrograms);
+        setError(null);
       } finally {
         setLoading(false);
       }
@@ -288,7 +331,7 @@ export default function Admission() {
     form.guardianName &&
     form.guardianRelation &&
     form.guardianPhone &&
-    form.guardianEmail.endsWith("@gmail.com") &&
+    form.guardianEmail.toLowerCase().endsWith("@gmail.com") &&
     form.guardianOccupation;
 
   const toggleLanguage = (lang) => {
@@ -313,7 +356,6 @@ export default function Admission() {
     }
   };
 
-  // Function to generate WhatsApp message after submission
   const generateWhatsAppMessage = async (admissionId) => {
     try {
       const response = await api.request("/whatsapp/generate_message/", {
@@ -322,7 +364,7 @@ export default function Admission() {
           admission_id: admissionId,
           message_type: "success",
         }),
-        auth: false, // Public: no auth required
+        auth: false,
       });
 
       if (response.whatsapp_url) {
@@ -330,7 +372,6 @@ export default function Admission() {
       }
     } catch (err) {
       console.error("Failed to generate WhatsApp message:", err);
-      // Don't show error to user, just continue without WhatsApp
     }
   };
 
@@ -344,9 +385,6 @@ export default function Admission() {
         throw new Error("Please select a program");
       }
 
-      // Step 1: Create admission with personal info
-      // NOTE: student_photo must be extracted from step_data and passed as top-level
-      // because the backend serializer expects it at the root level, not inside step_data
       const step1Data = {
         name: form.name,
         dob: form.dob,
@@ -366,10 +404,9 @@ export default function Admission() {
         step: 1,
         step_data: step1Data,
         time_spent: 0,
-        student_photo: form.studentPhoto, // Pass as top-level field, NOT inside step_data
+        student_photo: form.studentPhoto,
       });
 
-      // Step 2: Complete academic details
       const step2Data = {
         madrassa_name: form.madrassaName,
         class_stopped: form.classStopped,
@@ -402,7 +439,6 @@ export default function Admission() {
 
       await api.completeStep(admission.id, step2Data, 0);
 
-      // Step 3: Complete guardian info
       const step3Data = {
         guardian_name: form.guardianName,
         guardian_relation: form.guardianRelation,
@@ -413,35 +449,27 @@ export default function Admission() {
       };
 
       await api.completeStep(admission.id, step3Data, 0);
-
-      // Step 4: Submit admission
       await api.submitAdmission(admission.id);
 
-      // Store the application ID and generate WhatsApp message
       setSubmittedApplicationId(admission.id);
-
-      // Generate WhatsApp message
       await generateWhatsAppMessage(admission.id);
-
       setToast(true);
     } catch (err) {
       console.error("Submission failed:", err);
       setError(
-        err.message || "Failed to submit application. Please try again.",
+        err.message || "Failed to submit application. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle WhatsApp redirect
   const handleWhatsAppClick = () => {
     if (whatsappUrl) {
       window.open(whatsappUrl, "_blank");
     }
   };
 
-  // Handle going to home page
   const handleGoHome = () => {
     window.location.href = "/";
   };
@@ -449,781 +477,807 @@ export default function Admission() {
   return (
     <>
       <Navbar />
-      <section className="admission-page">
-        <div className="container">
-          <section className="admission-header">
-            <div className="breadcrumbs">
-              <a href="/">Home</a> <span>/ Admission</span>
+      <main className="admission-page">
+        {/* Header Section */}
+        <section className={`admission-header ${headerVisible ? "animate-in" : ""}`} ref={headerRef}>
+          <div className="hero-bg">
+            <div className="hero-grid-pattern"></div>
+            <div className="hero-glow-orb-1"></div>
+            <div className="hero-glow-orb-2"></div>
+          </div>
+          <div className="container">
+            <div className="breadcrumbs animate-item delay-1">
+              <a href="/">Home</a> <span>/</span> <span className="active">Admission</span>
             </div>
-            <h1>Admission Portal</h1>
-          </section>
-          <div className="admission-card">
-            {/* Show success screen if submitted */}
-            {toast && submittedApplicationId ? (
-              <div className="success-screen">
-                <div className="success-icon">✅</div>
-                <h2>Application Submitted Successfully!</h2>
-                <p>
-                  Thank you for submitting your application to Zainussunna
-                  Academy.
-                </p>
-                <p className="application-note">
-                  Your application has been saved. Our team will contact you
-                  shortly.
-                </p>
+            <h1 className="animate-item delay-2">Admission Portal</h1>
+            <p className="animate-item delay-3">Begin your scholarly journey. Complete the form details below to submit your application.</p>
+          </div>
+        </section>
 
-                {/* WhatsApp Button */}
-                {whatsappUrl && (
-                  <div className="whatsapp-section">
-                    <p className="whatsapp-prompt">
-                      📱 Share your admission details on WhatsApp for quick
-                      communication:
-                    </p>
-                    <button
-                      className="whatsapp-btn"
-                      onClick={handleWhatsAppClick}
-                    >
-                      <span className="whatsapp-icon">💬</span>
-                      Open WhatsApp
-                    </button>
+        {/* Content Section */}
+        <section className={`admission-content ${contentVisible ? "animate-in" : ""}`} ref={contentRef}>
+          <div className="container animate-item delay-1">
+            <div className="admission-card">
+              {/* Success Screen */}
+              {toast && submittedApplicationId ? (
+                <div className="success-screen">
+                  <div className="success-icon">
+                    <CheckCircle size={80} strokeWidth={1.5} />
                   </div>
-                )}
 
-                <button className="home-btn" onClick={handleGoHome}>
-                  Go to Home Page
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="timeline">
-                  {[1, 2, 3, 4].map((n) => (
-                    <div
-                      key={n}
-                      className={`dot ${step >= n ? "done" : ""} ${step === n ? "active" : ""} ${step < n ? "locked" : ""}`}
-                      onClick={() => jumpToStep(n)}
-                    >
-                      {n < step ? "✓" : n}
+                  <h2>Application Submitted Successfully!</h2>
+                  <p>Thank you for submitting your application to Zainussunna Academy.</p>
+                  
+                  <div className="application-note">
+                    <p>Your details have been saved under Application Reference ID:</p>
+                    <strong>{submittedApplicationId}</strong>
+                    <p className="sub-note">Our admissions board will review your credentials and contact you shortly.</p>
+                  </div>
+
+                  {/* WhatsApp Button */}
+                  {whatsappUrl && (
+                    <div className="whatsapp-section">
+                      <p className="whatsapp-prompt">
+                        <Smartphone size={18} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+                        Send a confirmation copy directly on WhatsApp for priority processing:
+                      </p>
+                      <button className="whatsapp-btn" onClick={handleWhatsAppClick}>
+                        <MessageCircle size={22} />
+                        <span>Share on WhatsApp</span>
+                      </button>
                     </div>
-                  ))}
-                  <div className="track">
-                    <span style={{ width: `${(step - 1) * 33}%` }}></span>
-                  </div>
+                  )}
+
+                  <button className="btn btn-secondary home-btn" onClick={handleGoHome}>
+                    Return to Home Page
+                  </button>
                 </div>
-
-                {step === 1 && (
-                  <>
-                    <h2>Program & Personal Information</h2>
-                    {error && <div className="error-message">{error}</div>}
-
-                    {loading ? (
-                      <div className="loading-message">Loading programs...</div>
-                    ) : programs.length === 0 ? (
-                      <div className="error-message">
-                        No programs available. Please try again later.
-                      </div>
-                    ) : (
-                      <div className="programs">
-                        {programs.map((p) => (
+              ) : (
+                <>
+                  {/* Timeline Steps Tracker */}
+                  <div className="timeline-wrapper">
+                    <div className="timeline">
+                      {[1, 2, 3, 4].map((n) => {
+                        const stepLabels = [
+                          "Personal Details",
+                          "Academic History",
+                          "Guardian Info",
+                          "Review & Submit"
+                        ];
+                        return (
                           <div
-                            key={p.slug}
-                            className={`program ${program === p.slug ? "selected" : ""}`}
-                            onClick={() => setProgram(p.slug)}
+                            key={n}
+                            className={`timeline-step ${step >= n ? "done" : ""} ${step === n ? "active" : ""} ${step < n ? "locked" : ""}`}
+                            onClick={() => jumpToStep(n)}
                           >
-                            {p.name}
+                            <div className="dot">
+                              {n < step ? <Check size={18} strokeWidth={3} /> : n}
+                            </div>
+                            <span className="step-label">{stepLabels[n - 1]}</span>
                           </div>
-                        ))}
+                        );
+                      })}
+                      <div className="track">
+                        <span style={{ width: `${(step - 1) * 33.3}%` }}></span>
                       </div>
-                    )}
-                    <div className="form two-col">
-                      <div className="photo-upload">
-                        <label>Student Photo *</label>
-                        <div className="photo-input">
+                    </div>
+                  </div>
+
+                  {/* Step 1: Program & Personal Details */}
+                  {step === 1 && (
+                    <div className="step-panel">
+                      <div className="step-header">
+                        <User size={24} />
+                        <h2>Select Program & Enter Personal Info</h2>
+                      </div>
+                      
+                      {error && <div className="error-message">{error}</div>}
+
+                      <div className="form-section-title">Academic Program</div>
+                      {loading ? (
+                        <div className="loading-message">
+                          <GraduationCap size={40} className="animate-pulse" />
+                          <p>Loading programs...</p>
+                        </div>
+                      ) : programs.length === 0 ? (
+                        <div className="error-message">No programs available. Please try again later.</div>
+                      ) : (
+                        <div className="programs-grid">
+                          {programs.map((p) => {
+                            const isSelected = program === p.slug;
+                            return (
+                              <div
+                                key={p.slug}
+                                className={`program-select-card ${isSelected ? "selected" : ""}`}
+                                onClick={() => setProgram(p.slug)}
+                              >
+                                <div className="select-icon">
+                                  {p.slug === "shareea" ? <BookOpen size={24} /> : <GraduationCap size={24} />}
+                                </div>
+                                <div className="select-content">
+                                  <h3>{p.name}</h3>
+                                  <p>{p.subtitle || "Academy course track"}</p>
+                                  <span className="age-limit">Age: {p.min_age} - {p.max_age} years</span>
+                                </div>
+                                <div className="checkbox-indicator">
+                                  <div className="check-dot"></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <div className="form-section-title">Personal Details</div>
+                      
+                      {/* Photo Upload Box */}
+                      <div className="photo-upload-container">
+                        <label className="photo-label">Student Photograph *</label>
+                        <div className="photo-uploader">
+                          <div className="uploader-avatar">
+                            {form.studentPhoto ? (
+                              <img src={URL.createObjectURL(form.studentPhoto)} alt="Preview" />
+                            ) : (
+                              <Camera size={32} />
+                            )}
+                          </div>
+                          <div className="uploader-actions">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handlePhotoChange}
+                              id="photo-upload-input"
+                              className="hidden-file-input"
+                            />
+                            <label htmlFor="photo-upload-input" className="btn btn-secondary">
+                              <Camera size={16} />
+                              <span>Select Image</span>
+                            </label>
+                            <span className="upload-hint">Upload a passport size photo (JPG/PNG, Max 10MB)</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="form-grid">
+                        <div className="form-field full-width">
+                          <label>Full Student Name *</label>
                           <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handlePhotoChange}
-                            id="photo-upload"
+                            placeholder="Enter full name as per records"
+                            value={form.name}
+                            onChange={(e) => update("name", e.target.value)}
                           />
-                          <label htmlFor="photo-upload" className="upload-btn">
-                            📷 Choose Photo
-                          </label>
-                          {form.studentPhoto && (
-                            <span className="file-name">
-                              {form.studentPhoto.name}
+                        </div>
+
+                        <div className="form-field">
+                          <label>Date of Birth *</label>
+                          <input
+                            type="date"
+                            value={form.dob}
+                            onChange={(e) => update("dob", e.target.value)}
+                          />
+                          {isAgeErrorVisible && getSelectedProgram() && (
+                            <span className="field-error-msg">
+                              Age must be between {getSelectedProgram()?.min_age} and {getSelectedProgram()?.max_age} years.
                             </span>
                           )}
                         </div>
-                        <span className="hint">Max 10MB, Image only</span>
-                      </div>
-                      <div className="spacer"></div>
-                      <div className="form-field name-field">
-                        <label>Student Name *</label>
-                        <input
-                          placeholder="Student Name *"
-                          value={form.name}
-                          onChange={(e) => update("name", e.target.value)}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Date of Birth *</label>
-                        <input
-                          type="date"
-                          value={form.dob}
-                          onChange={(e) => update("dob", e.target.value)}
-                        />
-                        {isAgeErrorVisible && getSelectedProgram() && (
-                          <span className="inline-error">
-                            Age must be between {getSelectedProgram()?.min_age}{" "}
-                            and {getSelectedProgram()?.max_age}
-                          </span>
-                        )}
-                      </div>
-                      <div className="form-field">
-                        <label>Age</label>
-                        <input
-                          readOnly
-                          placeholder="Age"
-                          value={form.age || ""}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Phone *</label>
-                        <div className="phone-input">
+
+                        <div className="form-field">
+                          <label>Calculated Age</label>
+                          <input
+                            readOnly
+                            placeholder="Calculated automatically"
+                            value={form.age || ""}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Primary Phone Number *</label>
+                          <div className="phone-input-group">
+                            <select
+                              value={countryCode}
+                              onChange={(e) => setCountryCode(e.target.value)}
+                            >
+                              {COUNTRY_CODES.map((c) => (
+                                <option key={c}>{c}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="tel"
+                              placeholder="Phone number"
+                              value={form.phone}
+                              maxLength={10}
+                              onChange={(e) => update("phone", e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-field">
+                          <label>Email Address *</label>
+                          <input
+                            type="email"
+                            placeholder="username@gmail.com *"
+                            value={form.email}
+                            onChange={(e) => update("email", e.target.value)}
+                          />
+                          {form.email && !form.email.endsWith("@gmail.com") && (
+                            <span className="field-error-msg">Must be a valid @gmail.com address</span>
+                          )}
+                        </div>
+
+                        <div className="form-field">
+                          <label>State *</label>
                           <select
-                            value={countryCode}
-                            onChange={(e) => setCountryCode(e.target.value)}
+                            value={form.state}
+                            onChange={(e) => {
+                              update("state", e.target.value);
+                              update("district", "");
+                            }}
                           >
-                            {COUNTRY_CODES.map((c) => (
-                              <option key={c}>{c}</option>
+                            <option value="">Select State *</option>
+                            {STATES.map((s) => (
+                              <option key={s}>{s}</option>
                             ))}
                           </select>
+                        </div>
+
+                        <div className="form-field">
+                          <label>District *</label>
+                          <select
+                            key={form.state}
+                            value={form.district}
+                            disabled={!form.state}
+                            onChange={(e) => update("district", e.target.value)}
+                          >
+                            <option value="">Select District *</option>
+                            {DISTRICTS[form.state]?.map((d) => (
+                              <option key={d}>{d}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="form-field">
+                          <label>House Name / Number *</label>
                           <input
-                            type="tel"
-                            placeholder="Phone *"
-                            value={form.phone}
-                            maxLength={10}
-                            onChange={(e) => update("phone", e.target.value)}
+                            placeholder="House name *"
+                            value={form.houseName}
+                            onChange={(e) => update("houseName", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Place / City *</label>
+                          <input
+                            placeholder="Place *"
+                            value={form.place}
+                            onChange={(e) => update("place", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Post Office *</label>
+                          <input
+                            placeholder="Post office *"
+                            value={form.postOffice}
+                            onChange={(e) => update("postOffice", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Postal PIN Code *</label>
+                          <input
+                            type="text"
+                            placeholder="6 digit PIN code *"
+                            value={form.zipCode}
+                            maxLength={6}
+                            onChange={(e) => update("zipCode", e.target.value)}
                           />
                         </div>
                       </div>
-                      <div className="form-field">
-                        <label>Email *</label>
-                        <input
-                          type="email"
-                          placeholder="Email (@gmail.com) *"
-                          value={form.email}
-                          onChange={(e) => update("email", e.target.value)}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>State *</label>
-                        <select
-                          value={form.state}
-                          onChange={(e) => {
-                            update("state", e.target.value);
-                            update("district", "");
-                          }}
-                        >
-                          <option value="">Select State *</option>
-                          {STATES.map((s) => (
-                            <option key={s}>{s}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="form-field">
-                        <label>District *</label>
-                        <select
-                          key={form.state}
-                          value={form.district}
-                          disabled={!form.state}
-                          onChange={(e) => update("district", e.target.value)}
-                        >
-                          <option value="">Select District *</option>
-                          {DISTRICTS[form.state]?.map((d) => (
-                            <option key={d}>{d}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="form-field">
-                        <label>House Name *</label>
-                        <input
-                          placeholder="House Name *"
-                          value={form.houseName}
-                          onChange={(e) => update("houseName", e.target.value)}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Place *</label>
-                        <input
-                          placeholder="Place *"
-                          value={form.place}
-                          onChange={(e) => update("place", e.target.value)}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Post Office *</label>
-                        <input
-                          placeholder="Post Office *"
-                          value={form.postOffice}
-                          onChange={(e) => update("postOffice", e.target.value)}
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>PIN Code *</label>
-                        <input
-                          type="text"
-                          placeholder="PIN Code *"
-                          value={form.zipCode}
-                          maxLength={6}
-                          onChange={(e) => update("zipCode", e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="nav">
-                      <button
-                        className="primary"
-                        disabled={!step1Valid || loading}
-                        onClick={next}
-                      >
-                        {loading ? "Processing..." : "Continue"}
-                      </button>
-                    </div>
-                  </>
-                )}
 
-                {step === 2 && (
-                  <>
-                    <h2>Academic Details</h2>
-                    <div className="form two-col">
-                      <div className="form-field">
-                        <label>Name of Madrassa / Dars *</label>
-                        <input
-                          placeholder="Name of Madrassa / Dars *"
-                          value={form.madrassaName}
-                          onChange={(e) =>
-                            update("madrassaName", e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Class where study stopped *</label>
-                        <select
-                          value={form.classStopped}
-                          onChange={(e) =>
-                            update("classStopped", e.target.value)
-                          }
+                      <div className="step-navigation">
+                        <div className="spacer"></div>
+                        <button
+                          className="btn btn-primary"
+                          disabled={!step1Valid || loading}
+                          onClick={next}
                         >
-                          <option value="">Class where study stopped *</option>
-                          {CLASSES.map((c) => (
-                            <option key={c}>{c}</option>
-                          ))}
-                        </select>
+                          <span>Continue</span>
+                          <ArrowRight size={18} />
+                        </button>
                       </div>
-                      <div className="form-field">
-                        <label>School / College studied *</label>
-                        <input
-                          placeholder="School / College studied *"
-                          value={form.schoolCollege}
-                          onChange={(e) =>
-                            update("schoolCollege", e.target.value)
-                          }
-                        />
+                    </div>
+                  )}
+
+                  {/* Step 2: Academic Details */}
+                  {step === 2 && (
+                    <div className="step-panel">
+                      <div className="step-header">
+                        <FileText size={24} />
+                        <h2>Academic History & Credentials</h2>
                       </div>
-                      <div className="form-field">
-                        <label>Standard going to study *</label>
-                        <select
-                          value={form.standard}
-                          onChange={(e) => update("standard", e.target.value)}
-                        >
-                          <option value="">Standard going to study *</option>
-                          {CLASSES.map((c) => (
-                            <option key={c}>{c}</option>
-                          ))}
-                        </select>
+
+                      <div className="form-section-title">Education Records</div>
+                      <div className="form-grid">
+                        <div className="form-field">
+                          <label>Name of Madrassa / Dars *</label>
+                          <input
+                            placeholder="Last attended Madrassa *"
+                            value={form.madrassaName}
+                            onChange={(e) => update("madrassaName", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Class completed stopping study *</label>
+                          <select
+                            value={form.classStopped}
+                            onChange={(e) => update("classStopped", e.target.value)}
+                          >
+                            <option value="">Select stopping class *</option>
+                            {CLASSES.map((c) => (
+                              <option key={c}>{c}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="form-field">
+                          <label>School / College studied *</label>
+                          <input
+                            placeholder="Last attended school/college *"
+                            value={form.schoolCollege}
+                            onChange={(e) => update("schoolCollege", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Standard going to study *</label>
+                          <select
+                            value={form.standard}
+                            onChange={(e) => update("standard", e.target.value)}
+                          >
+                            <option value="">Select upcoming class *</option>
+                            {CLASSES.map((c) => (
+                              <option key={c}>{c}</option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-                      <div className="languages-group">
+
+                      {/* Languages known checkboxes */}
+                      <div className="form-field full-width languages-field">
                         <label>Languages Known *</label>
-                        <div className="checkbox-group">
+                        <div className="custom-checkbox-group">
                           {LANGUAGES.map((lang) => (
-                            <label key={lang} className="checkbox-label">
+                            <label key={lang} className="checkbox-item">
                               <input
                                 type="checkbox"
                                 checked={form.languages.includes(lang)}
                                 onChange={() => toggleLanguage(lang)}
                               />
-                              {lang}
+                              <span className="checkbox-box"></span>
+                              <span className="checkbox-text">{lang}</span>
                             </label>
                           ))}
-                          <label className="checkbox-label">
+                          <label className="checkbox-item">
                             <input
                               type="checkbox"
                               checked={form.languages.includes("Other")}
                               onChange={() => toggleLanguage("Other")}
                             />
-                            Other
+                            <span className="checkbox-box"></span>
+                            <span className="checkbox-text">Other</span>
                           </label>
                         </div>
+
                         {form.languages.includes("Other") && (
                           <input
-                            placeholder="Specify other languages"
+                            placeholder="Please specify other languages"
                             value={form.languageOther}
-                            onChange={(e) =>
-                              update("languageOther", e.target.value)
-                            }
-                            className="other-input"
+                            onChange={(e) => update("languageOther", e.target.value)}
+                            className="other-lang-specify-input"
                           />
                         )}
                       </div>
+
+                      {/* Course specific questions */}
                       {program === "shareea" && (
                         <>
-                          <div className="form-field">
-                            <label>Skills you have *</label>
-                            <input
-                              placeholder="Skills *"
-                              value={form.skills}
-                              onChange={(e) => update("skills", e.target.value)}
-                            />
-                          </div>
-                          <div className="form-field">
-                            <label>Interests *</label>
-                            <input
-                              placeholder="Interests *"
-                              value={form.interests}
-                              onChange={(e) =>
-                                update("interests", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="form-field">
-                            <label>Last book you read *</label>
-                            <input
-                              placeholder="Last book *"
-                              value={form.lastBook}
-                              onChange={(e) =>
-                                update("lastBook", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="form-field">
-                            <label>Brief note about your career *</label>
-                            <input
-                              placeholder="Career note *"
-                              value={form.careerNote}
-                              onChange={(e) =>
-                                update("careerNote", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="form-field full-width">
-                            <label>Expectations from academy *</label>
-                            <textarea
-                              placeholder="Expectations *"
-                              value={form.expectations}
-                              onChange={(e) =>
-                                update("expectations", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="file-upload">
-                            <label
-                              className="file-label"
-                              htmlFor="achievements-upload"
-                            >
-                              📎 Upload Achievements (Optional)
-                            </label>
-                            <input
-                              type="file"
-                              id="achievements-upload"
-                              accept="image/*,.pdf"
-                              onChange={(e) =>
-                                handleFileChange("achievementsFile", e)
-                              }
-                            />
-                            {form.achievementsFile && (
-                              <span className="file-name">
-                                {form.achievementsFile.name}
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      )}
-                      {program === "thahfeez" && (
-                        <>
-                          <div className="form-field">
-                            <label>Can you read Arabic fluently? *</label>
-                            <select
-                              value={form.arabicFluent}
-                              onChange={(e) =>
-                                update("arabicFluent", e.target.value)
-                              }
-                            >
-                              <option value="">Select fluency level *</option>
-                              <option value="no">No - Cannot read</option>
-                              <option value="beginning">
-                                Beginning - Knows alphabets
-                              </option>
-                              <option value="elementary">
-                                Elementary - Can read words
-                              </option>
-                              <option value="intermediate">
-                                Intermediate - Can read sentences
-                              </option>
-                              <option value="advanced">
-                                Advanced - Can read paragraphs
-                              </option>
-                              <option value="fluent">
-                                Fluent - Can read fluently
-                              </option>
-                            </select>
-                          </div>
-                          <div className="form-field">
-                            <label>Have you studied Hifz before? *</label>
-                            <select
-                              value={form.hifzBefore}
-                              onChange={(e) => {
-                                update("hifzBefore", e.target.value);
-                                if (e.target.value === "no")
-                                  update("hifzAmount", "");
-                              }}
-                            >
-                              <option value="">Hifz before? *</option>
-                              <option value="yes">Yes</option>
-                              <option value="no">No</option>
-                            </select>
-                          </div>
-                          {form.hifzBefore === "yes" && (
-                            <div className="form-field memory-field">
-                              <label>How much Quran memorized? *</label>
+                          <div className="form-section-title">Course Specifications</div>
+                          <div className="form-grid">
+                            <div className="form-field">
+                              <label>Key Skills / Talents *</label>
                               <input
-                                placeholder="Juz/Surah *"
-                                value={form.hifzAmount}
-                                onChange={(e) =>
-                                  update("hifzAmount", e.target.value)
-                                }
+                                placeholder="E.g., public speaking, writing *"
+                                value={form.skills}
+                                onChange={(e) => update("skills", e.target.value)}
                               />
                             </div>
-                          )}
-                          <div className="form-field">
-                            <label>Skills *</label>
-                            <input
-                              placeholder="Skills *"
-                              value={form.thahfeezSkills}
-                              onChange={(e) =>
-                                update("thahfeezSkills", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="form-field">
-                            <label>Interests *</label>
-                            <input
-                              placeholder="Interests *"
-                              value={form.thahfeezInterests}
-                              onChange={(e) =>
-                                update("thahfeezInterests", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="form-field full-width">
-                            <label>Additional comments (Optional)</label>
-                            <textarea
-                              placeholder="Comments"
-                              value={form.thahfeezComments}
-                              onChange={(e) =>
-                                update("thahfeezComments", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="file-upload">
-                            <label
-                              className="file-label"
-                              htmlFor="thahfeez-upload"
-                            >
-                              📎 Upload Achievements (Optional)
-                            </label>
-                            <input
-                              type="file"
-                              id="thahfeez-upload"
-                              accept="image/*,.pdf"
-                              onChange={(e) =>
-                                handleFileChange("thahfeezAchievements", e)
-                              }
-                            />
-                            {form.thahfeezAchievements && (
-                              <span className="file-name">
-                                {form.thahfeezAchievements.name}
-                              </span>
-                            )}
+
+                            <div className="form-field">
+                              <label>Major Areas of Interest *</label>
+                              <input
+                                placeholder="E.g., Hadith, Arabic literature *"
+                                value={form.interests}
+                                onChange={(e) => update("interests", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field">
+                              <label>Last book read *</label>
+                              <input
+                                placeholder="Title and author of book read *"
+                                value={form.lastBook}
+                                onChange={(e) => update("lastBook", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field">
+                              <label>Brief career aspiration note *</label>
+                              <input
+                                placeholder="What is your career goal *"
+                                value={form.careerNote}
+                                onChange={(e) => update("careerNote", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field full-width">
+                              <label>Expectations from our Academy *</label>
+                              <textarea
+                                placeholder="What do you expect to achieve from Zainussunna Academy? *"
+                                value={form.expectations}
+                                onChange={(e) => update("expectations", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field full-width">
+                              <label className="file-uploader-box">
+                                <Upload size={20} />
+                                <span>Upload Certificates/Achievements (Optional)</span>
+                                <input
+                                  type="file"
+                                  accept="image/*,.pdf"
+                                  onChange={(e) => handleFileChange("achievementsFile", e)}
+                                />
+                              </label>
+                              {form.achievementsFile && (
+                                <span className="attached-file-name">📎 {form.achievementsFile.name}</span>
+                              )}
+                            </div>
                           </div>
                         </>
                       )}
-                    </div>
-                    <div className="nav">
-                      <button
-                        className="back-btn"
-                        onClick={back}
-                        disabled={loading}
-                      >
-                        Back
-                      </button>
-                      <button
-                        className="primary"
-                        disabled={!step2Valid || loading}
-                        onClick={next}
-                      >
-                        {loading ? "Processing..." : "Continue"}
-                      </button>
-                    </div>
-                  </>
-                )}
 
-                {step === 3 && (
-                  <>
-                    <h2>Parent / Guardian Information</h2>
-                    <div className="form two-col">
-                      <div className="form-field">
-                        <label>Guardian Name *</label>
-                        <input
-                          placeholder="Guardian Name *"
-                          value={form.guardianName}
-                          onChange={(e) =>
-                            update("guardianName", e.target.value)
-                          }
-                        />
+                      {program === "thahfeez" && (
+                        <>
+                          <div className="form-section-title">Course Specifications</div>
+                          <div className="form-grid">
+                            <div className="form-field">
+                              <label>Arabic Reading Fluency *</label>
+                              <select
+                                value={form.arabicFluent}
+                                onChange={(e) => update("arabicFluent", e.target.value)}
+                              >
+                                <option value="">Select fluency level *</option>
+                                <option value="no">No - Cannot read</option>
+                                <option value="beginning">Beginning - Knows alphabets</option>
+                                <option value="elementary">Elementary - Can read words</option>
+                                <option value="intermediate">Intermediate - Can read sentences</option>
+                                <option value="advanced">Advanced - Can read paragraphs</option>
+                                <option value="fluent">Fluent - Can read fluently</option>
+                              </select>
+                            </div>
+
+                            <div className="form-field">
+                              <label>Have you studied Hifz before? *</label>
+                              <select
+                                value={form.hifzBefore}
+                                onChange={(e) => {
+                                  update("hifzBefore", e.target.value);
+                                  if (e.target.value === "no") update("hifzAmount", "");
+                                }}
+                              >
+                                <option value="">Select option *</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                              </select>
+                            </div>
+
+                            {form.hifzBefore === "yes" && (
+                              <div className="form-field full-width">
+                                <label>How much Quran memorized? *</label>
+                                <input
+                                  placeholder="List Juz or Surahs memorized *"
+                                  value={form.hifzAmount}
+                                  onChange={(e) => update("hifzAmount", e.target.value)}
+                                />
+                              </div>
+                            )}
+
+                            <div className="form-field">
+                              <label>Key Skills *</label>
+                              <input
+                                placeholder="E.g., Recitation, Pronunciation *"
+                                value={form.thahfeezSkills}
+                                onChange={(e) => update("thahfeezSkills", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field">
+                              <label>Interests *</label>
+                              <input
+                                placeholder="Personal interests *"
+                                value={form.thahfeezInterests}
+                                onChange={(e) => update("thahfeezInterests", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field full-width">
+                              <label>Additional comments (Optional)</label>
+                              <textarea
+                                placeholder="Describe any additional details"
+                                value={form.thahfeezComments}
+                                onChange={(e) => update("thahfeezComments", e.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-field full-width">
+                              <label className="file-uploader-box">
+                                <Upload size={20} />
+                                <span>Upload Achievements/Quran Certificates (Optional)</span>
+                                <input
+                                  type="file"
+                                  accept="image/*,.pdf"
+                                  onChange={(e) => handleFileChange("thahfeezAchievements", e)}
+                                />
+                              </label>
+                              {form.thahfeezAchievements && (
+                                <span className="attached-file-name">📎 {form.thahfeezAchievements.name}</span>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="step-navigation">
+                        <button className="btn btn-secondary" onClick={back} disabled={loading}>
+                          <ArrowLeft size={18} />
+                          <span>Back</span>
+                        </button>
+                        <button
+                          className="btn btn-primary"
+                          disabled={!step2Valid || loading}
+                          onClick={next}
+                        >
+                          <span>Continue</span>
+                          <ArrowRight size={18} />
+                        </button>
                       </div>
-                      <div className="form-field">
-                        <label>Relationship *</label>
-                        <input
-                          placeholder="Relationship *"
-                          value={form.guardianRelation}
-                          onChange={(e) =>
-                            update("guardianRelation", e.target.value)
-                          }
-                        />
+                    </div>
+                  )}
+
+                  {/* Step 3: Guardian Details */}
+                  {step === 3 && (
+                    <div className="step-panel">
+                      <div className="step-header">
+                        <Users size={24} />
+                        <h2>Parent / Guardian Details</h2>
                       </div>
-                      <div className="form-field">
-                        <label>Contact Number *</label>
-                        <div className="phone-input">
-                          <select
-                            value={countryCode}
-                            onChange={(e) => setCountryCode(e.target.value)}
-                          >
-                            {COUNTRY_CODES.map((c) => (
-                              <option key={c}>{c}</option>
-                            ))}
-                          </select>
+
+                      <div className="form-section-title">Guardian Information</div>
+                      <div className="form-grid">
+                        <div className="form-field">
+                          <label>Guardian Full Name *</label>
                           <input
-                            type="tel"
-                            placeholder="Contact *"
-                            value={form.guardianPhone}
-                            maxLength={10}
-                            onChange={(e) =>
-                              update("guardianPhone", e.target.value)
-                            }
+                            placeholder="Full name of parent/guardian *"
+                            value={form.guardianName}
+                            onChange={(e) => update("guardianName", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Relationship *</label>
+                          <input
+                            placeholder="E.g. Father, Mother, Uncle *"
+                            value={form.guardianRelation}
+                            onChange={(e) => update("guardianRelation", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-field">
+                          <label>Contact Number *</label>
+                          <div className="phone-input-group">
+                            <select
+                              value={countryCode}
+                              onChange={(e) => setCountryCode(e.target.value)}
+                            >
+                              {COUNTRY_CODES.map((c) => (
+                                <option key={c}>{c}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="tel"
+                              placeholder="Guardian phone *"
+                              value={form.guardianPhone}
+                              maxLength={10}
+                              onChange={(e) => update("guardianPhone", e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-field">
+                          <label>Guardian Email Address *</label>
+                          <input
+                            type="email"
+                            placeholder="guardian@gmail.com *"
+                            value={form.guardianEmail}
+                            onChange={(e) => update("guardianEmail", e.target.value)}
+                          />
+                          {form.guardianEmail && !form.guardianEmail.toLowerCase().endsWith("@gmail.com") && (
+                            <span className="field-error-msg">Must be a valid @gmail.com address</span>
+                          )}
+                        </div>
+
+                        <div className="form-field full-width">
+                          <label>Occupation *</label>
+                          <input
+                            placeholder="Guardian occupation *"
+                            value={form.guardianOccupation}
+                            onChange={(e) => update("guardianOccupation", e.target.value)}
                           />
                         </div>
                       </div>
-                      <div className="form-field">
-                        <label>Email Address *</label>
-                        <input
-                          type="email"
-                          placeholder="Email (@gmail.com) *"
-                          value={form.guardianEmail}
-                          onChange={(e) =>
-                            update("guardianEmail", e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="form-field">
-                        <label>Occupation *</label>
-                        <input
-                          placeholder="Occupation *"
-                          value={form.guardianOccupation}
-                          onChange={(e) =>
-                            update("guardianOccupation", e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="nav">
-                      <button
-                        className="back-btn"
-                        onClick={back}
-                        disabled={loading}
-                      >
-                        Back
-                      </button>
-                      <button
-                        className="primary"
-                        disabled={!step3Valid || loading}
-                        onClick={next}
-                      >
-                        {loading ? "Processing..." : "Review"}
-                      </button>
-                    </div>
-                  </>
-                )}
 
-                {step === 4 && (
-                  <>
-                    <h2>Review Your Application</h2>
-                    <div className="review-sections">
-                      <div className="review-card">
-                        <div className="review-header">
-                          <h3>Program</h3>
-                          <button
-                            className="edit-btn"
-                            onClick={() => jumpToStep(1)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                        <p>
-                          <strong>Program:</strong> {getSelectedProgram()?.name}
-                        </p>
-                      </div>
-                      <div className="review-card">
-                        <div className="review-header">
-                          <h3>Personal</h3>
-                          <button
-                            className="edit-btn"
-                            onClick={() => jumpToStep(1)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                        <p>
-                          <strong>Name:</strong> {form.name}
-                        </p>
-                        <p>
-                          <strong>DOB:</strong> {form.dob}
-                        </p>
-                        <p>
-                          <strong>Age:</strong> {form.age}
-                        </p>
-                        <p>
-                          <strong>Phone:</strong> {countryCode} {form.phone}
-                        </p>
-                        <p>
-                          <strong>Email:</strong> {form.email}
-                        </p>
-                        <p>
-                          <strong>Address:</strong> {form.houseName} House,{" "}
-                          {form.place}, PO {form.postOffice} - {form.zipCode}
-                        </p>
-                        <p>
-                          <strong>State:</strong> {form.state}
-                        </p>
-                        <p>
-                          <strong>District:</strong> {form.district}
-                        </p>
-                      </div>
-                      <div className="review-card">
-                        <div className="review-header">
-                          <h3>Academic</h3>
-                          <button
-                            className="edit-btn"
-                            onClick={() => jumpToStep(2)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                        <p>
-                          <strong>Madrassa:</strong> {form.madrassaName}
-                        </p>
-                        <p>
-                          <strong>{"->"} Stopped:</strong> {form.classStopped}
-                        </p>
-                        <p>
-                          <strong>School:</strong> {form.schoolCollege}
-                        </p>
-                        <p>
-                          <strong>{" ->"} Stopped:</strong> {form.standard}
-                        </p>
-                        <p>
-                          <strong>Languages:</strong>{" "}
-                          {form.languages.join(", ")}
-                        </p>
-                        {program === "shareea" && (
-                          <>
-                            <p>
-                              <strong>Skills:</strong> {form.skills}
-                            </p>
-                            <p>
-                              <strong>Interests:</strong> {form.interests}
-                            </p>
-                          </>
-                        )}
-                        {program === "thahfeez" && (
-                          <p>
-                            <strong>Arabic:</strong> {form.arabicFluent},{" "}
-                            <strong>Hifz Before:</strong> {form.hifzBefore}
-                          </p>
-                        )}
-                      </div>
-                      <div className="review-card">
-                        <div className="review-header">
-                          <h3>Guardian</h3>
-                          <button
-                            className="edit-btn"
-                            onClick={() => jumpToStep(3)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                        <p>
-                          <strong>Name:</strong> {form.guardianName} (
-                          {form.guardianRelation})
-                        </p>
-                        <p>
-                          <strong>Phone:</strong> {countryCode}{" "}
-                          {form.guardianPhone}
-                        </p>
-                        <p>
-                          <strong>Email:</strong> {form.guardianEmail}
-                        </p>
-                        <p>
-                          <strong>Occupation:</strong> {form.guardianOccupation}
-                        </p>
+                      <div className="step-navigation">
+                        <button className="btn btn-secondary" onClick={back} disabled={loading}>
+                          <ArrowLeft size={18} />
+                          <span>Back</span>
+                        </button>
+                        <button
+                          className="btn btn-primary"
+                          disabled={!step3Valid || loading}
+                          onClick={next}
+                        >
+                          <span>Review Application</span>
+                          <ArrowRight size={18} />
+                        </button>
                       </div>
                     </div>
-                    <div className="confirmation-checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={confirmationChecked}
-                          onChange={(e) =>
-                            setConfirmationChecked(e.target.checked)
-                          }
-                        />
-                        I confirm the above information is correct
-                      </label>
+                  )}
+
+                  {/* Step 4: Review Application */}
+                  {step === 4 && (
+                    <div className="step-panel">
+                      <div className="step-header">
+                        <Info size={24} />
+                        <h2>Review Your Application Details</h2>
+                      </div>
+
+                      <p className="review-intro-note">
+                        Please review all fields carefully before submitting. You can jump back to edit any section.
+                      </p>
+
+                      <div className="review-cards-list">
+                        <div className="review-summary-card">
+                          <div className="card-header">
+                            <h3>Program Track</h3>
+                            <button className="edit-shortcut-btn" onClick={() => jumpToStep(1)}>Edit</button>
+                          </div>
+                          <div className="card-body-details">
+                            <p><strong>Chosen Program:</strong> {getSelectedProgram()?.name}</p>
+                          </div>
+                        </div>
+
+                        <div className="review-summary-card">
+                          <div className="card-header">
+                            <h3>Personal Information</h3>
+                            <button className="edit-shortcut-btn" onClick={() => jumpToStep(1)}>Edit</button>
+                          </div>
+                          <div className="card-body-details">
+                            <p><strong>Full Name:</strong> {form.name}</p>
+                            <p><strong>Date of Birth:</strong> {form.dob} ({form.age} years)</p>
+                            <p><strong>Primary Phone:</strong> {countryCode} {form.phone}</p>
+                            <p><strong>Email Address:</strong> {form.email}</p>
+                            <p><strong>Residential Address:</strong> {form.houseName} House, {form.place}, PO {form.postOffice} - {form.zipCode}</p>
+                            <p><strong>District & State:</strong> {form.district}, {form.state}</p>
+                          </div>
+                        </div>
+
+                        <div className="review-summary-card">
+                          <div className="card-header">
+                            <h3>Academic History</h3>
+                            <button className="edit-shortcut-btn" onClick={() => jumpToStep(2)}>Edit</button>
+                          </div>
+                          <div className="card-body-details">
+                            <p><strong>Madrassa:</strong> {form.madrassaName} (Class Stopped: {form.classStopped})</p>
+                            <p><strong>School/College:</strong> {form.schoolCollege} (Standard Stop/Studying: {form.standard})</p>
+                            <p><strong>Languages:</strong> {form.languages.join(", ")} {form.languageOther ? `(${form.languageOther})` : ""}</p>
+                            {program === "shareea" ? (
+                              <>
+                                <p><strong>Skills:</strong> {form.skills}</p>
+                                <p><strong>Interests:</strong> {form.interests}</p>
+                                <p><strong>Last Book Read:</strong> {form.lastBook}</p>
+                                <p><strong>Career Goal:</strong> {form.careerNote}</p>
+                                <p className="text-paragraph"><strong>Expectations:</strong> {form.expectations}</p>
+                              </>
+                            ) : (
+                              <>
+                                <p><strong>Arabic Reading:</strong> {form.arabicFluent}</p>
+                                <p><strong>Hifz Before:</strong> {form.hifzBefore} {form.hifzAmount ? `(Juz: ${form.hifzAmount})` : ""}</p>
+                                <p><strong>Skills:</strong> {form.thahfeezSkills}</p>
+                                <p><strong>Interests:</strong> {form.thahfeezInterests}</p>
+                                {form.thahfeezComments && <p className="text-paragraph"><strong>Comments:</strong> {form.thahfeezComments}</p>}
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="review-summary-card">
+                          <div className="card-header">
+                            <h3>Guardian details</h3>
+                            <button className="edit-shortcut-btn" onClick={() => jumpToStep(3)}>Edit</button>
+                          </div>
+                          <div className="card-body-details">
+                            <p><strong>Guardian Name:</strong> {form.guardianName} ({form.guardianRelation})</p>
+                            <p><strong>Contact phone:</strong> {countryCode} {form.guardianPhone}</p>
+                            <p><strong>Email Address:</strong> {form.guardianEmail}</p>
+                            <p><strong>Occupation:</strong> {form.guardianOccupation}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Confirmation Checkbox */}
+                      <div className="confirmation-box-wrapper">
+                        <label className="checkbox-item">
+                          <input
+                            type="checkbox"
+                            checked={confirmationChecked}
+                            onChange={(e) => setConfirmationChecked(e.target.checked)}
+                          />
+                          <span className="checkbox-box"></span>
+                          <span className="checkbox-text font-bold">I hereby declare that all the information provided above is true and accurate to the best of my knowledge.</span>
+                        </label>
+                      </div>
+
+                      {error && <div className="error-message">{error}</div>}
+
+                      <div className="step-navigation">
+                        <button className="btn btn-secondary" onClick={back} disabled={loading}>
+                          <ArrowLeft size={18} />
+                          <span>Back</span>
+                        </button>
+                        <button
+                          className="btn btn-primary"
+                          disabled={!confirmationChecked || loading}
+                          onClick={submit}
+                        >
+                          {loading ? (
+                            <>
+                              <GraduationCap size={18} className="animate-pulse" />
+                              <span>Submitting Application...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Submit Application</span>
+                              <ChevronRight size={18} />
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                    {error && <div className="error-message">{error}</div>}
-                    <div className="nav">
-                      <button
-                        className="back-btn"
-                        onClick={back}
-                        disabled={loading}
-                      >
-                        Back
-                      </button>
-                      <button
-                        className="primary"
-                        disabled={!confirmationChecked || loading}
-                        onClick={submit}
-                      >
-                        {loading ? "Submitting..." : "Submit Application"}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
-            )}
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
+
       {toast && !submittedApplicationId && (
-        <div className="toast">Application submitted successfully!</div>
+        <Toast
+          message="Application progress saved. Complete all steps to finish!"
+          onClose={() => setToast(false)}
+        />
       )}
       <Footer />
     </>

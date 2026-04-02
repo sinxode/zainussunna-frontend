@@ -1,249 +1,39 @@
-@import "colors";
-@import "fonts";
+@import "_global";
 
-/* LEGAL PAGE STYLES */
 .legal-page {
-  width: 100%;
-  min-height: 100vh;
-  background: $bg-main;
-  padding: 60px 20px;
+  padding: 100px 0;
+  min-height: 80vh;
+}
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+.legal-header {
+  margin-bottom: 60px;
+  h1 { font-size: 3rem; color: $blue-deep; font-weight: 800; }
+}
 
-  .breadcrumbs {
-    margin-bottom: 30px;
-    font-size: 14px;
-    color: $text-secondary;
-
-    a {
-      color: $blue-primary;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    span {
-      color: $text-secondary;
-    }
-  }
-
-  .legal-header {
-    text-align: center;
-    margin-bottom: 50px;
-    padding-bottom: 30px;
-    border-bottom: 2px solid rgba($blue-accent, 0.1);
-
-    h1 {
-      font-family: "DMSans-Bold";
-      font-size: 42px;
-      color: $text-primary;
-      margin-bottom: 10px;
-    }
-  }
-
-  .legal-content {
-    background: $bg-white;
-    border-radius: 16px;
-    padding: 50px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-
-    .content-block {
-      margin-bottom: 30px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: "DMSans-Bold";
-        color: $text-primary;
-        margin-bottom: 16px;
-        margin-top: 30px;
-
-        &:first-child {
-          margin-top: 0;
-        }
-      }
-
-      h1 {
-        font-size: 32px;
-      }
-
-      h2 {
-        font-size: 24px;
-        color: $blue-primary;
-      }
-
-      h3 {
-        font-size: 20px;
-      }
-
-      p {
-        font-size: 16px;
-        color: $text-secondary;
-        line-height: 1.8;
-        margin-bottom: 16px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-
-      ul,
-      ol {
-        margin-bottom: 20px;
-        padding-left: 24px;
-
-        li {
-          font-size: 16px;
-          color: $text-secondary;
-          line-height: 1.8;
-          margin-bottom: 10px;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-        }
-      }
-
-      ul {
-        list-style-type: disc;
-
-        li {
-          &::marker {
-            color: $blue-accent;
-          }
-        }
-      }
-
-      ol {
-        list-style-type: decimal;
-
-        li {
-          &::marker {
-            color: $blue-accent;
-            font-weight: bold;
-          }
-        }
-      }
-
-      strong {
-        color: $text-primary;
-        font-weight: 600;
-      }
-
-      a {
-        color: $blue-primary;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-
-  .legal-back {
-    text-align: center;
-    margin-top: 40px;
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-  }
-
-  .loading-container,
-  .error-container {
-    text-align: center;
-    padding: 80px 20px;
-    background: $bg-white;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba($blue-accent, 0.2);
-      border-top-color: $blue-primary;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    h1 {
-      font-family: "DMSans-Bold";
-      font-size: 28px;
-      color: $text-primary;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 16px;
-      color: $text-secondary;
-      margin-bottom: 24px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+.legal-content {
+  background: $bg-white;
+  padding: 60px;
+  border-radius: 32px;
+  box-shadow: $shadow-md;
+  border: 1px solid rgba($blue-slate, 0.05);
+  
+  .content-block {
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: $text-primary;
+    
+    h2, h3 { margin: 30px 0 20px; color: $blue-slate; }
+    p { margin-bottom: 20px; max-width: none; }
+    ul { padding-left: 20px; margin-bottom: 20px; li { margin-bottom: 10px; } }
   }
 }
 
-/* RESPONSIVE */
+.legal-back {
+  margin-top: 60px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
-  .legal-page {
-    padding: 40px 16px;
-
-    .legal-header {
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-
-      h1 {
-        font-size: 32px;
-      }
-    }
-
-    .legal-content {
-      padding: 30px 20px;
-
-      .content-block {
-        h1 {
-          font-size: 26px;
-        }
-
-        h2 {
-          font-size: 20px;
-        }
-
-        h3 {
-          font-size: 18px;
-        }
-
-        p,
-        li {
-          font-size: 15px;
-        }
-      }
-    }
-  }
+  .legal-content { padding: 40px 20px; }
 }

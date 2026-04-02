@@ -1,0 +1,15 @@
+0000000000000000000000000000000000000000 d56c52e911dc545edb2579fc84a37dd389657ff6 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772690346 +0530	commit (initial): Initial frontend commit
+d56c52e911dc545edb2579fc84a37dd389657ff6 d56c52e911dc545edb2579fc84a37dd389657ff6 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772690358 +0530	Branch: renamed refs/heads/main to refs/heads/main
+d56c52e911dc545edb2579fc84a37dd389657ff6 d56c52e911dc545edb2579fc84a37dd389657ff6 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772690424 +0530	Branch: renamed refs/heads/main to refs/heads/main
+d56c52e911dc545edb2579fc84a37dd389657ff6 09d76f523493f17e4afc31a09f435b08db0d6ee4 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772690453 +0530	pull origin main --rebase (finish): refs/heads/main onto ef32fb583a3dca690b618338b86750c7007b91a5
+09d76f523493f17e4afc31a09f435b08db0d6ee4 3434f4d7471c5568406e1537bcd32f6515660f41 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772691047 +0530	commit: Remove old frontend folder
+3434f4d7471c5568406e1537bcd32f6515660f41 6bdfe571f9656a00b992c5f7c1842acea8359b3a Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772691281 +0530	commit: Cleaned Codes
+6bdfe571f9656a00b992c5f7c1842acea8359b3a 0f8dd75a57aacc19e5d8779f02e1545a0ab88029 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772812659 +0530	commit: Fixed all errors and Got responsive
+0f8dd75a57aacc19e5d8779f02e1545a0ab88029 a6e49bf5c29d4254e23343ca724bf03f3e056e1c Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772813033 +0530	commit: Fixed all errors and Got responsive and cleaned code
+a6e49bf5c29d4254e23343ca724bf03f3e056e1c 34319a78a5ef88e02049c5fccf746c064e295324 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772813524 +0530	commit: api modified
+34319a78a5ef88e02049c5fccf746c064e295324 37dff4141287f54da5abdc7ef6d073c7e5349fca Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772813944 +0530	commit: api modified again
+37dff4141287f54da5abdc7ef6d073c7e5349fca 005642e622b9ae11e9bf91caa6052423779d47f2 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772815080 +0530	commit: api modified again and again
+005642e622b9ae11e9bf91caa6052423779d47f2 8702da396902d77c852d76f240d901dae262c8b3 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772835856 +0530	commit: Partially designed responsive
+8702da396902d77c852d76f240d901dae262c8b3 50d548f1f9803f10e6b43cac94507a792ca21d91 Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772879382 +0530	commit: Modes updated
+50d548f1f9803f10e6b43cac94507a792ca21d91 67003b7bb91e79b6b2aa4fac9992f8c4bd7c947d Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772950354 +0530	commit: Lots of changes
+67003b7bb91e79b6b2aa4fac9992f8c4bd7c947d b876a18be49962b37b17b77c42efb384632c6b4c Muhammad Sinan <muhammadsinanofficial@gmail.com> 1772953273 +0530	commit: Reveal Edited

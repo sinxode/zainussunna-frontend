@@ -1,44 +1,48 @@
-/* =========================================
-   Zainussunna Academy – Color Variables
-   ========================================= */
+/*==================================
+   Zainussunna Academy – Academic Premium Palette
+   ================================== */
 
-/* ---------- Brand Blues ---------- */
-$blue-primary: #213448; // Main brand / authority (header, hero, footer)
-$blue-secondary: #456882; // Supporting sections, cards, secondary UI
-$blue-accent: #036474; // Highlights, icons, active states
+/* ---------- Core Brand ---------- */
+$blue-deep: #0B132B;       // Deep Midnight (Primary Text, Hero Backgrounds)
+$blue-slate: #1C2541;      // Deep Slate (Headers, Deep Sections)
+$blue-primary: #3A506B;    // Academic Blue (Main brand elements)
+$gold-warm: #D4AF37;       // Warm Gold (Accents, Premium Highlights)
+$gold-light: #E9D28B;      // Light Gold (Hover states, subtle highlights)
 
-/* ---------- Light Backgrounds ---------- */
-$bg-main: #f9fafb; // Main page background
-$bg-section: #f1f5f9; // Section & card backgrounds
+/* ---------- Surfaces & Backgrounds ---------- */
+$bg-main: #F9F9F7;         // Soft Cream (Main page background)
+$bg-section: #F1F1ED;      // Slightly darker cream for contrast
+$bg-glass: rgba(255, 255, 255, 0.7);
 $bg-white: #ffffff;
 
 /* ---------- Text Colors ---------- */
-$text-primary: #1f2933; // Headings & main text
-$text-secondary: #6b7280; // Muted text, descriptions
-$text-inverse: #ffffff; // Text on dark backgrounds
+$text-primary: #1F2937;    // Deep charcoal for high legibility
+$text-secondary: #4B5563;  // Muted gray for descriptions
+$text-gold: #A68A2D;       // Darker gold for text on light backgrounds
+$text-inverse: #ffffff;    // Text on dark backgrounds
 
-/* ---------- Borders & Lines ---------- */
-$border-light: #e5e7eb;
-$border-muted: #cbd5e1;
+/* ---------- Borders & Glass ---------- */
+$border-light: rgba(209, 213, 219, 0.5);
+$border-glass: rgba(255, 255, 255, 0.4);
 
 /* ---------- Button Colors ---------- */
-$btn-primary-bg: $blue-primary;
+$btn-primary-bg: $blue-deep;
 $btn-primary-text: $text-inverse;
-$btn-primary-hover-bg: $blue-accent;
+$btn-primary-hover-bg: $blue-slate;
 
-$btn-secondary-bg: transparent;
-$btn-secondary-border: $blue-secondary;
-$btn-secondary-text: $blue-secondary;
-$btn-secondary-hover-bg: $blue-secondary;
-$btn-secondary-hover-text: $text-inverse;
+$btn-accent-bg: $gold-warm;
+$btn-accent-text: $blue-deep;
+$btn-accent-hover-bg: $gold-light;
 
-/* ---------- Status / Utility (Optional) ---------- */
-$success: #2f855a;
-$warning: #d69e2e;
-$error: #c53030;
-$info: $blue-accent;
+/* ---------- Status / Utility ---------- */
+$success: #15803D;
+$warning: #B45309;
+$error: #B91C1C;
+$info: $blue-primary;
 
-/* ---------- Shadows (Subtle only) ---------- */
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
-$shadow-lg: 0 0px 10px rgba(0, 0, 0, 0.1);
+/* ---------- Shadows (Modern & Diffused) ---------- */
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+$shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+$shadow-soft-float: 0 15px 45px -10px rgba(0, 0, 0, 0.12);

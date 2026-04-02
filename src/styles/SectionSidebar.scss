@@ -2,40 +2,43 @@
 
 .section-sidebar {
   position: sticky;
-  top: 120px;
-  align-self: start;
-
-  ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      padding: 10px 14px;
-      margin-bottom: 6px;
-      font-size: 15px;
-      color: $text-secondary;
-      border-left: 3px solid transparent;
-      cursor: pointer;
-      transition: all 0.25s ease;
-
-      &:hover {
-        color: $text-primary;
-      }
-
-      &.active {
-        color: $text-primary;
-        font-weight: 600;
-        border-left-color: $blue-accent;
-        background: rgba($blue-accent, 0.08);
-        transform: translateX(4px);
-        border-radius: 4px;
+  top: 100px;
+  width: 100%;
+  
+  .sidebar-card {
+    @extend .card;
+    padding: 30px;
+    
+    h3 { font-size: 1.25rem; color: $blue-deep; margin-bottom: 24px; border-bottom: 2px solid $gold-warm; display: inline-block; padding-bottom: 8px; }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 12px;
+        a {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 12px;
+          color: $text-secondary;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: rgba($gold-warm, 0.05);
+            color: $blue-deep;
+            transform: translateX(5px);
+          }
+          
+          &.active {
+            background: $blue-deep;
+            color: $text-inverse;
+            svg { color: $gold-warm; }
+          }
+        }
       }
     }
-  }
-}
-
-@media (max-width: 900px) {
-  .section-sidebar {
-    display: none;
   }
 }

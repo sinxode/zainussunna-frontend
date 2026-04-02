@@ -11,6 +11,8 @@ import Admissions from "./pages/Admissions";
 import Contact from "./pages/Contact";
 import Faculty from "./pages/Faculty";
 import Legal from "./pages/Legal";
+import NotFound from "./components/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [showIntro, setShowIntro] = useState(false);
@@ -42,6 +44,7 @@ function App() {
       {showIntro && <Intro onDone={handleIntroDone} />}
       {!showIntro && (
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route
               path="/"
@@ -50,13 +53,13 @@ function App() {
               }
             />
             <Route path="/intro" element={<Intro onDone={() => {}} />} />
-            <Route path="/About" element={<About />} />
-            <Route path="/Programs" element={<Programs />} />
-            <Route path="/Achievements" element={<Achievements />} />
-            <Route path="/Gallery" element={<Gallery />} />
-            <Route path="/Admissions" element={<Admissions />} />
-            <Route path="/Contact" element={<Contact />} />
-            <Route path="/Faculty" element={<Faculty />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/achievements" element={<Achievements />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/admissions" element={<Admissions />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faculty" element={<Faculty />} />
             <Route
               path="/privacy-policy"
               element={<Legal slug="privacy-policy" />}
@@ -73,6 +76,7 @@ function App() {
               path="/shipping-policy"
               element={<Legal slug="shipping-policy" />}
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       )}

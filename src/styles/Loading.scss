@@ -1,0 +1,56 @@
+@import "global";
+
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+  
+  .loading-content {
+    text-align: center;
+    
+    .spinner-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      
+      .spinner-icon {
+        color: $gold-warm;
+        animation: rotate 2s linear infinite;
+        z-index: 2;
+      }
+      
+      .pulse-ring {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba($gold-warm, 0.1);
+        animation: pulseRing 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        z-index: 1;
+      }
+    }
+    
+    .loading-message {
+      font-family: $font-heading;
+      font-weight: 700;
+      color: $blue-deep;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}

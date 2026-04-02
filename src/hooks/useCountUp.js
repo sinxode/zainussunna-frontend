@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Hook for animating numbers from 0 to target value
@@ -11,11 +11,9 @@ import { useState, useEffect, useRef } from "react";
 export const useCountUp = (target, options = {}) => {
   const { duration = 2000, startWhen = true } = options;
   const [count, setCount] = useState(0);
-  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!startWhen || hasStarted.current) return;
-    hasStarted.current = true;
+    if (!startWhen) return;
 
     let startTime = null;
     let animationFrame;

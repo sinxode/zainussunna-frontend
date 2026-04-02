@@ -1,164 +1,100 @@
-/* =========================================
-   ZAINUSSUNNA Academy - Intro Page
-   Professional Calm Animation
-   ========================================= */
+@import "_global";
 
-/* Import fonts and colors */
-@import "./fonts";
-@import "./colors";
-
-/* Animation Keyframes */
-@keyframes softFadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes subtitleReveal {
-  0% {
-    opacity: 0;
-    letter-spacing: 15px;
-  }
-  100% {
-    opacity: 0.75;
-    letter-spacing: 5px;
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-15px) rotate(5deg);
-  }
-  50% {
-    transform: translateY(-8px) rotate(-3deg);
-  }
-  75% {
-    transform: translateY(-18px) rotate(3deg);
-  }
-}
-
-@keyframes floatReverse {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(12px) rotate(-5deg);
-  }
-  50% {
-    transform: translateY(6px) rotate(3deg);
-  }
-  75% {
-    transform: translateY(18px) rotate(-3deg);
-  }
-}
-
-@keyframes floatSlow {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-20px) rotate(6deg);
-  }
-  66% {
-    transform: translateY(-10px) rotate(-4deg);
-  }
-}
-
-/* Intro Overlay - Full Screen with White Background */
 .intro-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: $bg-white;
+  inset: 0;
+  background: $blue-deep;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba($gold-warm, 0.15) 0%, transparent 70%);
+  }
+
+  .intro-particles {
+    position: absolute;
+    inset: 0;
+    
+    .particle {
+      position: absolute;
+      background: rgba($gold-warm, 0.2);
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: floatParticle 10s infinite ease-in-out;
+    }
+    
+    .p-1 { width: 300px; height: 300px; top: -100px; left: -100px; animation-delay: 0s; }
+    .p-2 { width: 200px; height: 200px; bottom: 10%; right: 5%; animation-delay: -2s; }
+    .p-3 { width: 150px; height: 150px; top: 20%; right: 20%; animation-delay: -4s; }
+    .p-4 { width: 250px; height: 250px; bottom: -50px; left: 20%; animation-delay: -6s; }
+    .p-5 { width: 180px; height: 180px; top: 40%; left: 10%; animation-delay: -8s; }
+    .p-6 { width: 120px; height: 120px; top: 10%; left: 40%; animation-delay: -3s; }
+  }
+
+  .intro-content {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    
+    .logo-reveal {
+      margin-bottom: 30px;
+      .sparkle-icon {
+        color: $gold-warm;
+        animation: scaleIn 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+    }
+
+    .intro-title {
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: $text-inverse;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      margin-bottom: 10px;
+      animation: introReveal 1.2s 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .intro-subtitle {
+      font-size: 1.2rem;
+      color: $gold-warm;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      animation: introReveal 1s 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .intro-line {
+      width: 0;
+      height: 2px;
+      background: $gold-warm;
+      margin: 30px auto 0;
+      animation: lineExpand 1.5s 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+  }
 }
 
-/* Floating Geometric Shapes - Blue tints */
-.geo-shape {
-  position: absolute;
-  pointer-events: none;
-  opacity: 1;
-  z-index: 1;
+@keyframes floatParticle {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, 50px); }
+  66% { transform: translate(-20px, 20px); }
 }
 
-.geo-1 {
-  width: 180px;
-  height: 180px;
-  top: -40px;
-  left: -40px;
-  animation: float 8s ease-in-out infinite;
-  filter: grayscale(100%) hue-rotate(170deg) saturate(300%);
+@keyframes introReveal {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.geo-2 {
-  width: 120px;
-  height: 120px;
-  bottom: 8%;
-  right: -20px;
-  animation: floatReverse 7s ease-in-out infinite;
-  animation-delay: 1s;
-  filter: grayscale(100%) hue-rotate(170deg) saturate(300%);
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.geo-3 {
-  width: 80px;
-  height: 80px;
-  top: 30%;
-  right: 12%;
-  animation: floatSlow 9s ease-in-out infinite;
-  animation-delay: 2s;
-  filter: grayscale(100%) hue-rotate(170deg) saturate(300%);
-}
-
-/* Intro Content */
-.intro-content {
-  text-align: center;
-  color: $blue-accent;
-  position: relative;
-  z-index: 2;
-}
-
-/* Title - ZAINUSSUNNA */
-.intro-title {
-  font-family: "DMSans-Bold", sans-serif;
-  font-size: clamp(28px, 6vw, 62px);
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: $blue-accent;
-  margin: 0;
-  margin-bottom: -15px;
-  opacity: 0;
-  animation: softFadeUp 1s ease-out 0.2s forwards;
-}
-
-/* Subtitle - Academy Of Integrated Studies */
-.intro-subtitle {
-  font-family: "DMSans-Light";
-  font-size: clamp(12px, 2vw, 18px);
-  letter-spacing: 5px;
-  color: rgba($blue-primary, 0.75);
-  margin: 0;
-  text-transform: none;
-  font-style: normal;
-  opacity: 0;
-  animation: subtitleReveal 1s ease-out 0.8s forwards;
+@keyframes lineExpand {
+  from { width: 0; }
+  to { width: 100px; }
 }

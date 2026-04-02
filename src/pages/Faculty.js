@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Loading from "../components/Loading";
 import { api } from "../services/api";
 import "../styles/Faculty.scss";
+import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import { Users } from "lucide-react";
 
 function Faculty() {
   const [facultyList, setFacultyList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [headerRef, headerVisible] = useScrollAnimation({ threshold: 0.1 });
+  const [gridRef, gridVisible] = useScrollAnimation({ threshold: 0.15 });
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -21,13 +27,11 @@ function Faculty() {
         }
         setError(null);
       } catch (err) {
-        console.error("Error fetching faculty:", err);
         setError("Failed to load faculty. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchFaculty();
   }, []);
 
@@ -35,10 +39,7 @@ function Faculty() {
     return (
       <>
         <Navbar />
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading faculty...</p>
-        </div>
+        <Loading message="Introducing our Faculty..." />
         <Footer />
       </>
     );
@@ -48,39 +49,31 @@ function Faculty() {
     <>
       <Navbar />
 
-      <section className="faculty-section">
-        <div className="container">
-          {/* HEADER */}
-          <div className="breadcrumbs">
-            <a href="/">
-              <img
-                src={require("../assets/icons/arrow-ac.svg").default}
-                alt="Home"
-              />
-              Home
-            </a>
-          </div>
-          <div className="faculty-header">
-            <span className="overline">Our Faculty</span>
-            <h2>Qualified and Responsible Educators</h2>
-            <p>
+      <main className="faculty-page">
+        <section className={`faculty-header ${headerVisible ? "animate-in" : ""}`} ref={headerRef}>
+          <div className="container">
+            <div className="breadcrumbs animate-item delay-1">
+              <a href="/">Home</a> <span>/</span> <span>Faculty</span>
+            </div>
+            <span className="overline animate-item delay-2">Our Faculty</span>
+            <h2 className="animate-item delay-3">Qualified and Responsible Educators</h2>
+            <p className="animate-item delay-4">
               Our faculty members are committed to disciplined teaching,
-              conceptual clarity, and student mentorship.
+              conceptual clarity, and scholarly mentorship.
             </p>
           </div>
+        </section>
 
-          {error && <div className="error-message">{error}</div>}
+        <section className={`container ${gridVisible ? "animate-in" : ""}`} ref={gridRef}>
+          {error && <div className="error-message" style={{ textAlign: 'center', color: 'red', padding: '40px' }}>{error}</div>}
 
-          {/* GRID */}
           <div className="faculty-grid">
             {facultyList.length > 0 ? (
               facultyList.map((faculty, index) => (
-                <div key={faculty.id || index} className="faculty-card">
+                <div key={faculty.id || index} className={`faculty-card animate-item delay-${(index % 3) + 1}`}>
                   <div className="photo">
                     <img
-                      src={
-                        faculty.photo || require("../assets/images/nasar.png")
-                      }
+                      src={faculty.photo || require("../assets/images/nasar.png")}
                       alt={faculty.name}
                     />
                   </div>
@@ -93,13 +86,14 @@ function Faculty() {
                 </div>
               ))
             ) : (
-              <div className="no-data">
-                <p>No faculty members to display.</p>
+              <div style={{ gridColumn: 'span 3', textAlign: 'center', padding: '100px 0' }}>
+                <Users size={48} style={{ opacity: 0.1, marginBottom: '20px' }} />
+                <p>No faculty records found.</p>
               </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </>

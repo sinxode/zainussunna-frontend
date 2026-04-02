@@ -1,577 +1,240 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
 import "../styles/Programs.scss";
-import { api } from "../services/api";
+import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import { 
+  BookOpen, 
+  Layers, 
+  Users, 
+  GraduationCap, 
+  ChevronRight, 
+  Check, 
+  Plus, 
+  Minus,
+  Star,
+  Scroll,
+  Book,
+  Heart,
+  Clock
+} from "lucide-react";
 
-// Fallback data in case backend doesn't have data yet
-const fallbackPrograms = {
+const staticPrograms = {
   integrated: {
     id: "integrated",
     title: "Integrated Sharee'a",
     subtitle: "Da'wa Dars Program",
-    description:
-      "A comprehensive Islamic studies program centered on classical learning and guidance-oriented education. Designed to help students develop sound understanding, clarity of thought, and responsible engagement with Islamic knowledge.",
+    description: "A comprehensive Islamic studies program centered on classical learning and guidance-oriented education. This track is designed for students seeking deep textual mastery alongside modern intellectual development.",
     image: require("../assets/images/dars.jpg"),
-    gallery: [
-      require("../assets/images/IMG_0072.jpeg"),
-      require("../assets/images/IMG_0097.jpeg"),
-      require("../assets/images/IMG_0113.jpeg"),
-    ],
     features: [
-      {
-        icon: "book",
-        title: "Classical Text Study",
-        description:
-          "In-depth study of core classical Islamic texts with proper understanding and context",
-      },
-      {
-        icon: "structure",
-        title: "Mukhtasar-Based Curriculum",
-        description:
-          "Structured curriculum following traditional Mukhtasar methodology for systematic learning",
-      },
-      {
-        icon: "guidance",
-        title: "Guided Learning",
-        description:
-          "Personal guidance under experienced Ustads with regular evaluation and feedback",
-      },
-      {
-        icon: "community",
-        title: "Scholarly Environment",
-        description:
-          "Immersive learning environment fostering academic excellence and character development",
-      },
+      { icon: BookOpen, title: "Classical Study", description: "In-depth study of core classical Islamic texts from primary sources." },
+      { icon: Layers, title: "Structured Curriculum", description: "Following traditional Mukhtasar methodology for conceptual clarity." },
+      { icon: Scroll, title: "Guided Learning", description: "Personal guidance under experienced Ustads with a focus on discipline." },
+      { icon: Users, title: "Scholarly Environment", description: "Fostering academic excellence within a righteous peer community." },
     ],
     curriculum: [
       "Fiqh (Islamic Jurisprudence)",
       "Aqeedah (Islamic Creed)",
       "Seerah (Prophetic Biography)",
       "Hadith Studies",
-      "Arabic Language",
+      "Classical Arabic Grammar",
       "Usul al-Fiqh (Principles of Jurisprudence)",
+      "Tafsir Foundations",
+      "Logic & Rhetoric"
     ],
     outcomes: [
-      "Strong foundational knowledge in Islamic sciences",
-      "Ability to understand and explain classical texts",
-      "Critical thinking and analytical skills",
-      "Preparation for advanced Islamic studies",
-      "Character development and spiritual growth",
+      "Foundational knowledge of sacred sciences",
+      "Ability to analyze classical texts",
+      "Strong critical thinking skills",
+      "Spiritual grounding and moral integrity",
+      "Preparedness for higher scholarly pursuits"
     ],
+    details: [
+      { label: "Duration", value: "4-6 Years" },
+      { label: "Eligibility", value: "Aged 12-18" },
+      { label: "Medium", value: "Arabic & Malayalam" }
+    ]
   },
   quran: {
     id: "quran",
     title: "Qur'anic Studies",
     subtitle: "Thahfeel-ul-Qur'an Program",
-    description:
-      "A focused Hifz program dedicated to Qur'an memorization with accuracy, discipline, and consistent revision. The program supports students through structured routines and guided supervision to achieve complete memorization.",
+    description: "A focused Hifz program dedicated to Qur'an memorization with precision, accuracy, and spiritual discipline. Our method emphasizes long-term retention and beautiful recitation.",
     image: require("../assets/images/hifl.jpg"),
-    gallery: [
-      require("../assets/images/IMG_0122.jpeg"),
-      require("../assets/images/IMG_0130.jpeg"),
-      require("../assets/images/IMG_0190.jpeg"),
-    ],
     features: [
-      {
-        icon: "memorization",
-        title: "Systematic Memorization",
-        description:
-          "Structured approach to Qur'an memorization with personalized pacing for each student",
-      },
-      {
-        icon: "tajweed",
-        title: "Tajweed Mastery",
-        description:
-          "Strong emphasis on accurate pronunciation and application of tajweed rules",
-      },
-      {
-        icon: "revision",
-        title: "Daily Revision",
-        description:
-          "Consistent revision schedule to ensure strong retention and long-term memorization",
-      },
-      {
-        icon: "discipline",
-        title: "Disciplined Environment",
-        description:
-          "Structured daily routine fostering discipline, focus, and spiritual connection",
-      },
+      { icon: Book, title: "Systematic Hifz", description: "Personalized pacing adapted to each student's capacity." },
+      { icon: Star, title: "Tajweed Mastery", description: "Strict emphasis on accurate pronunciation and rules of Tilawah." },
+      { icon: Clock, title: "Daily Revision", description: "Rigorous revision cycles (Muraja'ah) ensuring long-term retention." },
+      { icon: Heart, title: "Spiritual Focus", description: "Fostering a deep, life-long connection with the Book of Allah." },
     ],
     curriculum: [
-      "Complete Qur'an Memorization (Hifz)",
-      "Tajweed Rules and Application",
-      "Qur'anic Recitation (Tilawah)",
-      "Memorization Techniques",
-      "Revision and Retention Methods",
-      "Spiritual Development",
+      "Complete Qur'an Memorization",
+      "Advanced Tajweed Rules",
+      "Makharij & Sifat",
+      "Etiquettes of the Qur'an",
+      "Daily Muraja'ah Cycles",
+      "Basic Qur'anic Vocabulary"
     ],
     outcomes: [
-      "Complete memorization of the Holy Qur'an",
-      "Mastery of tajweed rules and proper recitation",
-      "Strong retention through systematic revision",
-      "Disciplined study habits and time management",
-      "Spiritual connection with the Qur'an",
+      "Full memorization with high accuracy",
+      "Mastery of Tajweed and recitation",
+      "Disciplined routine and time management",
+      "Strong character through Qur'anic values",
+      "Ability to lead prayers (Imamah)"
     ],
+    details: [
+      { label: "Duration", value: "Flexible (Pace-based)" },
+      { label: "Eligibility", value: "Aged 9-15" },
+      { label: "Medium", value: "Arabic" }
+    ]
   },
-};
-
-const fallbackFaqData = [
-  {
-    q: "Who can apply for these programs?",
-    a: "Students who are committed to disciplined Islamic study and have completed basic Islamic education. Both programs welcome sincere learners dedicated to gaining authentic knowledge.",
-  },
-  {
-    q: "What is the medium of instruction?",
-    a: "Primary instruction is in Arabic with guided explanation in English/Malayalam to ensure proper understanding of concepts and texts.",
-  },
-  {
-    q: "How are students assessed?",
-    a: "Regular evaluation through oral examinations, written tests, and practical application. Progress is monitored continuously with feedback from instructors.",
-  },
-  {
-    q: "What is the duration of each program?",
-    a: "Integrated Sharee'a is a multi-year program with progressive levels. Thahfeel-ul-Qur'an typically takes 3-4 years depending on individual pace and memorization capacity.",
-  },
-  {
-    q: "Are there any fees for the programs?",
-    a: "The academy operates on a donation-based system. There are no fixed fees, but families are encouraged to contribute according to their capacity to support the institution.",
-  },
-];
-
-// Icon mapping for features
-const getFeatureIcon = (iconName) => {
-  const iconMap = {
-    book: require("../assets/icons/book-wh.png"),
-    structure: require("../assets/icons/book-wh.png"),
-    guidance: require("../assets/icons/book-wh.png"),
-    community: require("../assets/icons/book-wh.png"),
-    memorization: require("../assets/icons/holy-wh.png"),
-    tajweed: require("../assets/icons/holy-wh.png"),
-    revision: require("../assets/icons/holy-wh.png"),
-    discipline: require("../assets/icons/holy-wh.png"),
-  };
-  return iconMap[iconName] || require("../assets/icons/book-wh.png");
-};
-
-// Program icon mapping
-const getProgramIcon = (programId, isActive) => {
-  if (programId === "integrated" || programId === "shareea") {
-    return isActive
-      ? require("../assets/icons/shareea-wh.png")
-      : require("../assets/icons/shareea-pr.png");
-  }
-  if (programId === "quran" || programId === "thahfeez") {
-    return isActive
-      ? require("../assets/icons/quran-wh.png")
-      : require("../assets/icons/quran-pr.png");
-  }
-  return isActive
-    ? require("../assets/icons/shareea-wh.png")
-    : require("../assets/icons/shareea-pr.png");
 };
 
 function Programs() {
   const [activeProgram, setActiveProgram] = useState("integrated");
-  const [isHovered, setIsHovered] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
-  const [programs, setPrograms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Fetch programs from backend
-  useEffect(() => {
-    const fetchPrograms = async () => {
-      try {
-        setLoading(true);
-        const data = await api.getPrograms();
+  const [headerRef, headerVisible] = useScrollAnimation({ threshold: 0.1 });
+  const [tabsRef, tabsVisible] = useScrollAnimation({ threshold: 0.1 });
+  const [detailRef, detailVisible] = useScrollAnimation({ threshold: 0.15 });
+  const [faqRef, faqVisible] = useScrollAnimation({ threshold: 0.15 });
+  const [ctaRef, ctaVisible] = useScrollAnimation({ threshold: 0.15 });
 
-        if (data.results) {
-          setPrograms(data.results);
-        } else if (Array.isArray(data)) {
-          setPrograms(data);
-        }
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching programs:", err);
-        setError("Failed to load programs. Using default data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrograms();
-  }, []);
-
-  // Map frontend tab ID to backend program slug
-  const mapTabToProgramSlug = (tabId) => {
-    const tabIdLower = tabId?.toLowerCase();
-    if (tabIdLower === "integrated") return "shareea";
-    if (tabIdLower === "quran") return "thahfeez";
-    return tabIdLower;
-  };
-
-  // Map backend program slug to frontend tab ID
-  const mapProgramToTab = (slug) => {
-    const slugLower = slug?.toLowerCase();
-    if (slugLower === "shareea" || slugLower === "integrated")
-      return "integrated";
-    if (slugLower === "thahfeez" || slugLower === "quran") return "quran";
-    return slugLower;
-  };
-
-  const handleProgramClick = (programSlug) => {
-    const tabId = mapProgramToTab(programSlug);
-    setActiveProgram(tabId);
-  };
-
-  // Get active program data - from backend or fallback
-  const getActiveProgramData = () => {
-    // Always use fallback as default
-    let result = fallbackPrograms[activeProgram] || fallbackPrograms.integrated;
-
-    // Then try to find from backend data using proper slug mapping
-    if (programs.length > 0) {
-      const programSlug = mapTabToProgramSlug(activeProgram);
-      const backendProgram = programs.find((p) => {
-        const slug = p.slug?.toLowerCase();
-        return slug === programSlug;
-      });
-
-      if (backendProgram && backendProgram.description) {
-        // Transform backend data to frontend format
-        result = {
-          id: backendProgram.id,
-          title: backendProgram.name,
-          subtitle: backendProgram.subtitle || "",
-          description: backendProgram.description,
-          image: backendProgram.image
-            ? `${process.env.REACT_APP_API_URL || "http://localhost:8000"}${backendProgram.image}`
-            : fallbackPrograms[activeProgram]?.image,
-          gallery:
-            backendProgram.gallery?.length > 0
-              ? backendProgram.gallery.map((g) =>
-                  g.image
-                    ? `${process.env.REACT_APP_API_URL || "http://localhost:8000"}${g.image}`
-                    : g,
-                )
-              : fallbackPrograms[activeProgram]?.gallery || [],
-          features:
-            backendProgram.features?.length > 0
-              ? backendProgram.features
-              : fallbackPrograms[activeProgram]?.features || [],
-          curriculum:
-            backendProgram.curriculum?.length > 0
-              ? backendProgram.curriculum
-              : fallbackPrograms[activeProgram]?.curriculum || [],
-          outcomes:
-            backendProgram.outcomes?.length > 0
-              ? backendProgram.outcomes
-              : fallbackPrograms[activeProgram]?.outcomes || [],
-        };
-      }
-    }
-
-    return result;
-  };
-
-  // Get FAQ data - from backend or fallback
-  const getFaqData = () => {
-    // First check if there's a matching backend program with FAQ
-    const programSlug = mapTabToProgramSlug(activeProgram);
-    const backendProgram = programs.find(
-      (p) => p.slug?.toLowerCase() === programSlug,
-    );
-
-    if (backendProgram && backendProgram.faq && backendProgram.faq.length > 0) {
-      return backendProgram.faq;
-    }
-
-    // Fallback to hardcoded data
-    return fallbackFaqData;
-  };
-
-  // Get program tabs from backend or fallback
-  const getProgramTabs = () => {
-    if (programs.length > 0) {
-      return programs.map((p) => ({
-        id: mapProgramToTab(p.slug),
-        name: p.name,
-        subtitle: p.subtitle,
-      }));
-    }
-
-    return [
-      {
-        id: "integrated",
-        name: "Integrated Sharee'a",
-        subtitle: "Da'wa Dars Program",
-      },
-      {
-        id: "quran",
-        name: "Qur'anic Studies",
-        subtitle: "Thahfeel-ul-Qu'ran Program",
-      },
-    ];
-  };
-
-  const programData = getActiveProgramData();
-  const faqData = getFaqData();
-  const programTabs = getProgramTabs();
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading programs...</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  // Display error message if there's an error
-  if (error) {
-    return (
-      <>
-        <Navbar />
-        <div className="error-container">
-          <p>{error}</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  const programData = staticPrograms[activeProgram];
 
   return (
     <>
       <Navbar />
 
-      {/* Hero Section */}
-      <ScrollReveal as="section" className="program-page">
-        <div className="container">
-          <ScrollReveal as="section" className="programs-header">
-            <div className="hero-content">
-              <div className="breadcrumbs">
-                <a href="/">Home</a> <span>/ Programs</span>
-              </div>
-              <h1>Our Academic Programs</h1>
-              <p>
-                Discover structured Islamic education programs designed to
-                nurture knowledge, character, and spiritual growth through
-                authentic learning.
-              </p>
-            </div>
-          </ScrollReveal>
+      <main className="program-page">
+        <section className={`programs-header ${headerVisible ? "animate-in" : ""}`} ref={headerRef}>
+          <div className="container">
+            <div className="breadcrumbs animate-item delay-1"><a href="/">Home</a> <span>/</span> <span>Programs</span></div>
+            <h1 className="animate-item delay-2">Academic Programs</h1>
+            <p className="animate-item delay-3">Structured Islamic education designed for holistic spiritual and intellectual growth.</p>
+          </div>
+        </section>
 
-          {/* Program Selector Tabs */}
-          <ScrollReveal as="section" className="program-tabs">
-            <div className="container">
-              {programTabs.map((program) => (
-                <button
-                  key={program.id}
-                  className={`tab-btn ${activeProgram === mapProgramToTab(program.id) ? "active" : ""}`}
-                  onClick={() => handleProgramClick(program.id)}
-                >
-                  <img
-                    src={getProgramIcon(
-                      program.id,
-                      activeProgram === mapProgramToTab(program.id),
-                    )}
-                    alt=""
-                  />
-                  <span>{program.name}</span>
-                </button>
-              ))}
-            </div>
-          </ScrollReveal>
+        <section className={`program-tabs ${tabsVisible ? "animate-in" : ""}`} ref={tabsRef}>
+          <div className="container">
+            <button 
+              className={`tab-btn animate-item delay-1 ${activeProgram === "integrated" ? "active" : ""}`} 
+              onClick={() => setActiveProgram("integrated")}
+            >
+              <BookOpen size={22} /> <span>Integrated Sharee'a</span>
+            </button>
+            <button 
+              className={`tab-btn animate-item delay-2 ${activeProgram === "quran" ? "active" : ""}`} 
+              onClick={() => setActiveProgram("quran")}
+            >
+              <GraduationCap size={22} /> <span>Qur'anic Studies</span>
+            </button>
+          </div>
+        </section>
 
-          {/* Active Program Detail Section */}
-          <ScrollReveal as="section" className="program-detail">
-            <div className="container">
-              <div className="detail-content">
-                <div className="detail-header">
-                  <div className="detail-text">
-                    {programData.subtitle && (
-                      <span className="subtitle">{programData.subtitle}</span>
-                    )}
-                    <h2>{programData.title}</h2>
-                    <p className="description">{programData.description}</p>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => (window.location.href = "/Admissions")}
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                    >
-                      <img
-                        src={
-                          isHovered
-                            ? require("../assets/icons/arrow-pr.svg").default
-                            : require("../assets/icons/arrow-in.svg").default
-                        }
-                        alt="Arrow"
-                        className="enquire-arrow"
-                      />
-                      Apply Now
-                    </button>
-                  </div>
-                  <div className="detail-image">
-                    <img
-                      src={programData.image}
-                      alt={programData.title}
-                      onError={(e) => {
-                        e.target.src = fallbackPrograms[activeProgram]?.image;
-                      }}
-                    />
-                    <div className="image-accent"></div>
-                  </div>
-                </div>
-
-                {/* Features Grid */}
-                {programData.features && programData.features.length > 0 && (
-                  <div className="features-section">
-                    <h3>Program Features</h3>
-                    <div className="features-grid">
-                      {programData.features.map((feature, index) => (
-                        <div className="feature-card" key={index}>
-                          <div className="feature-icon">
-                            <img src={getFeatureIcon(feature.icon)} alt="" />
-                          </div>
-                          <h4>{feature.title}</h4>
-                          <p>{feature.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Gallery */}
-                {programData.gallery && programData.gallery.length > 0 && (
-                  <div className="programs-gallery-section">
-                    <h3>Classroom Moments</h3>
-                    <div className="gallery-grid">
-                      {programData.gallery.map((img, index) => (
-                        <div className="gallery-item" key={index}>
-                          <img
-                            src={img}
-                            alt={`Classroom ${index + 1}`}
-                            onError={(e) => {
-                              e.target.src =
-                                fallbackPrograms[activeProgram]?.gallery[index];
-                            }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Curriculum & Outcomes */}
-                {(programData.curriculum?.length > 0 ||
-                  programData.outcomes?.length > 0) && (
-                  <div className="two-column">
-                    {programData.curriculum?.length > 0 && (
-                      <div className="column">
-                        <h3>Curriculum</h3>
-                        <ul className="curriculum-list">
-                          {programData.curriculum.map((item, index) => (
-                            <li key={index}>
-                              <span className="check-icon">✓</span>
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {programData.outcomes?.length > 0 && (
-                      <div className="column">
-                        <h3>Learning Outcomes</h3>
-                        <ul className="outcomes-list">
-                          {programData.outcomes.map((item, index) => (
-                            <li key={index}>
-                              <span className="check-icon">✓</span>
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* FAQ Section */}
-          {faqData && faqData.length > 0 && (
-            <ScrollReveal as="section" className="faq-section">
-              <div className="container">
-                <h2>Frequently Asked Questions</h2>
-                <div className="faq-list">
-                  {faqData.map((item, i) => (
-                    <div
-                      key={i}
-                      className={`faq-item ${openFaq === i ? "open" : ""}`}
-                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    >
-                      <div className="faq-question">
-                        <span>{item.q}</span>
-                        <span className="faq-toggle">
-                          {openFaq === i ? "−" : "+"}
-                        </span>
-                      </div>
-                      <div className="faq-answer">{item.a}</div>
+        <section className={`program-detail ${detailVisible ? "animate-in" : ""}`} ref={detailRef}>
+          <div className="container">
+            <div className="detail-header">
+              <div className="detail-text animate-item delay-1">
+                <span className="subtitle">{programData.subtitle}</span>
+                <h2>{programData.title}</h2>
+                <p className="description">{programData.description}</p>
+                
+                <div className="program-quick-info" style={{ display: 'flex', gap: '30px', margin: '30px 0 40px' }}>
+                  {programData.details.map((d, i) => (
+                    <div key={i} className="info-item">
+                      <span style={{ display: 'block', fontSize: '0.85rem', color: '#D4AF37', fontWeight: 700, textTransform: 'uppercase', marginBottom: '5px' }}>{d.label}</span>
+                      <span style={{ fontSize: '1.1rem', color: '#213448', fontWeight: 600 }}>{d.value}</span>
                     </div>
                   ))}
                 </div>
+
+                <button className="btn btn-primary" onClick={() => window.location.href="/admissions"}>
+                  <span>Apply for Admission</span>
+                  <ChevronRight size={18} style={{ marginLeft: '8px' }} />
+                </button>
               </div>
-            </ScrollReveal>
-          )}
-
-          {/* CTA Section */}
-          <ScrollReveal as="section" className="cta-section">
-            {/* Live Floating Geometry Patterns */}
-            <img
-              src={require("../assets/images/geomtric.png")}
-              className="geo-shape geo-1"
-              alt=""
-            />
-            <img
-              src={require("../assets/images/geomtric.png")}
-              className="geo-shape geo-4"
-              alt=""
-            />
-
-            <div className="container">
-              <h2>Ready to Begin Your Journey?</h2>
-              <p>
-                Take the first step towards authentic Islamic education. Apply
-                now and join our community of dedicated learners.
-              </p>
-              <button
-                className="btn btn-primary-invert"
-                onClick={() => (window.location.href = "/Admissions")}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <img
-                  src={
-                    isHovered
-                      ? require("../assets/icons/arrow-in.svg").default
-                      : require("../assets/icons/arrow-pr.svg").default
-                  }
-                  alt="Arrow"
-                  className="enquire-arrow"
-                />
-                Start Your Application
-              </button>
+              <div className="detail-image animate-item delay-2">
+                <img src={programData.image} alt={programData.title} />
+              </div>
             </div>
-          </ScrollReveal>
-        </div>
-      </ScrollReveal>
+
+            <div className="features-section animate-item delay-3">
+              <h3>Core Pillars of Excellence</h3>
+              <div className="features-grid">
+                {programData.features.map((f, i) => (
+                  <div key={i} className={`feature-card animate-item delay-${i + 1}`}>
+                    <div className="feature-icon"><f.icon size={30} /></div>
+                    <h4>{f.title}</h4>
+                    <p>{f.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="two-column animate-item delay-4">
+              <div className="column animate-item delay-1">
+                <h3>Curriculum Focus</h3>
+                <ul>{programData.curriculum.map((c, i) => <li key={i}><Check className="check-icon" size={18} /> {c}</li>)}</ul>
+              </div>
+              <div className="column animate-item delay-2">
+                <h3>Key Learning Outcomes</h3>
+                <ul>{programData.outcomes.map((o, i) => <li key={i}><Check className="check-icon" size={18} /> {o}</li>)}</ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={`faq-section ${faqVisible ? "animate-in" : ""}`} ref={faqRef}>
+          <div className="container">
+            <h2 className="animate-item delay-1">Frequently Asked Questions</h2>
+            <div className="faq-list animate-item delay-2">
+              {[
+                { q: "Who is eligible to apply for these programs?", a: "We seek dedicated students who possess a foundational understanding of Islamic principles and a sincere passion for seeking knowledge. Age criteria vary: the Integrated Sharee'a program is ideal for students aged 12-18, while the Qur'anic Studies (Hifz) program accepts students aged 9-15. Previous academic records and a preliminary interview are part of the selection criteria." },
+                { q: "What is the medium of instruction?", a: "To preserve the authenticity of Islamic scholarship, the primary medium for textual study is Arabic. However, our experienced faculty use English and Malayalam extensively for conceptual breakdowns, discussions, and mentorship, ensuring that students fully grasp complex subjects regardless of their initial Arabic proficiency." },
+                { q: "Is the curriculum recognized for higher studies?", a: "Yes. Our curriculum is meticulously structured based on the traditional 'Mukhtasar' methodology, which is globally respected. Graduates from our Integrated Sharee'a program possess the rigorous academic foundation required to pursue advanced degrees at renowned Islamic universities and institutions worldwide." },
+                { q: "What is the daily schedule like?", a: "Our daily routine is designed to foster discipline, spiritual growth, and academic focus. The day begins before Fajr with spiritual reflection and revision, followed by core academic classes, dedicated research and library hours in the afternoon, and mentorship sessions in the evening. Ample time is also allocated for rest, recreation, and meals." },
+                { q: "Are extracurricular activities included?", a: "We believe in holistic development. Alongside rigorous academics, students participate in public speaking (Da'wa) training, physical education, community service initiatives, and academic symposiums to build their confidence, character, and leadership skills." }
+              ].map((item, i) => (
+                <div key={i} className={`faq-item ${openFaq === i ? "open" : ""}`} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                  <div className="faq-question">
+                    <span>{item.q}</span>
+                    {openFaq === i ? <Minus size={20} /> : <Plus size={20} />}
+                  </div>
+                  <div className="faq-answer">{item.a}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={`section-cta ${ctaVisible ? "animate-in" : ""}`} ref={ctaRef}>
+          <div className="container">
+            <div className="cta-modern-box">
+              <div className="cta-glow-orb"></div>
+              <div className="cta-content">
+                <span className="overline">Take the Next Step</span>
+                <h2>Ready to Excel in Your Studies?</h2>
+                <p>Join our community of scholars and embark on a journey of authentic Islamic learning.</p>
+                <div className="cta-actions">
+                  <button className="btn btn-primary" onClick={() => window.location.href="/admissions"}>
+                    <span>Start Your Application</span>
+                    <ChevronRight size={20} style={{ marginLeft: '10px' }} />
+                  </button>
+                </div>
+              </div>
+              <div className="cta-visual">
+                <div className="visual-graphic">
+                  <div className="circle-1"></div>
+                  <div className="circle-2"></div>
+                  <GraduationCap size={80} className="cta-icon" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
       <Footer />
     </>
   );

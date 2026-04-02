@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 import "../styles/Intro.scss";
 
 function Intro({ onDone }) {
@@ -8,36 +9,28 @@ function Intro({ onDone }) {
     const timer = setTimeout(() => {
       setVisible(false);
       if (onDone) onDone();
-    }, 3500);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [onDone]);
 
-  if (!visible) {
-    return null;
-  }
+  if (!visible) return null;
 
   return (
     <div className="intro-overlay">
-      <img
-        src={require("../assets/images/geomtric.png")}
-        className="geo-shape geo-1"
-        alt=""
-      />
-      <img
-        src={require("../assets/images/geomtric.png")}
-        className="geo-shape geo-2"
-        alt=""
-      />
-      <img
-        src={require("../assets/images/geomtric.png")}
-        className="geo-shape geo-3"
-        alt=""
-      />
-
+      <div className="intro-particles">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className={`particle p-${i+1}`}></div>
+        ))}
+      </div>
+      
       <div className="intro-content">
+        <div className="logo-reveal">
+          <Sparkles className="sparkle-icon" size={40} />
+        </div>
         <h1 className="intro-title">Zainussunna</h1>
         <p className="intro-subtitle">Academy Of Integrated Studies</p>
+        <div className="intro-line"></div>
       </div>
     </div>
   );

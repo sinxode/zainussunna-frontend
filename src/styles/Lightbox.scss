@@ -1,0 +1,100 @@
+@import "global";
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($blue-deep, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+}
+
+.lightbox-controls {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  
+  .control-group {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .control-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $gold-warm;
+      color: $blue-deep;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.lightbox-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px 40px;
+  
+  .nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover { color: white; transform: scale(1.1); }
+  }
+  
+  .image-wrapper {
+    position: relative;
+    max-width: 80%;
+    max-height: 80vh;
+    
+    img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .image-caption {
+      position: absolute;
+      bottom: -60px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: white;
+      
+      h3 { color: white; font-size: 1.25rem; margin-bottom: 5px; }
+      span { color: $gold-warm; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .lightbox-content {
+    padding: 0 10px 20px;
+    .nav-btn { display: none; }
+    .image-wrapper { max-width: 95%; }
+  }
+  .lightbox-controls { padding: 15px 20px; }
+}
