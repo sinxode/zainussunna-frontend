@@ -234,6 +234,14 @@
 
     @include respond-to(mobile) {
       gap: 10px;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 5px 20px 20px;
+      margin: 0 -20px;
+      -webkit-overflow-scrolling: touch;
+      &::-webkit-scrollbar { display: none; }
+      scrollbar-width: none;
     }
 
     .filter-btn {
@@ -330,13 +338,13 @@
   }
 
   .card-content {
-    padding: 35px;
+    padding: 25px;
     background: $bg-white;
     position: relative;
     border-top: 1px solid rgba($blue-slate, 0.04);
 
     @include respond-to(mobile) {
-      padding: 24px;
+      padding: 16px;
     }
     
     .card-category {

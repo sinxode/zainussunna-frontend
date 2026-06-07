@@ -150,6 +150,14 @@
 
     @include respond-to(mobile) {
       gap: 10px;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 5px 20px 20px;
+      margin: 0 -20px;
+      -webkit-overflow-scrolling: touch;
+      &::-webkit-scrollbar { display: none; }
+      scrollbar-width: none;
     }
 
     .category-btn {

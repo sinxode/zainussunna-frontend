@@ -14,23 +14,21 @@
 /* 1. HERO HEADER */
 .contact-hero {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 0; // Removed margin to handle spacing via grid
   background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
-  padding: 120px 40px 100px;
+  padding: 160px 40px 120px; // Increased top padding for navbar clearance
   border-radius: 0 0 60px 60px;
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
 
   @include respond-to(tablet-portrait) {
-    padding: 100px 24px 80px;
-    margin-bottom: 60px;
+    padding: 140px 24px 100px;
     border-radius: 0 0 40px 40px;
   }
 
   @include respond-to(mobile) {
-    padding: 80px 20px 60px;
-    margin-bottom: 40px;
+    padding: 120px 20px 80px;
     border-radius: 0 0 32px 32px;
   }
 
@@ -137,14 +135,14 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  margin-top: -60px;
+  margin-top: 60px; // Changed from negative to positive for clear separation
   position: relative;
   z-index: 10;
 
   @include respond-to(tablet-portrait) {
     grid-template-columns: 1fr;
     gap: 16px;
-    margin-top: -40px;
+    margin-top: 40px;
   }
 }
 
