@@ -115,19 +115,19 @@ function Contact() {
   const faqs = [
     {
       question: "What is the admission process?",
-      answer: "Our admission process is designed to be seamless and transparent. It begins with submitting an online application via our Admissions portal. Once reviewed, eligible candidates will be invited for a brief personal interview and an assessment to gauge their foundational knowledge. Final admission is granted based on the interview performance and seat availability.",
+      answer: "Our admission process is designed to be seamless and transparent. It begins with submitting an online application via our Admissions portal. Once reviewed, eligible candidates will be invited for a brief personal interview and a basic competency assessment. Final admission is granted based on the interview performance, previous academic background, and seat availability.",
     },
     {
       question: "What are the fees for the programs?",
-      answer: "Zainussunna Academy is committed to making quality Islamic education accessible to all. We operate on a subsidized fee structure, and in many cases, it is donation-based depending on the student's financial background. For a detailed and up-to-date fee breakdown, please reach out to our administration office via WhatsApp or phone.",
+      answer: "Zainussunna Academy is committed to making quality Islamic education accessible to all sincere seekers of knowledge. We operate on a subsidized model, and in many cases, education is provided through a donation-based system depending on the student's financial background. For a detailed and up-to-date breakdown of contributions, please contact our administrative office via WhatsApp.",
     },
     {
       question: "Do you provide hostel facilities?",
-      answer: "Currently, Zainussunna Academy operates primarily as a day-academy. However, we understand the needs of outstation students and maintain a network of trusted, safe, and comfortable boarding facilities nearby. Our administration team is always available to assist parents in securing suitable accommodation for their children.",
+      answer: "Currently, Zainussunna Academy operates primarily as a day-academy and residential dars. For outstation students, we facilitate secure and comfortable boarding facilities nearby through a network of trusted providers. Our administration team ensures that all external accommodations meet our safety and discipline standards.",
     },
     {
       question: "Can parents visit the academy?",
-      answer: "Absolutely. We encourage parents to be active participants in their child's educational journey. You are welcome to visit the campus during our working hours. For detailed discussions with faculty or the director, we recommend scheduling an appointment in advance."
+      answer: "Absolutely. We encourage parents to be active participants in their child's educational journey. You are welcome to visit the campus during our designated working hours. To ensure the availability of the Director or specific faculty members, we recommend scheduling an appointment at least 24 hours in advance.",
     }
   ];
 

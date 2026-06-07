@@ -26,20 +26,17 @@
   overflow: hidden;
   padding-top: 100px;
   background-color: $blue-deep;
-  margin-bottom: 120px;
 
   @include respond-to(tablet-portrait) {
     height: auto !important;
     min-height: 600px !important;
     padding: 140px 0 100px;
     text-align: center;
-    margin-bottom: 80px;
   }
 
   @include respond-to(mobile) {
     min-height: 500px !important;
     padding: 120px 0 80px;
-    margin-bottom: 60px;
   }
 
   .hero-bg {

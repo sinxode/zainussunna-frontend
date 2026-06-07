@@ -1271,9 +1271,54 @@ export default function Admission() {
             </div>
           </div>
         </section>
-      </main>
 
-      {toast && !submittedApplicationId && (
+                    {/* FAQ Section */}
+                    <section className={`faq-section ${contentVisible ? "animate-in" : ""}`} style={{ paddingBottom: '120px' }}>
+                    <div className="container">
+                    <div className="section-header text-center animate-item" style={{ marginBottom: '60px' }}>
+                    <span className="overline">Admission Help</span>
+                    <h2>Common Questions</h2>
+                    <p>Everything you need to know about joining Zainussunna Academy.</p>
+                    </div>
+
+                    <div className="faq-list animate-item delay-1" style={{ maxWidth: '850px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {[
+                    {
+                    q: "What documents are required for admission?",
+                    a: "For the initial online application, you only need a clear digital photograph of the student. However, during the physical interview, you will need to bring the student's Birth Certificate, Aadhaar Card, previous academic School Leaving Certificate (TC), and a copy of the parent/guardian's identity proof."
+                    },
+                    {
+                    q: "Is there an entrance examination?",
+                    a: "Yes. After the initial application review, eligible candidates are called for a basic entrance assessment. For the Hifz program, we evaluate recitation ability and memory capacity. For the Sharee'a program, we assess basic Islamic knowledge, Arabic reading skills, and general aptitude."
+                    },
+                    {
+                    q: "Can I apply for multiple programs simultaneously?",
+                    a: "No. Our programs are intensive and require full-time commitment. However, our Integrated Sharee'a program does include basic Qur'anic studies. If you are unsure which track is best, we recommend choosing the one that aligns most with your primary goal (memorization vs. scholarship) and discussing it during your interview."
+                    },
+                    {
+                    q: "How will I know if my application is selected?",
+                    a: "Once you submit your application, you will receive an application number. Our team will review it within 7-10 working days. If shortlisted, you will receive a call or WhatsApp message on the registered guardian number with details for the interview and assessment."
+                    },
+                    {
+                    q: "Is there any application fee?",
+                    a: "No, Zainussunna Academy does not charge any fee for the admission application. We believe in providing equal opportunity to all sincere seekers of knowledge."
+                    }
+                    ].map((item, i) => (
+                    <div key={i} className="faq-item" style={{ background: '#F9F9F7', borderRadius: '24px', padding: '30px 40px', border: '1px solid rgba(58, 80, 107, 0.05)' }}>
+                    <div className="faq-question" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, color: '#0B132B', fontSize: '1.15rem' }}>
+                    <span>{item.q}</span>
+                    </div>
+                    <div className="faq-answer" style={{ marginTop: '15px', color: '#50667F', lineHeight: '1.7', fontSize: '1.05rem' }}>
+                    {item.a}
+                    </div>
+                    </div>
+                    ))}
+                    </div>
+                    </div>
+                    </section>
+                    </main>
+
+                    {toast && !submittedApplicationId && (
         <Toast
           message="Application progress saved. Complete all steps to finish!"
           onClose={() => setToast(false)}

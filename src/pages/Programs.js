@@ -53,6 +53,20 @@ const staticPrograms = {
       { label: "Duration", value: "4-6 Years" },
       { label: "Eligibility", value: "Aged 12-18" },
       { label: "Medium", value: "Arabic & Malayalam" }
+    ],
+    faq: [
+      { 
+        q: "What is the core focus of the Integrated Sharee'a track?", 
+        a: "The core focus is on primary classical texts (Mukhtasars) in Fiqh, Aqeedah, and Arabic Grammar, providing a solid intellectual foundation for traditional Islamic scholarship." 
+      },
+      {
+        q: "How does this program prepare students for modern challenges?",
+        a: "By combining traditional Dars methodology with modern research tools and contemporary textual analysis, we equip students to apply classical principles to modern contexts."
+      },
+      {
+        q: "Are there prerequisites for joining this track?",
+        a: "Candidates should have completed basic Islamic education and possess a sincere commitment to long-term, disciplined scholarly pursuit."
+      }
     ]
   },
   quran: {
@@ -86,6 +100,20 @@ const staticPrograms = {
       { label: "Duration", value: "Flexible (Pace-based)" },
       { label: "Eligibility", value: "Aged 9-15" },
       { label: "Medium", value: "Arabic" }
+    ],
+    faq: [
+      {
+        q: "What makes your Hifz methodology unique?",
+        a: "We prioritize 'Itqan' (precision) and 'Muraja'ah' (retention) over speed. Our structured daily revision cycles ensure that what is memorized remains fresh for life."
+      },
+      {
+        q: "How do you handle students with different memorization speeds?",
+        a: "Each student follows a personalized plan tailored to their individual capacity, ensuring they are challenged but not overwhelmed."
+      },
+      {
+        q: "Do students learn the meanings of the Qur'an as well?",
+        a: "While the primary focus is memorization and Tajweed, we introduce basic Qur'anic vocabulary and brief conceptual summaries to help students connect with the verses."
+      }
     ]
   },
 };
@@ -189,13 +217,28 @@ function Programs() {
           <div className="container">
             <h2 className="animate-item delay-1">Frequently Asked Questions</h2>
             <div className="faq-list animate-item delay-2">
-              {[
-                { q: "Who is eligible to apply for these programs?", a: "We seek dedicated students who possess a foundational understanding of Islamic principles and a sincere passion for seeking knowledge. Age criteria vary: the Integrated Sharee'a program is ideal for students aged 12-18, while the Qur'anic Studies (Hifz) program accepts students aged 9-15. Previous academic records and a preliminary interview are part of the selection criteria." },
-                { q: "What is the medium of instruction?", a: "To preserve the authenticity of Islamic scholarship, the primary medium for textual study is Arabic. However, our experienced faculty use English and Malayalam extensively for conceptual breakdowns, discussions, and mentorship, ensuring that students fully grasp complex subjects regardless of their initial Arabic proficiency." },
-                { q: "Is the curriculum recognized for higher studies?", a: "Yes. Our curriculum is meticulously structured based on the traditional 'Mukhtasar' methodology, which is globally respected. Graduates from our Integrated Sharee'a program possess the rigorous academic foundation required to pursue advanced degrees at renowned Islamic universities and institutions worldwide." },
-                { q: "What is the daily schedule like?", a: "Our daily routine is designed to foster discipline, spiritual growth, and academic focus. The day begins before Fajr with spiritual reflection and revision, followed by core academic classes, dedicated research and library hours in the afternoon, and mentorship sessions in the evening. Ample time is also allocated for rest, recreation, and meals." },
-                { q: "Are extracurricular activities included?", a: "We believe in holistic development. Alongside rigorous academics, students participate in public speaking (Da'wa) training, physical education, community service initiatives, and academic symposiums to build their confidence, character, and leadership skills." }
-              ].map((item, i) => (
+              {(programData.faq || [
+                { 
+                  q: "Who is eligible to apply for these programs?", 
+                  a: "We seek dedicated students with a foundational understanding of Islamic principles and a sincere passion for knowledge. The Integrated Sharee'a program is ideal for students aged 12-18, while the Qur'anic Studies (Hifz) program accepts students aged 9-15. Previous academic records and a preliminary interview are part of our selection criteria to ensure a good fit for our rigorous curriculum." 
+                },
+                { 
+                  q: "What is the medium of instruction?", 
+                  a: "To preserve the authenticity of Islamic scholarship, the primary medium for textual study is Arabic. However, our experienced faculty use English and Malayalam extensively for conceptual breakdowns, discussions, and mentorship. This ensures that students fully grasp complex subjects regardless of their initial Arabic proficiency while progressively building their language skills." 
+                },
+                { 
+                  q: "Is the curriculum recognized for higher studies?", 
+                  a: "Yes. Our curriculum is meticulously structured based on the traditional 'Mukhtasar' methodology, which is globally respected in the world of Islamic scholarship. Graduates from our Integrated Sharee'a program possess a rigorous academic foundation that prepares them for advanced degrees at renowned Islamic universities and institutions worldwide." 
+                },
+                { 
+                  q: "What is the daily schedule like?", 
+                  a: "Our daily routine fosters discipline, spiritual growth, and academic focus. The day begins before Fajr with Tahajjud and revision, followed by core academic classes until noon. Afternoons include dedicated research and library hours, while evenings are reserved for mentorship sessions and community activities. We ensure a balanced approach with ample time for rest and meals." 
+                },
+                { 
+                  q: "Are extracurricular activities included?", 
+                  a: "Absolutely. We believe in holistic development. Alongside rigorous academics, students participate in public speaking (Da'wa) training, physical education, community service initiatives, and academic symposiums. These activities are designed to build confidence, leadership skills, and a strong sense of social responsibility." 
+                }
+              ]).map((item, i) => (
                 <div key={i} className={`faq-item ${openFaq === i ? "open" : ""}`} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                   <div className="faq-question">
                     <span>{item.q}</span>
