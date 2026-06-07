@@ -18,13 +18,29 @@
 
 /* 1. HERO SECTION */
 .hero-wrapper {
-  min-height: 100vh;
+  height: 850px !important;
+  min-height: 1010px !important;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
   padding-top: 100px;
   background-color: $blue-deep;
+  margin-bottom: 120px;
+
+  @include respond-to(tablet-portrait) {
+    height: auto !important;
+    min-height: 600px !important;
+    padding: 140px 0 100px;
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  @include respond-to(mobile) {
+    min-height: 500px !important;
+    padding: 120px 0 80px;
+    margin-bottom: 60px;
+  }
 
   .hero-bg {
     position: absolute;
@@ -38,6 +54,11 @@
       background: url(../assets/images/Hero.jpeg) right center / auto 100% no-repeat;
       animation: kenBurns 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 1;
+
+      @include respond-to(tablet-portrait) {
+        background-size: cover;
+        background-position: center;
+      }
     }
 
     .hero-image-overlay {
@@ -49,6 +70,13 @@
         rgba($blue-deep, 0.8) 55%, 
         rgba($blue-deep, 0.2) 100%);
       z-index: 2;
+
+      @include respond-to(tablet-portrait) {
+        background: linear-gradient(0deg, 
+          rgba($blue-deep, 0.95) 0%, 
+          rgba($blue-deep, 0.8) 50%, 
+          rgba($blue-deep, 0.4) 100%);
+      }
     }
 
     &::after {
@@ -65,14 +93,25 @@
 
   .hero-content {
     width: 100%;
+    max-width: 889px;
+
+    @include respond-to(tablet-portrait) {
+      max-width: 100%;
+      margin: 0 auto;
+    }
     
     h1 {
       font-size: clamp(2.5rem, 6vw, 5rem);
       color: white;
-      line-height: 1;
+      line-height: 1.1;
       margin: 20px 0 35px;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.04em;
+
+      @include respond-to(mobile) {
+        font-size: 2.5rem;
+        margin: 15px 0 25px;
+      }
       
       span { 
         color: $gold-warm; 
@@ -89,11 +128,32 @@
       line-height: 1.6;
       margin-bottom: 50px;
       max-width: 600px;
+
+      @include respond-to(tablet-portrait) {
+        margin: 0 auto 40px;
+        font-size: 1.15rem;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 1rem;
+        margin-bottom: 30px;
+      }
     }
 
     .cta-group {
       display: flex;
       gap: 20px;
+
+      @include respond-to(tablet-portrait) {
+        justify-content: center;
+      }
+
+      @include respond-to(mobile) {
+        flex-direction: column;
+        gap: 12px;
+        .btn { width: 100%; }
+      }
+
       .btn { padding: 18px 40px; font-size: 1.1rem; }
     }
   }
@@ -104,6 +164,10 @@
   position: relative;
   z-index: 10;
   margin-top: -80px;
+
+  @include respond-to(tablet-portrait) {
+    margin-top: -40px;
+  }
 }
 
 .metrics-grid {
@@ -116,6 +180,11 @@
   box-shadow: $shadow-soft-float;
   overflow: hidden;
 
+  @include respond-to(tablet-portrait) {
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+
   .metric {
     flex: 1;
     padding: 60px 40px;
@@ -123,18 +192,35 @@
     border-right: 1px solid rgba($blue-slate, 0.08);
     transition: all 0.4s ease;
 
+    @include respond-to(tablet-portrait) {
+      flex: 0 0 50%;
+      padding: 40px 20px;
+      border-bottom: 1px solid rgba($blue-slate, 0.08);
+      
+      &:nth-child(even) { border-right: none; }
+      &:nth-last-child(-n+2) { border-bottom: none; }
+    }
+
+    @include respond-to(mobile) {
+      padding: 30px 20px;
+    }
+
     &:last-child { border-right: none; }
     &:hover { background: rgba(255, 255, 255, 0.4); }
 
     .m-val {
       font-size: 3.5rem;
-      font-weight: 800;
+      font-weight: 700;
       color: $blue-deep;
       margin-bottom: 5px;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, $blue-deep, $blue-primary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+
+      @include respond-to(mobile) {
+        font-size: 2.75rem;
+      }
     }
 
     p {
@@ -143,6 +229,10 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+
+      @include respond-to(mobile) {
+        font-size: 0.85rem;
+      }
     }
   }
 }
@@ -150,12 +240,30 @@
 /* 3. ABOUT SECTION */
 .section-about {
   padding: 150px 0;
+
+  @include respond-to(tablet-landscape) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
   
   .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 100px;
     align-items: center;
+
+    @include respond-to(tablet-landscape) {
+      gap: 50px;
+    }
+
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 60px;
+    }
   }
 
   .about-image {
@@ -166,6 +274,10 @@
       box-shadow: $shadow-lg;
       position: relative;
       z-index: 1;
+
+      @include respond-to(mobile) {
+        border-radius: 24px;
+      }
     }
     .image-accent {
       position: absolute;
@@ -174,21 +286,44 @@
       border-radius: 50px;
       z-index: 0;
       transform: rotate(-3deg);
+
+      @include respond-to(mobile) {
+        display: none;
+      }
     }
   }
 
   .about-text {
-    h2 { 
-      margin: 25px 0; 
-      font-size: 3rem; 
-      letter-spacing: -0.03em;
+    @include respond-to(tablet-portrait) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    p { margin-bottom: 30px; font-size: 1.2rem; }
+
+    h2 {
+      margin: 25px 0;
+      font-size: 2.8rem;
+      letter-spacing: -0.03em;
+
+      @include respond-to(mobile) {
+        font-size: 2.25rem;
+        margin: 15px 0;
+      }
+    }
+    p { margin-bottom: 30px; font-size: 1.2rem; 
+      @include respond-to(mobile) { font-size: 1.1rem; }
+    }
     
     .points {
       list-style: none;
       padding: 0;
       margin-bottom: 45px;
+
+      @include respond-to(mobile) {
+        margin-bottom: 30px;
+        text-align: left;
+      }
+
       li {
         display: flex;
         align-items: center;
@@ -197,6 +332,11 @@
         color: $blue-slate;
         margin-bottom: 15px;
         svg { color: $gold-warm; }
+
+        @include respond-to(mobile) {
+          font-size: 0.95rem;
+          gap: 10px;
+        }
       }
     }
   }
@@ -206,26 +346,62 @@
 .section-features {
   padding: 150px 0;
   background: $bg-section;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
   
-  .section-header { margin-bottom: 80px; h2 { font-size: 3.5rem; } }
+  .section-header { 
+    margin-bottom: 80px; 
+    h2 { font-size: 3.5rem; }
+
+    @include respond-to(mobile) {
+      margin-bottom: 40px;
+      h2 { font-size: 2.25rem; }
+    }
+  }
 
   .features-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
   }
 
   .feature-card {
     @extend .card;
     text-align: center;
     padding: 60px 30px;
+
+    @include respond-to(mobile) {
+      padding: 40px 20px;
+    }
     
     .icon-box {
       width: 80px; height: 80px; background: rgba($gold-warm, 0.1); color: $gold-warm; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;
       transition: all 0.4s ease;
+
+      @include respond-to(mobile) {
+        width: 60px; height: 60px; border-radius: 16px; margin-bottom: 20px;
+        svg { width: 28px; height: 28px; }
+      }
     }
 
-    h3 { font-size: 1.25rem; color: $blue-deep; margin-bottom: 15px; }
+    h3 { font-size: 1.25rem; color: $blue-deep; margin-bottom: 15px; 
+      @include respond-to(mobile) { font-size: 1.15rem; margin-bottom: 10px; }
+    }
     p { font-size: 0.95rem; line-height: 1.6; }
 
     &:hover {
@@ -242,13 +418,35 @@
 /* 5. PROGRAMS SECTION */
 .section-programs {
   padding: 150px 0;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
   
-  .section-header { margin-bottom: 80px; text-align: center; h2 { font-size: 3.5rem; } }
+  .section-header { 
+    margin-bottom: 80px; 
+    text-align: center; 
+    h2 { font-size: 3.5rem; }
+
+    @include respond-to(mobile) {
+      margin-bottom: 40px;
+      h2 { font-size: 2.25rem; }
+    }
+  }
 
   .programs-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
+
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
   }
 
   .program-card {
@@ -261,16 +459,34 @@
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba($blue-slate, 0.05);
 
+    @include respond-to(mobile) {
+      border-radius: 24px;
+    }
+
     .image-box { 
       height: 320px; 
       overflow: hidden;
+
+      @include respond-to(mobile) {
+        height: 240px;
+      }
+
       img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
     }
 
     .card-body {
       padding: 50px;
-      h3 { font-size: 2rem; color: $blue-deep; margin-bottom: 15px; }
-      p { margin-bottom: 35px; font-size: 1.05rem; }
+
+      @include respond-to(mobile) {
+        padding: 30px 24px;
+      }
+
+      h3 { font-size: 2rem; color: $blue-deep; margin-bottom: 15px; 
+        @include respond-to(mobile) { font-size: 1.6rem; }
+      }
+      p { margin-bottom: 35px; font-size: 1.05rem; 
+        @include respond-to(mobile) { margin-bottom: 25px; font-size: 1rem; }
+      }
     }
 
     &:hover {
@@ -291,6 +507,14 @@
   position: relative;
   overflow: hidden;
 
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -307,12 +531,31 @@
     align-items: center;
     position: relative;
     z-index: 2;
+
+    @include respond-to(tablet-landscape) {
+      gap: 40px;
+    }
+
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: 1fr;
+      text-align: center;
+      .tutors-text {
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   }
 
   .tutors-text {
     .overline { margin-bottom: 20px; }
-    h2 { font-size: 3.5rem; margin-bottom: 25px; line-height: 1.1; letter-spacing: -0.02em; }
-    p { font-size: 1.25rem; color: $text-secondary; margin-bottom: 45px; line-height: 1.6; }
+    h2 { font-size: 3.5rem; margin-bottom: 25px; line-height: 1.1; letter-spacing: -0.02em; 
+      @include respond-to(mobile) { font-size: 2.25rem; }
+    }
+    p { font-size: 1.25rem; color: $text-secondary; margin-bottom: 45px; line-height: 1.6; 
+      @include respond-to(mobile) { font-size: 1.1rem; margin-bottom: 30px; }
+    }
   }
 
   .tutors-grid {
@@ -320,10 +563,23 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
     align-items: start;
+
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
     
     // Staggered asymmetrical layout
     .tutor-card:nth-child(even) {
       margin-top: 80px;
+      @include respond-to(tablet-portrait) {
+        margin-top: 0;
+      }
     }
   }
 
@@ -335,6 +591,11 @@
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba($blue-slate, 0.05);
     box-shadow: $shadow-sm;
+
+    @include respond-to(mobile) {
+      padding: 30px 20px;
+      border-radius: 24px;
+    }
     
     .photo-circle {
       width: 150px;
@@ -349,6 +610,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
+
+      @include respond-to(mobile) {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 15px;
+      }
 
       img { 
         width: 100%; 
@@ -373,7 +640,9 @@
       }
     }
 
-    h3 { font-size: 1.35rem; color: $blue-deep; margin-bottom: 8px; letter-spacing: -0.01em; font-weight: 800; }
+    h3 { font-size: 1.35rem; color: $blue-deep; margin-bottom: 8px; letter-spacing: -0.01em; font-weight: 700; 
+      @include respond-to(mobile) { font-size: 1.15rem; }
+    }
     .role { color: $gold-warm; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0; }
 
     &:hover {
@@ -401,6 +670,10 @@
   position: relative;
   z-index: 10;
 
+  @include respond-to(mobile) {
+    padding: 60px 0;
+  }
+
   .bar-grid {
     display: flex;
     justify-content: space-between;
@@ -413,6 +686,13 @@
     border-radius: 40px;
     border: 1px solid rgba($blue-slate, 0.1);
     box-shadow: 0 20px 50px rgba($blue-deep, 0.05);
+
+    @include respond-to(tablet-portrait) {
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 24px;
+    }
   }
 
   .bar-item {
@@ -425,6 +705,12 @@
     text-decoration: none;
     background: transparent;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @include respond-to(tablet-portrait) {
+      width: 100%;
+      padding: 16px 20px;
+      gap: 16px;
+    }
     
     .icon-wrap {
       width: 64px;
@@ -436,10 +722,21 @@
       justify-content: center;
       color: $blue-deep;
       transition: all 0.4s ease;
+
+      @include respond-to(mobile) {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        svg { width: 22px; height: 22px; }
+      }
     }
     
-    span { display: block; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: $text-secondary; margin-bottom: 6px; letter-spacing: 0.05em; }
-    p { font-size: 1.2rem; font-weight: 800; color: $blue-deep; margin: 0; }
+    span { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: $text-secondary; margin-bottom: 6px; letter-spacing: 0.05em; 
+      @include respond-to(mobile) { font-size: 0.75rem; margin-bottom: 2px; }
+    }
+    p { font-size: 1.2rem; font-weight: 700; color: $blue-deep; margin: 0; 
+      @include respond-to(mobile) { font-size: 1rem; }
+    }
 
     &.highlight {
       background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
@@ -460,36 +757,5 @@
       transform: translateY(-8px);
       .icon-wrap { background: $gold-warm; color: $blue-deep; transform: scale(1.1); }
     }
-  }
-}
-
-/* RESPONSIVE REFINEMENTS */
-@media (max-width: 1200px) {
-  .hero-wrapper { background-size: cover; .hero-content { max-width: 600px; } }
-  .section-about .about-grid { gap: 50px; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .tutors-modern-layout { gap: 40px; }
-}
-
-@media (max-width: 991px) {
-  .hero-wrapper { padding: 150px 0 100px; text-align: center; .hero-content { margin: 0 auto; .cta-group { justify-content: center; } } }
-  .metrics-section .metrics-grid { flex-wrap: wrap; .metric { flex: 0 0 50%; border-bottom: 1px solid rgba($blue-slate, 0.08); &:nth-child(2) { border-right: none; } } }
-  .section-about .about-grid { grid-template-columns: 1fr; }
-  .bar-grid { flex-direction: column; }
-  .section-tutors .tutors-modern-layout {
-    grid-template-columns: 1fr;
-    text-align: center;
-    .tutors-text {
-      margin-bottom: 40px;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .section-programs .programs-grid { grid-template-columns: 1fr; }
-  .section-tutors .tutors-grid { 
-    grid-template-columns: 1fr; 
-    gap: 30px;
-    .tutor-card:nth-child(n) { margin-top: 0; }
   }
 }

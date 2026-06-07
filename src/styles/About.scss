@@ -4,18 +4,34 @@
   padding-bottom: 120px;
   overflow-x: hidden;
   background-color: $bg-main;
+
+  @include respond-to(mobile) {
+    padding-bottom: 60px;
+  }
 }
 
 /* 1. HEADER SECTION */
 .about-header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 120px;
   background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
   padding: 120px 40px 100px;
   border-radius: 0 0 60px 60px;
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 24px 80px;
+    margin-bottom: 80px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 20px 60px;
+    margin-bottom: 60px;
+    border-radius: 0 0 32px 32px;
+  }
 
   .hero-bg {
     position: absolute;
@@ -64,6 +80,12 @@
     font-size: 0.9rem;
     margin-bottom: 24px;
     font-family: $font-heading;
+
+    @include respond-to(mobile) {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+    }
+
     a {
       color: rgba($text-inverse, 0.8);
       text-decoration: none;
@@ -76,9 +98,13 @@
   h1 { 
     font-size: clamp(2.5rem, 5.5vw, 4.5rem); 
     color: $text-inverse; 
-    font-weight: 800; 
+    font-weight: 700; 
     margin: 0; 
     letter-spacing: -0.03em;
+
+    @include respond-to(mobile) {
+      font-size: 2.25rem;
+    }
   }
   
   p { 
@@ -88,6 +114,11 @@
     margin: 20px auto 0; 
     line-height: 1.6; 
     font-weight: 400;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+      margin-top: 15px;
+    }
   }
 }
 
@@ -97,10 +128,24 @@
   z-index: 10;
   margin-top: -80px;
 
+  @include respond-to(tablet-portrait) {
+    margin-top: -60px;
+  }
+
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
   }
 
   .stat-card {
@@ -109,6 +154,11 @@
     text-align: center;
     position: relative;
     overflow: hidden;
+
+    @include respond-to(tablet-portrait) {
+      padding: 40px 20px 35px;
+      border-radius: 24px;
+    }
 
     .stat-card-glow {
       position: absolute;
@@ -136,12 +186,20 @@
     .stat-number {
       display: block;
       font-size: 3.5rem;
-      font-weight: 800;
+      font-weight: 700;
       font-family: $font-heading;
       margin-bottom: 8px;
       color: $blue-deep;
       letter-spacing: -0.02em;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+      @include respond-to(tablet-portrait) {
+        font-size: 3rem;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 2.5rem;
+      }
     }
 
     .stat-label {
@@ -152,6 +210,10 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: 6px;
+
+      @include respond-to(mobile) {
+        font-size: 0.8rem;
+      }
     }
 
     .stat-desc {
@@ -168,9 +230,21 @@
 .story-section {
   padding: 140px 0 100px;
 
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0 60px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0 40px;
+  }
+
   .section-header {
     text-align: center;
     margin-bottom: 70px;
+
+    @include respond-to(tablet-portrait) {
+      margin-bottom: 40px;
+    }
 
     .overline {
       margin-bottom: 20px;
@@ -181,12 +255,24 @@
       color: $blue-deep;
       margin-bottom: 20px;
       letter-spacing: -0.02em;
+
+      @include respond-to(tablet-portrait) {
+        font-size: 2.5rem;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 2rem;
+      }
     }
 
     p {
       margin: 0 auto;
       font-size: 1.2rem;
       color: $text-secondary;
+
+      @include respond-to(mobile) {
+        font-size: 1.05rem;
+      }
     }
   }
 
@@ -194,6 +280,10 @@
     display: flex;
     justify-content: center;
     margin-bottom: 70px;
+
+    @include respond-to(tablet-portrait) {
+      margin-bottom: 40px;
+    }
   }
 
   .story-tabs {
@@ -203,6 +293,13 @@
     border-radius: 100px;
     border: 1px solid rgba($blue-slate, 0.05);
     gap: 5px;
+
+    @include respond-to(tablet-portrait) {
+      flex-direction: column;
+      width: 100%;
+      border-radius: 24px;
+      padding: 12px;
+    }
 
     .tab-btn {
       padding: 16px 36px;
@@ -218,6 +315,13 @@
       align-items: center;
       gap: 12px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+      @include respond-to(tablet-portrait) {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
 
       svg {
         color: $text-secondary;
@@ -247,6 +351,10 @@
   .story-content {
     min-height: 480px;
 
+    @include respond-to(tablet-landscape) {
+      min-height: auto;
+    }
+
     > div {
       animation: tabFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
@@ -270,6 +378,12 @@
     gap: 80px;
     align-items: center;
 
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: 1fr;
+      gap: 50px;
+      text-align: center;
+    }
+
     .story-image {
       position: relative;
 
@@ -281,6 +395,15 @@
         box-shadow: $shadow-soft-float;
         position: relative;
         z-index: 2;
+
+        @include respond-to(tablet-landscape) {
+          height: 400px;
+        }
+
+        @include respond-to(mobile) {
+          height: 300px;
+          border-radius: 24px;
+        }
       }
 
       .image-overlay-glow {
@@ -299,10 +422,20 @@
         z-index: 1;
         transform: rotate(2.5deg);
         pointer-events: none;
+
+        @include respond-to(mobile) {
+          display: none;
+        }
       }
     }
 
     .story-text {
+      @include respond-to(tablet-landscape) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
       .panel-tag {
         display: inline-block;
         font-size: 0.9rem;
@@ -319,6 +452,11 @@
         margin-bottom: 25px;
         letter-spacing: -0.02em;
         line-height: 1.2;
+
+        @include respond-to(mobile) {
+          font-size: 1.85rem;
+          margin-bottom: 15px;
+        }
       }
 
       p {
@@ -326,6 +464,11 @@
         line-height: 1.75;
         color: $text-secondary;
         margin-bottom: 25px;
+
+        @include respond-to(mobile) {
+          font-size: 1.05rem;
+          margin-bottom: 15px;
+        }
 
         &:last-child {
           margin-bottom: 0;
@@ -340,6 +483,11 @@
     grid-template-columns: 1fr 1fr;
     gap: 40px;
 
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
     .mission-card {
       background: $bg-white;
       border: 1px solid rgba($blue-slate, 0.05);
@@ -349,6 +497,11 @@
       box-shadow: $shadow-md;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+
+      @include respond-to(mobile) {
+        padding: 40px 24px;
+        border-radius: 24px;
+      }
 
       &::after {
         content: '';
@@ -385,6 +538,14 @@
         align-items: center;
         justify-content: center;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        @include respond-to(mobile) {
+          width: 60px;
+          height: 60px;
+          border-radius: 16px;
+          margin-bottom: 20px;
+          svg { width: 28px; height: 28px; }
+        }
       }
 
       h3 {
@@ -392,6 +553,11 @@
         color: $blue-deep;
         margin-bottom: 20px;
         letter-spacing: -0.01em;
+
+        @include respond-to(mobile) {
+          font-size: 1.5rem;
+          margin-bottom: 12px;
+        }
       }
 
       p {
@@ -399,6 +565,10 @@
         line-height: 1.75;
         color: $text-secondary;
         margin: 0;
+
+        @include respond-to(mobile) {
+          font-size: 1.05rem;
+        }
       }
     }
   }
@@ -409,6 +579,15 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 30px;
+
+      @include respond-to(tablet-landscape) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @include respond-to(mobile) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
     }
 
     .approach-item {
@@ -420,6 +599,11 @@
       box-shadow: $shadow-sm;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+
+      @include respond-to(mobile) {
+        padding: 40px 20px;
+        border-radius: 24px;
+      }
 
       &:hover {
         transform: translateY(-8px);
@@ -435,11 +619,16 @@
       .approach-number {
         display: block;
         font-size: 3.5rem;
-        font-weight: 800;
+        font-weight: 700;
         font-family: $font-heading;
         color: rgba($blue-primary, 0.08);
         margin-bottom: 20px;
         transition: all 0.4s ease;
+
+        @include respond-to(mobile) {
+          font-size: 2.5rem;
+          margin-bottom: 10px;
+        }
       }
 
       h4 {
@@ -447,6 +636,11 @@
         color: $blue-deep;
         margin-bottom: 15px;
         letter-spacing: -0.01em;
+
+        @include respond-to(mobile) {
+          font-size: 1.15rem;
+          margin-bottom: 10px;
+        }
       }
 
       p {
@@ -466,6 +660,14 @@
   position: relative;
   overflow: hidden;
 
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
+
   .container {
     position: relative;
     z-index: 2;
@@ -473,6 +675,10 @@
 
   .section-header {
     margin-bottom: 80px;
+
+    @include respond-to(tablet-portrait) {
+      margin-bottom: 50px;
+    }
 
     .overline {
       margin-bottom: 20px;
@@ -483,6 +689,14 @@
       color: $blue-deep;
       margin-bottom: 20px;
       letter-spacing: -0.02em;
+
+      @include respond-to(tablet-portrait) {
+        font-size: 2.5rem;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 2rem;
+      }
     }
 
     p {
@@ -496,6 +710,15 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
   }
 
   .value-card {
@@ -507,6 +730,11 @@
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+
+    @include respond-to(mobile) {
+      padding: 40px 20px;
+      border-radius: 24px;
+    }
 
     .value-card-glow {
       position: absolute;
@@ -542,6 +770,13 @@
       align-items: center;
       justify-content: center;
       transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+
+      @include respond-to(mobile) {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+        svg { width: 28px; height: 28px; }
+      }
     }
 
     h3 {
@@ -549,6 +784,11 @@
       color: $blue-deep;
       margin-bottom: 20px;
       letter-spacing: -0.01em;
+
+      @include respond-to(mobile) {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+      }
     }
 
     p {
@@ -564,12 +804,27 @@
 .gallery-section {
   padding: 140px 0;
 
+  @include respond-to(tablet-portrait) {
+    padding: 100px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 0;
+  }
+
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 60px;
     text-align: left;
+
+    @include respond-to(tablet-portrait) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
 
     .header-left {
       max-width: 700px;
@@ -581,6 +836,12 @@
     .header-right {
       flex-shrink: 0;
       margin-bottom: 10px;
+
+      @include respond-to(tablet-portrait) {
+        width: 100%;
+        margin-bottom: 0;
+        .btn { width: 100%; justify-content: center; }
+      }
     }
   }
 
@@ -590,6 +851,17 @@
     grid-template-rows: 280px 280px;
     gap: 24px;
 
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 200px);
+      gap: 16px;
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(5, 200px);
+    }
+
     .gallery-item {
       position: relative;
       border-radius: 36px;
@@ -598,6 +870,10 @@
       cursor: pointer;
       height: 100%;
       aspect-ratio: auto;
+
+      @include respond-to(tablet-portrait) {
+        border-radius: 20px;
+      }
 
       img {
         width: 100%;
@@ -615,6 +891,10 @@
         padding: 30px;
         opacity: 0;
         transition: all 0.5s ease;
+
+        @include respond-to(tablet-portrait) {
+          padding: 20px;
+        }
         
         span {
           color: $text-inverse;
@@ -623,6 +903,10 @@
           font-size: 1.25rem;
           transform: translateY(15px);
           transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+          @include respond-to(tablet-portrait) {
+            font-size: 1rem;
+          }
         }
       }
 
@@ -642,172 +926,14 @@
 
       &.large {
         grid-row: span 2;
-      }
-    }
-  }
-}
-
-/* 6. RESPONSIVE REFINEMENTS */
-@media (max-width: 1200px) {
-  .stats-section {
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-  }
-
-  .story-panel {
-    grid-template-columns: 1fr;
-    gap: 50px;
-    
-    .story-image img {
-      height: 400px;
-    }
-  }
-
-  .mission-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .approach-panel {
-    .approach-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .values-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .about-header {
-    padding: 100px 0 80px;
-    border-radius: 0 0 40px 40px;
-    
-    p {
-      font-size: 1.15rem;
-      margin-top: 15px;
-    }
-  }
-
-  .stats-section {
-    margin-top: -60px;
-    
-    .stat-card {
-      padding: 40px 20px 35px;
-      border-radius: 24px;
-
-      .stat-number {
-        font-size: 3rem;
-      }
-    }
-  }
-
-  .story-section {
-    padding: 100px 0 60px;
-
-    .section-header {
-      margin-bottom: 40px;
-      h2 {
-        font-size: 2.5rem;
-      }
-    }
-
-    .story-tabs {
-      flex-direction: column;
-      width: 100%;
-      border-radius: 24px;
-      
-      .tab-btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-  }
-
-  .values-section {
-    padding: 100px 0;
-    
-    .section-header {
-      margin-bottom: 50px;
-      h2 {
-        font-size: 2.5rem;
-      }
-    }
-  }
-
-  .gallery-section {
-    padding: 100px 0;
-
-    .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 24px;
-      text-align: left;
-      margin-bottom: 40px;
-
-      .header-right {
-        width: 100%;
-        margin-bottom: 0;
-
-        .btn {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    }
-
-    .gallery-grid {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: repeat(3, 200px);
-      gap: 16px;
-
-      .gallery-item {
-        border-radius: 20px;
-        
-        .item-overlay {
-          padding: 20px;
-          span {
-            font-size: 1rem;
-          }
-        }
-
-        &.large {
+        @include respond-to(tablet-portrait) {
           grid-column: span 2;
           grid-row: span 1;
         }
+        @include respond-to(mobile) {
+          grid-column: span 1;
+        }
       }
     }
   }
 }
-
-@media (max-width: 480px) {
-  .stats-section {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .approach-panel {
-    .approach-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .values-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .gallery-section {
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(5, 200px);
-
-      .gallery-item.large {
-        grid-column: span 1;
-      }
-    }
-  }
-}
-

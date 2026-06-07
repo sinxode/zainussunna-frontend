@@ -5,6 +5,10 @@
   min-height: 100vh;
   background-color: $bg-main;
   padding-bottom: 120px;
+
+  @include respond-to(mobile) {
+    padding-bottom: 60px;
+  }
 }
 
 /* 1. HEADER SECTION */
@@ -17,6 +21,18 @@
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 24px 80px;
+    margin-bottom: 60px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 20px 60px;
+    margin-bottom: 40px;
+    border-radius: 0 0 32px 32px;
+  }
 
   .hero-bg {
     position: absolute;
@@ -65,6 +81,12 @@
     font-size: 0.9rem;
     margin-bottom: 24px;
     font-family: $font-heading;
+    
+    @include respond-to(mobile) {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+    }
+
     a {
       color: rgba($text-inverse, 0.8);
       text-decoration: none;
@@ -84,9 +106,13 @@
   h1 { 
     font-size: clamp(2.5rem, 5.5vw, 4.5rem); 
     color: $text-inverse; 
-    font-weight: 800; 
+    font-weight: 700; 
     margin: 0; 
     letter-spacing: -0.03em;
+
+    @include respond-to(mobile) {
+      font-size: 2.25rem;
+    }
   }
   
   p { 
@@ -96,6 +122,11 @@
     margin: 20px auto 0; 
     line-height: 1.6; 
     font-weight: 400;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+      margin-top: 15px;
+    }
   }
 }
 
@@ -108,6 +139,18 @@
     background: rgba(255, 255, 255, 0.9);
     position: relative;
     z-index: 12;
+
+    @include respond-to(tablet-portrait) {
+      padding: 40px 24px;
+      margin-top: -30px;
+      border-radius: 32px;
+    }
+
+    @include respond-to(mobile) {
+      padding: 30px 20px;
+      margin-top: -20px;
+      border-radius: 24px;
+    }
 
     &:hover {
       transform: none;
@@ -125,6 +168,11 @@
       text-transform: uppercase;
       margin-bottom: 10px;
       display: block;
+
+      @include respond-to(mobile) {
+        font-size: 0.75rem;
+        margin-bottom: 6px;
+      }
     }
 
     input, select, textarea {
@@ -136,6 +184,11 @@
       color: $text-primary;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: inset 0 2px 4px rgba($blue-deep, 0.01);
+
+      @include respond-to(mobile) {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+      }
 
       &::placeholder {
         color: rgba($text-secondary, 0.45);
@@ -204,6 +257,10 @@
   max-width: 800px;
   margin: 0 auto 70px;
   position: relative;
+
+  @include respond-to(tablet-portrait) {
+    margin-bottom: 50px;
+  }
 }
 
 .timeline {
@@ -222,6 +279,10 @@
     background: rgba($blue-slate, 0.06);
     z-index: 1;
     border-radius: 10px;
+
+    @include respond-to(mobile) {
+      top: 18px;
+    }
 
     span {
       display: block;
@@ -254,6 +315,13 @@
       color: $blue-slate;
       font-family: $font-heading;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+      @include respond-to(mobile) {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+      }
     }
 
     .step-label {
@@ -264,6 +332,14 @@
       transition: color 0.4s ease;
       font-family: $font-heading;
       text-align: center;
+
+      @include respond-to(tablet-portrait) {
+        font-size: 0.75rem;
+      }
+
+      @include respond-to(mobile) {
+        display: none; // Hide labels on small mobile to fit
+      }
     }
 
     &:hover:not(.locked) {
@@ -287,7 +363,7 @@
       }
       .step-label {
         color: $blue-deep;
-        font-weight: 800;
+        font-weight: 700;
       }
     }
 
@@ -322,8 +398,15 @@
     padding-bottom: 20px;
     border-bottom: 1px solid rgba($blue-slate, 0.08);
 
+    @include respond-to(mobile) {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      gap: 10px;
+    }
+
     svg {
       color: $gold-warm;
+      @include respond-to(mobile) { width: 24px; height: 24px; }
     }
 
     h2 {
@@ -332,6 +415,10 @@
       color: $blue-deep;
       text-align: left;
       font-weight: 700;
+
+      @include respond-to(mobile) {
+        font-size: 1.4rem;
+      }
     }
   }
 }
@@ -344,12 +431,17 @@
 .form-section-title {
   font-family: $font-heading;
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
   color: $blue-deep;
   margin: 35px 0 25px;
   letter-spacing: 0.02em;
   position: relative;
   padding-left: 15px;
+
+  @include respond-to(mobile) {
+    font-size: 1.1rem;
+    margin: 25px 0 15px;
+  }
 
   &::before {
     content: '';
@@ -371,6 +463,15 @@
   gap: 30px;
   margin-bottom: 40px;
 
+  @include respond-to(tablet-landscape) {
+    gap: 20px;
+  }
+
+  @include respond-to(tablet-portrait) {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
   .program-select-card {
     background: $bg-white;
     border: 2px solid rgba($blue-slate, 0.05);
@@ -384,6 +485,17 @@
     position: relative;
     overflow: hidden;
 
+    @include respond-to(tablet-landscape) {
+      padding: 25px;
+      gap: 15px;
+    }
+
+    @include respond-to(mobile) {
+      border-radius: 20px;
+      padding: 20px;
+      gap: 12px;
+    }
+
     .select-icon {
       width: 60px;
       height: 60px;
@@ -394,6 +506,14 @@
       align-items: center;
       justify-content: center;
       transition: all 0.4s ease;
+      flex-shrink: 0;
+
+      @include respond-to(mobile) {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        svg { width: 22px; height: 22px; }
+      }
     }
 
     .select-content {
@@ -404,6 +524,11 @@
         color: $blue-deep;
         margin-bottom: 8px;
         transition: color 0.4s ease;
+
+        @include respond-to(mobile) {
+          font-size: 1.15rem;
+          margin-bottom: 4px;
+        }
       }
 
       p {
@@ -411,6 +536,11 @@
         color: $text-secondary;
         margin-bottom: 8px;
         line-height: 1.4;
+
+        @include respond-to(mobile) {
+          font-size: 0.85rem;
+          margin-bottom: 4px;
+        }
       }
 
       .age-limit {
@@ -419,6 +549,10 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+
+        @include respond-to(mobile) {
+          font-size: 0.75rem;
+        }
       }
     }
 
@@ -431,6 +565,12 @@
       align-items: center;
       justify-content: center;
       transition: all 0.4s ease;
+      flex-shrink: 0;
+
+      @include respond-to(mobile) {
+        width: 20px;
+        height: 20px;
+      }
 
       .check-dot {
         width: 10px;
@@ -503,6 +643,13 @@
   border-radius: 24px;
   padding: 24px;
 
+  @include respond-to(mobile) {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    gap: 15px;
+  }
+
   .uploader-avatar {
     width: 90px;
     height: 90px;
@@ -514,6 +661,13 @@
     justify-content: center;
     color: $text-secondary;
     overflow: hidden;
+    flex-shrink: 0;
+
+    @include respond-to(mobile) {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+    }
 
     img {
       width: 100%;
@@ -527,6 +681,10 @@
     flex-direction: column;
     gap: 8px;
 
+    @include respond-to(mobile) {
+      align-items: center;
+    }
+
     .hidden-file-input {
       display: none;
     }
@@ -536,6 +694,10 @@
       padding: 10px 20px;
       font-size: 0.9rem;
       gap: 8px;
+
+      @include respond-to(mobile) {
+        align-self: center;
+      }
     }
 
     .upload-hint {
@@ -561,6 +723,11 @@
   font-family: $font-heading;
   font-weight: 700;
   font-size: 1rem;
+
+  @include respond-to(mobile) {
+    padding: 25px 15px;
+    font-size: 0.9rem;
+  }
 
   input {
     display: none;
@@ -596,8 +763,20 @@
   column-gap: 40px;
   row-gap: 15px;
 
+  @include respond-to(tablet-landscape) {
+    column-gap: 24px;
+  }
+
+  @include respond-to(tablet-portrait) {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
   .full-width {
     grid-column: span 2;
+    @include respond-to(tablet-portrait) {
+      grid-column: span 1;
+    }
   }
 
   .phone-input-group {
@@ -636,6 +815,11 @@
     color: $text-primary;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+    @include respond-to(mobile) {
+      padding: 12px 16px;
+      font-size: 0.95rem;
+    }
+
     &:hover {
       border-color: rgba($blue-primary, 0.3);
       background: rgba($blue-slate, 0.025);
@@ -659,6 +843,13 @@
   padding: 20px 25px;
   border-radius: 16px;
   border: 1px solid rgba($blue-slate, 0.05);
+
+  @include respond-to(mobile) {
+    padding: 15px;
+    gap: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
   .checkbox-item {
     display: flex;
@@ -694,6 +885,7 @@
       display: inline-block;
       position: relative;
       transition: all 0.3s ease;
+      flex-shrink: 0;
 
       &::after {
         content: "";
@@ -713,6 +905,10 @@
       font-size: 1rem;
       font-weight: 600;
       color: $text-primary;
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+      }
     }
 
     &:hover {
@@ -729,6 +925,11 @@
   color: $text-secondary;
   margin-bottom: 35px;
   line-height: 1.6;
+
+  @include respond-to(mobile) {
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
 }
 
 .review-cards-list {
@@ -745,6 +946,11 @@
   padding: 35px;
   transition: all 0.4s ease;
 
+  @include respond-to(tablet-portrait) {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
   &:hover {
     background: $bg-white;
     box-shadow: $shadow-md;
@@ -759,11 +965,21 @@
     padding-bottom: 15px;
     margin-bottom: 25px;
 
+    @include respond-to(mobile) {
+      flex-direction: row;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+    }
+
     h3 {
       font-size: 1.35rem;
       color: $blue-deep;
       margin: 0;
       font-weight: 700;
+
+      @include respond-to(mobile) {
+        font-size: 1.15rem;
+      }
     }
 
     .edit-shortcut-btn {
@@ -776,6 +992,11 @@
       border-radius: 100px;
       cursor: pointer;
       transition: all 0.3s ease;
+
+      @include respond-to(mobile) {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+      }
 
       &:hover {
         background: $blue-primary;
@@ -790,6 +1011,10 @@
     grid-template-columns: 1fr;
     gap: 15px;
 
+    @include respond-to(mobile) {
+      gap: 10px;
+    }
+
     p {
       margin: 0;
       font-size: 1.05rem;
@@ -797,10 +1022,27 @@
       display: flex;
       line-height: 1.5;
 
+      @include respond-to(tablet-portrait) {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+      }
+
       strong {
         width: 180px;
         flex-shrink: 0;
         color: $blue-slate;
+
+        @include respond-to(tablet-portrait) {
+          width: 100%;
+          font-size: 0.85rem;
+          color: $text-secondary;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+        }
       }
     }
 
@@ -823,11 +1065,20 @@
   border: 1px solid rgba($gold-warm, 0.25);
   border-radius: 20px;
 
+  @include respond-to(mobile) {
+    margin: 30px 0;
+    padding: 16px;
+  }
+
   .checkbox-item {
     display: flex;
     align-items: flex-start;
     cursor: pointer;
     gap: 15px;
+
+    @include respond-to(mobile) {
+      gap: 10px;
+    }
 
     input {
       position: absolute;
@@ -877,6 +1128,10 @@
       font-weight: 700;
       color: $blue-deep;
       line-height: 1.4;
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+      }
     }
   }
 }
@@ -885,6 +1140,10 @@
 .success-screen {
   text-align: center;
   padding: 50px 0;
+
+  @include respond-to(mobile) {
+    padding: 30px 0;
+  }
 
   .success-icon {
     display: inline-flex;
@@ -897,14 +1156,25 @@
     border-radius: 50%;
     margin-bottom: 35px;
     box-shadow: 0 10px 40px rgba($success, 0.15);
+
+    @include respond-to(mobile) {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 25px;
+      svg { width: 40px; height: 40px; }
+    }
   }
 
   h2 {
     font-size: 2.5rem;
     color: $blue-deep;
     margin-bottom: 15px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.02em;
+
+    @include respond-to(mobile) {
+      font-size: 2rem;
+    }
   }
 
   p {
@@ -912,6 +1182,10 @@
     color: $text-secondary;
     max-width: 600px;
     margin: 0 auto 20px;
+
+    @include respond-to(mobile) {
+      font-size: 1.05rem;
+    }
   }
 
   .application-note {
@@ -921,6 +1195,12 @@
     padding: 35px;
     max-width: 600px;
     margin: 40px auto;
+
+    @include respond-to(mobile) {
+      padding: 24px;
+      border-radius: 20px;
+      margin: 30px auto;
+    }
 
     p {
       font-size: 1rem;
@@ -936,6 +1216,10 @@
       letter-spacing: 0.05em;
       margin-bottom: 12px;
       word-break: break-all;
+
+      @include respond-to(mobile) {
+        font-size: 1.25rem;
+      }
     }
 
     .sub-note {
@@ -959,6 +1243,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
     }
 
     .whatsapp-btn {
@@ -982,12 +1271,22 @@
   padding-top: 30px;
   border-top: 1px solid rgba($blue-slate, 0.08);
 
+  @include respond-to(tablet-portrait) {
+    flex-direction: column-reverse;
+    gap: 15px;
+  }
+
   .spacer {
     flex: 1;
+    @include respond-to(tablet-portrait) { display: none; }
   }
 
   .btn {
     padding: 16px 36px;
+    @include respond-to(tablet-portrait) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }
 
@@ -1009,139 +1308,3 @@
     font-size: 1.1rem;
   }
 }
-
-/* 11. RESPONSIVE REFINEMENTS */
-@media (max-width: 1200px) {
-  .programs-grid {
-    gap: 20px;
-    
-    .program-select-card {
-      padding: 25px;
-      gap: 15px;
-    }
-  }
-
-  .form-grid {
-    column-gap: 24px;
-  }
-}
-
-@media (max-width: 768px) {
-  .admission-header {
-    padding: 100px 0 80px;
-    border-radius: 0 0 40px 40px;
-  }
-
-  .admission-content {
-    .admission-card {
-      padding: 40px 24px;
-      margin-top: -30px;
-      border-radius: 30px;
-    }
-  }
-
-  .timeline {
-    .timeline-step {
-      .step-label {
-        font-size: 0.75rem;
-      }
-    }
-  }
-
-  .programs-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-
-    .full-width {
-      grid-column: span 1;
-    }
-  }
-
-  .review-summary-card {
-    padding: 24px;
-
-    .card-body-details {
-      p {
-        flex-direction: column;
-        gap: 5px;
-
-        strong {
-          width: 100%;
-        }
-      }
-    }
-  }
-
-  .step-navigation {
-    flex-direction: column-reverse;
-    gap: 15px;
-
-    .btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .timeline {
-    .track {
-      left: 12.5%;
-      right: 12.5%;
-      top: 18px;
-    }
-
-    .timeline-step {
-      .dot {
-        width: 36px;
-        height: 36px;
-        border-radius: 12px;
-        font-size: 0.95rem;
-      }
-
-      .step-label {
-        display: none; /* Hide labels on very small screens to fit dots */
-      }
-    }
-  }
-
-  .photo-uploader {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-
-    .uploader-actions {
-      align-items: center;
-
-      .btn {
-        align-self: center;
-      }
-    }
-  }
-
-  .custom-checkbox-group {
-    padding: 15px;
-    gap: 12px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .success-screen {
-    h2 {
-      font-size: 2rem;
-    }
-
-    .application-note {
-      padding: 24px;
-      
-      strong {
-        font-size: 1.25rem;
-      }
-    }
-  }
-}
-

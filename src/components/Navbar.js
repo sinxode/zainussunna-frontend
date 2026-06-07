@@ -91,6 +91,10 @@ function Navbar() {
         <div className="mobile-menu-header">
           <div className="logo" onClick={() => { navigate("/"); setMobileMenuOpen(false); }}>
             <img src={require("../assets/logos/logo.png")} alt="Logo" />
+            <div className="academy-name">
+              <h1>Zainussunna</h1>
+              <h2>Academy</h2>
+            </div>
           </div>
           <button className="close-btn" onClick={() => setMobileMenuOpen(false)}>
             <X size={28} strokeWidth={1.5} />

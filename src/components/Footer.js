@@ -7,15 +7,16 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        {/* Top Section - Brand and Info */}
-        <div className="footer-top">
+        {/* Main Content Area */}
+        <div className="footer-main">
+          {/* Brand Section - Centered Logo and Name */}
           <div className="footer-brand">
             <div className="brand-header">
               <Link to="/">
                 <img src={require("../assets/logos/logo.png")} alt="Zainussunna Academy" className="brand-logo" />
                 <div className="brand-text">
-                  <h2>Zainussunna</h2>
-                  <h3>Academy</h3>
+                  <h2>Zainussunna Academy</h2>
+                  <h3>Academy Of Integrated Studies</h3>
                 </div>
               </Link>
             </div>
@@ -36,34 +37,38 @@ function Footer() {
             </div>
           </div>
 
-          <div className="footer-links">
-            <h4>Explore</h4>
-            <ul>
-              <li><Link to="/about">About Academy</Link></li>
-              <li><Link to="/programs">Academic Programs</Link></li>
-              <li><Link to="/faculty">Our Faculty</Link></li>
-              <li><Link to="/admissions">Admissions</Link></li>
-            </ul>
+          {/* Middle Row - Explore and Get in Touch in 2-column layout */}
+          <div className="footer-info-row">
+            <div className="footer-links">
+              <h4>Explore</h4>
+              <ul>
+                <li><Link to="/about">About Academy</Link></li>
+                <li><Link to="/programs">Academic Programs</Link></li>
+                <li><Link to="/faculty">Our Faculty</Link></li>
+                <li><Link to="/admissions">Admissions</Link></li>
+              </ul>
+            </div>
+
+            <div className="footer-contact">
+              <h4>Get in Touch</h4>
+              <ul className="contact-list">
+                <li>
+                  <MapPin size={18} className="contact-icon" />
+                  <span>Vadakkekkad, Thrissur, Kerala</span>
+                </li>
+                <li>
+                  <Phone size={18} className="contact-icon" />
+                  <a href="tel:+919037601403">+91 90376 01403</a>
+                </li>
+                <li>
+                  <Mail size={18} className="contact-icon" />
+                  <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="footer-contact">
-            <h4>Get in Touch</h4>
-            <ul className="contact-list">
-              <li>
-                <MapPin size={18} className="contact-icon" />
-                <span>Vadakkekkad, Thrissur, Kerala</span>
-              </li>
-              <li>
-                <Phone size={18} className="contact-icon" />
-                <a href="tel:+919037601403">+91 90376 01403</a>
-              </li>
-              <li>
-                <Mail size={18} className="contact-icon" />
-                <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
-              </li>
-            </ul>
-          </div>
-
+          {/* Newsletter Section */}
           <div className="footer-newsletter">
             <h4>Stay Updated</h4>
             <p>Subscribe for the latest news and academic updates.</p>

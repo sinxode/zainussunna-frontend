@@ -173,10 +173,12 @@ function Contact() {
                   <div className="card-icon">
                     <method.icon size={28} />
                   </div>
-                  <span className="card-tag">{method.tag}</span>
-                  <h3>{method.title}</h3>
-                  <p className="card-value">{method.value}</p>
-                  <span className="card-note">{method.note}</span>
+                  <div className="card-content-mobile">
+                    <span className="card-tag">{method.tag}</span>
+                    <h3>{method.title}</h3>
+                    <p className="card-value">{method.value}</p>
+                    <span className="card-note">{method.note}</span>
+                  </div>
                 </a>
               ))}
             </div>

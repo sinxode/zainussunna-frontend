@@ -41,9 +41,16 @@
     text-align: center;
     position: relative;
     z-index: 10;
+    padding: 0 20px;
     
     .logo-reveal {
       margin-bottom: 30px;
+
+      @include respond-to(mobile) {
+        margin-bottom: 20px;
+        .sparkle-icon { width: 48px; height: 48px; }
+      }
+
       .sparkle-icon {
         color: $gold-warm;
         animation: scaleIn 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -53,10 +60,14 @@
     .intro-title {
       font-size: clamp(3rem, 10vw, 6rem);
       color: $text-inverse;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.05em;
       margin-bottom: 10px;
       animation: introReveal 1.2s 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+      @include respond-to(mobile) {
+        font-size: 3rem;
+      }
     }
 
     .intro-subtitle {
@@ -66,6 +77,11 @@
       text-transform: uppercase;
       letter-spacing: 0.4em;
       animation: introReveal 1s 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+      @include respond-to(mobile) {
+        font-size: 0.9rem;
+        letter-spacing: 0.2em;
+      }
     }
 
     .intro-line {
@@ -74,6 +90,10 @@
       background: $gold-warm;
       margin: 30px auto 0;
       animation: lineExpand 1.5s 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+      @include respond-to(mobile) {
+        margin-top: 20px;
+      }
     }
   }
 }
@@ -86,7 +106,7 @@
 
 @keyframes introReveal {
   from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {

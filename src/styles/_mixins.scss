@@ -1,0 +1,20 @@
+// Breakpoint Variables
+$bp-mobile: 480px;
+$bp-tablet-portrait: 768px;
+$bp-tablet-landscape: 1024px;
+$bp-desktop: 1200px;
+
+// Mixin for Responsive Media Queries
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == "mobile" {
+    @media (max-width: #{$bp-mobile}) { @content; }
+  } @else if $breakpoint == "tablet-portrait" {
+    @media (max-width: #{$bp-tablet-portrait}) { @content; }
+  } @else if $breakpoint == "tablet-landscape" {
+    @media (max-width: #{$bp-tablet-landscape}) { @content; }
+  } @else if $breakpoint == "desktop" {
+    @media (max-width: #{$bp-desktop}) { @content; }
+  } @else {
+    @media (max-width: #{$breakpoint}) { @content; }
+  }
+}

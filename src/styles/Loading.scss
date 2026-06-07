@@ -6,6 +6,10 @@
   justify-content: center;
   min-height: 400px;
   width: 100%;
+
+  @include respond-to(mobile) {
+    min-height: 300px;
+  }
   
   .loading-content {
     text-align: center;
@@ -21,6 +25,11 @@
         color: $gold-warm;
         animation: rotate 2s linear infinite;
         z-index: 2;
+
+        @include respond-to(mobile) {
+          width: 32px;
+          height: 32px;
+        }
       }
       
       .pulse-ring {
@@ -31,6 +40,11 @@
         background: rgba($gold-warm, 0.1);
         animation: pulseRing 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         z-index: 1;
+
+        @include respond-to(mobile) {
+          width: 48px;
+          height: 48px;
+        }
       }
     }
     
@@ -41,6 +55,10 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
       font-size: 0.9rem;
+
+      @include respond-to(mobile) {
+        font-size: 0.8rem;
+      }
     }
   }
 }

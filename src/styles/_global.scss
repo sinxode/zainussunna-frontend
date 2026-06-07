@@ -1,7 +1,8 @@
 /* --------------------
-   1. FONTS
+   1. FONTS & MIXINS
 -------------------- */
 @import "./_fonts";
+@import "./_mixins";
 
 $font-heading: "DMSans", system-ui, sans-serif;
 $font-body: "Inter", system-ui, sans-serif; // Switching body to Inter for better readability at scale
@@ -23,6 +24,14 @@ $font-body: "Inter", system-ui, sans-serif; // Switching body to Inter for bette
 html {
   scroll-behavior: smooth;
   font-size: 16px; // Base size
+
+  @include respond-to(tablet-portrait) {
+    font-size: 15px; // Scale down rem-based elements
+  }
+
+  @include respond-to(mobile) {
+    font-size: 14px; // Further scale down for mobile
+  }
 }
 
 body {
@@ -34,6 +43,12 @@ body {
   color: $text-primary;
   background-color: $bg-main;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @include respond-to(tablet-portrait) {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
 }
 
 /* --------------------
@@ -52,22 +67,38 @@ h4 {
 
 h1 {
   font-size: clamp(2.5rem, 5vw, 4rem); // Fluid typography
-  font-weight: 800;
+  font-weight: 700;
+
+  @include respond-to(mobile) {
+    font-size: 2.25rem;
+  }
 }
 
 h2 {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
+
+  @include respond-to(mobile) {
+    font-size: 1.85rem;
+  }
 }
 
 h3 {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 600;
+
+  @include respond-to(mobile) {
+    font-size: 1.5rem;
+  }
 }
 
 h4 {
   font-size: 1.5rem;
   font-weight: 600;
+
+  @include respond-to(mobile) {
+    font-size: 1.25rem;
+  }
 }
 
 p {
@@ -75,7 +106,12 @@ p {
   color: $text-secondary;
   font-size: 1.125rem;
   max-width: 70ch; // Optimal line length
+
+  @include respond-to(tablet-portrait) {
+    font-size: 1rem;
+  }
 }
+
 
 a {
   text-decoration: none;
@@ -130,10 +166,26 @@ a {
   padding: 0 40px;
   margin: 0 auto;
   width: 100%;
+
+  @include respond-to(tablet-portrait) {
+    padding: 0 24px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 0 20px;
+  }
 }
 
 .section {
   padding: 120px 0; // Increased padding for premium rhythm
+
+  @include respond-to(tablet-portrait) {
+    padding: 80px 0;
+  }
+
+  @include respond-to(mobile) {
+    padding: 60px 0;
+  }
 }
 
 .section-light {
@@ -153,6 +205,15 @@ a {
 .mt-sm { margin-top: 1.5rem; }
 .mt-md { margin-top: 2.5rem; }
 .mt-lg { margin-top: 4rem; }
+
+@include respond-to(mobile) {
+  .mb-sm { margin-bottom: 1rem; }
+  .mb-md { margin-bottom: 1.5rem; }
+  .mb-lg { margin-bottom: 2.5rem; }
+  .mt-sm { margin-top: 1rem; }
+  .mt-md { margin-top: 1.5rem; }
+  .mt-lg { margin-top: 2.5rem; }
+}
 
 /* --------------------
    7. BUTTON SYSTEM (Magnetic Slide Edition)
@@ -176,6 +237,19 @@ a {
   white-space: nowrap;
   letter-spacing: 0.02em;
   z-index: 1;
+
+  @include respond-to(tablet-portrait) {
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    gap: 8px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
 
   span, svg {
     position: relative;
@@ -584,10 +658,7 @@ a {
 /* --------------------
    11. RESPONSIVE REFINEMENTS
 -------------------- */
-@media (max-width: 1024px) {
-  .container { padding: 0 30px; }
-  .section { padding: 80px 0; }
-  
+@include respond-to(tablet-landscape) {
   .section-cta {
     .cta-modern-box {
       grid-template-columns: 1fr;
@@ -603,13 +674,8 @@ a {
   }
 }
 
-@media (max-width: 768px) {
-  html { font-size: 15px; }
-  .container { padding: 0 20px; }
-  .section { padding: 60px 0; }
-  
+@include respond-to(tablet-portrait) {
   .section-cta {
-    padding: 60px 0;
     .cta-modern-box {
       padding: 50px 25px;
       border-radius: 32px;
@@ -632,12 +698,21 @@ a {
       }
     }
   }
-  
-  .btn {
-    padding: 12px 24px;
-    font-size: 0.95rem;
+}
+
+@include respond-to(mobile) {
+  .section-cta {
+    padding: 60px 0;
+    .cta-modern-box {
+      padding: 40px 20px;
+      
+      .cta-content {
+        h2 { font-size: 1.85rem; }
+      }
+    }
   }
 }
+
 
 /* --------------------
    11. FORM SYSTEM

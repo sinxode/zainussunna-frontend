@@ -3,11 +3,22 @@
 .legal-page {
   padding: 100px 0;
   min-height: 80vh;
+
+  @include respond-to(tablet-portrait) {
+    padding: 60px 0;
+  }
 }
 
 .legal-header {
   margin-bottom: 60px;
-  h1 { font-size: 3rem; color: $blue-deep; font-weight: 800; }
+  h1 { font-size: 3rem; color: $blue-deep; font-weight: 700; 
+    @include respond-to(tablet-portrait) { font-size: 2.25rem; }
+    @include respond-to(mobile) { font-size: 1.85rem; }
+  }
+
+  @include respond-to(mobile) {
+    margin-bottom: 30px;
+  }
 }
 
 .legal-content {
@@ -16,14 +27,30 @@
   border-radius: 32px;
   box-shadow: $shadow-md;
   border: 1px solid rgba($blue-slate, 0.05);
+
+  @include respond-to(tablet-portrait) {
+    padding: 40px 24px;
+    border-radius: 24px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 30px 20px;
+  }
   
   .content-block {
     margin-bottom: 40px;
     font-size: 1.1rem;
     line-height: 1.8;
     color: $text-primary;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
     
-    h2, h3 { margin: 30px 0 20px; color: $blue-slate; }
+    h2, h3 { margin: 30px 0 20px; color: $blue-slate; 
+      @include respond-to(mobile) { margin: 25px 0 15px; }
+    }
     p { margin-bottom: 20px; max-width: none; }
     ul { padding-left: 20px; margin-bottom: 20px; li { margin-bottom: 10px; } }
   }
@@ -32,8 +59,8 @@
 .legal-back {
   margin-top: 60px;
   text-align: center;
-}
 
-@media (max-width: 768px) {
-  .legal-content { padding: 40px 20px; }
+  @include respond-to(mobile) {
+    margin-top: 40px;
+  }
 }

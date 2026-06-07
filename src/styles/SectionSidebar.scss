@@ -4,18 +4,47 @@
   position: sticky;
   top: 100px;
   width: 100%;
+
+  @include respond-to(tablet-portrait) {
+    position: static;
+    margin-bottom: 40px;
+  }
   
   .sidebar-card {
     @extend .card;
     padding: 30px;
+
+    @include respond-to(mobile) {
+      padding: 24px 20px;
+      border-radius: 20px;
+    }
     
-    h3 { font-size: 1.25rem; color: $blue-deep; margin-bottom: 24px; border-bottom: 2px solid $gold-warm; display: inline-block; padding-bottom: 8px; }
+    h3 { font-size: 1.25rem; color: $blue-deep; margin-bottom: 24px; border-bottom: 2px solid $gold-warm; display: inline-block; padding-bottom: 8px; 
+      @include respond-to(mobile) { font-size: 1.15rem; margin-bottom: 15px; }
+    }
     
     ul {
       list-style: none;
       padding: 0;
+      
+      @include respond-to(tablet-portrait) {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 15px;
+      }
+
+      @include respond-to(mobile) {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
       li {
         margin-bottom: 12px;
+
+        @include respond-to(tablet-portrait) {
+          margin-bottom: 0;
+        }
+
         a {
           display: flex;
           align-items: center;
@@ -30,6 +59,10 @@
             background: rgba($gold-warm, 0.05);
             color: $blue-deep;
             transform: translateX(5px);
+
+            @include respond-to(tablet-portrait) {
+              transform: none;
+            }
           }
           
           &.active {

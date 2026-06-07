@@ -1,166 +1,282 @@
 @import "_global";
 
 .faculty-page {
-  padding-bottom: 120px;
+  background-color: $bg-main;
+  overflow-x: hidden;
 }
 
-/* HEADER SECTION */
-.faculty-header {
+/* 1. HERO SECTION */
+.faculty-hero {
   text-align: center;
-  margin-bottom: 80px;
   background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
-  padding: 120px 40px 100px;
+  padding: 140px 40px 120px;
   border-radius: 0 0 60px 60px;
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
+  margin-bottom: 100px;
 
-  &::before {
-    content: "";
+  @include respond-to(tablet-portrait) {
+    padding: 120px 24px 100px;
+    border-radius: 0 0 40px 40px;
+    margin-bottom: 80px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 100px 20px 80px;
+    border-radius: 0 0 32px 32px;
+    margin-bottom: 60px;
+  }
+
+  .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(rgba($gold-warm, 0.1) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: 0.4;
-  }
-  
-  &::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
-    background: radial-gradient(circle at 50% 50%, rgba($gold-warm, 0.05) 0%, transparent 50%);
+    z-index: 0;
     pointer-events: none;
+
+    .hero-grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba($gold-warm, 0.15) 1.5px, transparent 1.5px);
+      background-size: 50px 50px;
+      opacity: 0.35;
+    }
+
+    .hero-glow-orb-1 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba($gold-warm, 0.08) 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .hero-glow-orb-2 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba($blue-primary, 0.15) 0%, transparent 75%);
+      bottom: -300px;
+      right: -100px;
+      border-radius: 50%;
+      filter: blur(50px);
+    }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
   }
 
   .breadcrumbs {
-    padding: 0;
-    margin-bottom: 24px;
     color: rgba($text-inverse, 0.6);
     font-size: 0.9rem;
+    margin-bottom: 24px;
     font-family: $font-heading;
     display: flex;
     justify-content: center;
-    
+    align-items: center;
+
     a {
       color: rgba($text-inverse, 0.8);
-      text-decoration: none;
       transition: color 0.3s ease;
       &:hover { color: $gold-warm; }
     }
     span { color: rgba($text-inverse, 0.4); margin: 0 10px; }
   }
 
-  .overline { 
-    @extend .overline; 
-    background: rgba(255,255,255,0.1); 
-    border-color: rgba(255,255,255,0.2); 
-    color: $gold-warm; 
+  .overline {
+    @extend .overline;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $gold-warm;
     margin-bottom: 20px;
   }
-  
-  h2 {
+
+  h1 {
     font-size: clamp(2.5rem, 5.5vw, 4.5rem);
     color: $text-inverse;
-    margin: 20px 0;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    margin: 0;
+    letter-spacing: -0.03em;
   }
-  
+
   p {
     font-size: 1.25rem;
     color: rgba($text-inverse, 0.85);
     max-width: 750px;
-    margin: 0 auto;
+    margin: 24px auto 0;
     line-height: 1.6;
-    font-weight: 400;
   }
 }
 
-/* GRID SECTION */
+/* 2. LISTING SECTION */
+.faculty-listing-section {
+  padding: 120px 0;
+
+  @include respond-to(tablet-portrait) { padding: 80px 0; }
+  @include respond-to(mobile) { padding: 60px 0; }
+
+  .section-header {
+    margin-bottom: 80px;
+    h2 { font-size: 3rem; margin-bottom: 20px; }
+    p { max-width: 650px; margin: 0 auto; font-size: 1.15rem; }
+    
+    @include respond-to(mobile) {
+      margin-bottom: 50px;
+      h2 { font-size: 2.25rem; }
+    }
+  }
+}
+
+/* 3. MODERN FACULTY GRID */
 .faculty-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 60px;
-  animation: panelReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+
+  @include respond-to(tablet-landscape) { grid-template-columns: repeat(3, 1fr); }
+  @include respond-to(tablet-portrait) { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  @include respond-to(mobile) { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 }
 
-.faculty-card {
-  @extend .card;
-  padding: 0;
-  overflow: hidden;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
+.faculty-modern-card {
+  height: 100%;
 
-  .photo {
-    height: 380px;
+  .card-inner {
+    @extend .card;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 32px;
+    background: $bg-white;
     overflow: hidden;
-    background: $bg-section;
-    position: relative;
-    
-    img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent 60%, rgba($blue-deep, 0.2));
-      opacity: 0;
-      transition: opacity 0.4s ease;
+    border: 1px solid rgba($blue-slate, 0.05);
+
+    &:hover {
+      border-color: rgba($gold-warm, 0.3);
+      .photo-container img { transform: scale(1.1); }
+      .photo-overlay { opacity: 1; }
+      .photo-accent { transform: scale(1.05) rotate(5deg); }
     }
   }
 
-  .info {
-    padding: 35px 25px;
+  .photo-container {
+    height: 320px;
+    position: relative;
+    overflow: hidden;
+    background: $bg-section;
+
+    @include respond-to(tablet-portrait) { height: 280px; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba($blue-deep, 0.4), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 2;
+
+      .overlay-icons {
+        display: flex;
+        gap: 12px;
+        color: white;
+        transform: translateY(10px);
+        transition: transform 0.4s ease;
+      }
+    }
+
+    .photo-accent {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba($gold-warm, 0.15) 0%, transparent 70%);
+      z-index: 1;
+      transition: transform 0.6s ease;
+    }
+  }
+
+  .info-box {
+    padding: 32px 24px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    
-    h3 { font-size: 1.5rem; color: $blue-deep; margin-bottom: 10px; letter-spacing: -0.01em; }
-    .role { color: $gold-warm; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-    .specialization { font-size: 0.95rem; color: $text-secondary; line-height: 1.5; font-weight: 500; }
+
+    .faculty-role {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: $gold-warm;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: $blue-deep;
+      margin-bottom: 16px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .qualification-wrap {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+      align-items: flex-start;
+      
+      svg {
+        color: rgba($blue-slate, 0.3);
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: $text-secondary;
+        line-height: 1.5;
+        margin: 0;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+/* EMPTY STATE */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 100px 0;
+  color: $text-secondary;
+
+  svg {
+    color: rgba($blue-slate, 0.1);
+    margin-bottom: 24px;
   }
 
-  &:hover {
-    .photo img { transform: scale(1.08); }
-    .photo::after { opacity: 1; }
-    border-color: rgba($gold-warm, 0.4);
-  }
+  h3 { font-size: 1.75rem; color: $blue-deep; margin-bottom: 12px; }
+  p { font-size: 1.1rem; }
 }
 
-@keyframes panelReveal {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .faculty-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
-  .faculty-card .photo { height: 320px; }
-}
-
-@media (max-width: 768px) {
-  .faculty-header { padding: 80px 20px 60px; border-radius: 0 0 40px 40px; }
-  .faculty-grid { grid-template-columns: 1fr; margin-top: 40px; }
-  .faculty-card .photo { height: 350px; }
+.error-message {
+  @extend .error-message;
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 40px;
 }

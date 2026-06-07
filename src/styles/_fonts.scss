@@ -1,161 +1,169 @@
-@font-face {
-  font-family: "DMSans-Light";
-  src: url("../assets/fonts/DMSans-Light.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-Light.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+/* --------------------------------------------------------------------------
+   DMSans - Unified Font Family Mapping
+   -------------------------------------------------------------------------- */
 
 @font-face {
-  font-family: "DMSans-ExtraLight";
-  src: url("../assets/fonts/DMSans-ExtraLight.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-ExtraLight.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DMSans-Medium";
-  src: url("../assets/fonts/DMSans-Medium.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-Medium.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DMSans-Black";
-  src: url("../assets/fonts/DMSans-Black.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-Black.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DMSans-Bold";
-  src: url("../assets/fonts/DMSans-Bold.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-Bold.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DMSans-ExtraBold";
-  src: url("../assets/fonts/DMSans-ExtraBold.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-ExtraBold.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DMSans-Thin";
+  font-family: "DMSans";
   src: url("../assets/fonts/DMSans-Thin.woff2") format("woff2"),
     url("../assets/fonts/DMSans-Thin.woff") format("woff");
-  font-weight: normal;
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "DMSans-SemiBold";
-  src: url("../assets/fonts/DMSans-SemiBold.woff2") format("woff2"),
-    url("../assets/fonts/DMSans-SemiBold.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-ExtraLight.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-ExtraLight.woff") format("woff");
+  font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "DMSans-Regular";
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-Light.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DMSans";
   src: url("../assets/fonts/DMSans-Regular.woff2") format("woff2"),
     url("../assets/fonts/DMSans-Regular.woff") format("woff");
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter18pt-Black";
-  src: url("../assets/fonts/Inter18pt-Black.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-Black.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-Medium.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-Medium.woff") format("woff");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter18pt-Bold";
-  src: url("../assets/fonts/Inter18pt-Bold.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-Bold.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-SemiBold.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-SemiBold.woff") format("woff");
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter18pt-ExtraBold";
-  src: url("../assets/fonts/Inter18pt-ExtraBold.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-ExtraBold.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-Bold.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-Bold.woff") format("woff");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter18pt-ExtraLight";
-  src: url("../assets/fonts/Inter18pt-ExtraLight.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-ExtraLight.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-ExtraBold.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-ExtraBold.woff") format("woff");
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter18pt-Light";
-  src: url("../assets/fonts/Inter18pt-Light.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-Light.woff") format("woff");
-  font-weight: normal;
+  font-family: "DMSans";
+  src: url("../assets/fonts/DMSans-Black.woff2") format("woff2"),
+    url("../assets/fonts/DMSans-Black.woff") format("woff");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Inter18pt-Medium";
-  src: url("../assets/fonts/Inter18pt-Medium.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-Medium.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+/* --------------------------------------------------------------------------
+   Inter - Unified Font Family Mapping
+   -------------------------------------------------------------------------- */
 
 @font-face {
-  font-family: "Inter18pt-Regular";
-  src: url("../assets/fonts/Inter18pt-Regular.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Inter18pt-SemiBold";
-  src: url("../assets/fonts/Inter18pt-SemiBold.woff2") format("woff2"),
-    url("../assets/fonts/Inter18pt-SemiBold.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Inter18pt-Thin";
+  font-family: "Inter";
   src: url("../assets/fonts/Inter18pt-Thin.woff2") format("woff2"),
     url("../assets/fonts/Inter18pt-Thin.woff") format("woff");
-  font-weight: normal;
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-ExtraLight.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-ExtraLight.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-Light.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-Regular.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-Medium.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-SemiBold.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-Bold.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-ExtraBold.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter18pt-Black.woff2") format("woff2"),
+    url("../assets/fonts/Inter18pt-Black.woff") format("woff");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }

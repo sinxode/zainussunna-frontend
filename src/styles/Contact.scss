@@ -5,6 +5,10 @@
   min-height: 100vh;
   background-color: $bg-main;
   padding-bottom: 120px;
+
+  @include respond-to(mobile) {
+    padding-bottom: 60px;
+  }
 }
 
 /* 1. HERO HEADER */
@@ -17,6 +21,18 @@
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 24px 80px;
+    margin-bottom: 60px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 20px 60px;
+    margin-bottom: 40px;
+    border-radius: 0 0 32px 32px;
+  }
 
   .hero-bg {
     position: absolute;
@@ -68,6 +84,11 @@
     display: flex;
     justify-content: center;
 
+    @include respond-to(mobile) {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+    }
+
     a {
       color: rgba($text-inverse, 0.8);
       text-decoration: none;
@@ -87,9 +108,13 @@
   h1 {
     font-size: clamp(2.5rem, 5.5vw, 4.5rem);
     color: $text-inverse;
-    font-weight: 800;
+    font-weight: 700;
     margin: 0;
     letter-spacing: -0.03em;
+
+    @include respond-to(mobile) {
+      font-size: 2.25rem;
+    }
   }
   
   p {
@@ -99,6 +124,11 @@
     margin: 20px auto 0;
     line-height: 1.6;
     font-weight: 400;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+      margin-top: 15px;
+    }
   }
 }
 
@@ -110,6 +140,15 @@
   margin-top: -60px;
   position: relative;
   z-index: 10;
+
+  @include respond-to(tablet-landscape) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(tablet-portrait) {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: -40px;
+  }
 }
 
 .method-card {
@@ -123,6 +162,15 @@
   border-radius: 28px;
   padding: 40px 30px;
 
+  @include respond-to(tablet-portrait) {
+    flex-direction: row;
+    text-align: left;
+    padding: 20px 24px;
+    border-radius: 20px;
+    align-items: center;
+    gap: 20px;
+  }
+
   .card-icon {
     width: 60px;
     height: 60px;
@@ -134,15 +182,36 @@
     align-items: center;
     justify-content: center;
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    @include respond-to(tablet-portrait) {
+      margin-bottom: 0;
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      border-radius: 14px;
+      svg { width: 24px; height: 24px; }
+    }
+  }
+
+  .card-content-mobile {
+    @include respond-to(tablet-portrait) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .card-tag {
     font-size: 0.75rem;
     color: $text-gold;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 8px;
+
+    @include respond-to(tablet-portrait) {
+      margin-bottom: 2px;
+    }
   }
 
   h3 {
@@ -150,6 +219,11 @@
     color: $blue-deep;
     margin-bottom: 12px;
     font-weight: 700;
+
+    @include respond-to(tablet-portrait) {
+      font-size: 1.15rem;
+      margin-bottom: 2px;
+    }
   }
 
   .card-value {
@@ -158,11 +232,20 @@
     color: $blue-slate;
     margin-bottom: 6px;
     font-family: $font-heading;
+
+    @include respond-to(tablet-portrait) {
+      font-size: 1rem;
+      margin-bottom: 0;
+    }
   }
 
   .card-note {
     font-size: 0.9rem;
     color: $text-secondary;
+
+    @include respond-to(tablet-portrait) {
+      display: none; // Hide note on mobile strips for extreme cleanliness
+    }
   }
 
   &.highlight {
@@ -205,6 +288,11 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 60px;
+
+  @include respond-to(tablet-landscape) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 }
 
 .form-wrapper {
@@ -214,15 +302,24 @@
   box-shadow: $shadow-md;
   border: 1px solid rgba($blue-slate, 0.06);
 
+  @include respond-to(tablet-portrait) {
+    padding: 40px 24px;
+    border-radius: 28px;
+  }
+
   .form-header { 
     margin-bottom: 40px; 
     
     h2 {
       font-size: 2.25rem;
       color: $blue-deep;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.02em;
       margin-bottom: 10px;
+
+      @include respond-to(mobile) {
+        font-size: 1.75rem;
+      }
     }
 
     p {
@@ -240,6 +337,11 @@
       display: grid; 
       grid-template-columns: 1fr 1fr; 
       gap: 24px; 
+
+      @include respond-to(tablet-portrait) {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
     }
 
     .form-group {
@@ -266,6 +368,11 @@
         width: 100%;
         font-family: $font-body;
         box-shadow: inset 0 2px 4px rgba($blue-deep, 0.01);
+
+        @include respond-to(mobile) {
+          padding: 12px 16px;
+          font-size: 0.95rem;
+        }
 
         &::placeholder {
           color: rgba($text-secondary, 0.45);
@@ -319,6 +426,11 @@
     background: rgba(255, 255, 255, 0.85);
     border-radius: 28px;
 
+    @include respond-to(mobile) {
+      padding: 24px;
+      border-radius: 20px;
+    }
+
     h3 { 
       font-size: 1.35rem; 
       color: $blue-deep; 
@@ -328,6 +440,11 @@
       font-weight: 700;
       gap: 10px;
       
+      @include respond-to(mobile) {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+      }
+
       svg {
         color: $gold-warm;
       }
@@ -423,11 +540,15 @@
       display: inline-block; 
       margin-top: 20px; 
       font-size: 1.6rem; 
-      font-weight: 800; 
+      font-weight: 700; 
       color: $gold-warm; 
       text-decoration: none;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: $font-heading;
+
+      @include respond-to(mobile) {
+        font-size: 1.3rem;
+      }
       
       &:hover {
         transform: translateY(-2px);
@@ -449,6 +570,15 @@
     position: relative;
     box-shadow: $shadow-lg;
     border: 1px solid rgba($blue-slate, 0.08);
+
+    @include respond-to(tablet-portrait) {
+      height: 400px;
+    }
+
+    @include respond-to(mobile) {
+      height: 300px;
+      border-radius: 24px;
+    }
     
     iframe { 
       width: 100%; 
@@ -462,16 +592,28 @@
 .faq-section {
   padding: 100px 0;
   background: $bg-section;
+
+  @include respond-to(mobile) {
+    padding: 60px 0;
+  }
   
   .section-header {
     text-align: center;
     margin-bottom: 60px;
 
+    @include respond-to(mobile) {
+      margin-bottom: 40px;
+    }
+
     h2 {
       font-size: 2.75rem;
       color: $blue-deep;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.02em;
+
+      @include respond-to(mobile) {
+        font-size: 2rem;
+      }
     }
   }
   
@@ -482,6 +624,10 @@
     flex-direction: column;
     gap: 20px;
 
+    @include respond-to(mobile) {
+      gap: 15px;
+    }
+
     .faq-item {
       background: $bg-white;
       border-radius: 22px;
@@ -490,6 +636,11 @@
       border: 1px solid rgba($blue-slate, 0.05);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+
+      @include respond-to(mobile) {
+        padding: 20px;
+        border-radius: 16px;
+      }
       
       .faq-question {
         display: flex;
@@ -504,6 +655,10 @@
           font-weight: 700;
           line-height: 1.4;
           transition: color 0.3s ease;
+
+          @include respond-to(mobile) {
+            font-size: 1.05rem;
+          }
         }
 
         .faq-toggle { 
@@ -524,6 +679,11 @@
           font-size: 1.05rem; 
           line-height: 1.7;
           color: $text-secondary;
+
+          @include respond-to(mobile) {
+            font-size: 0.95rem;
+            margin-top: 15px;
+          }
         }
       }
 
@@ -546,43 +706,9 @@
         }
         
         .faq-answer { 
-          max-height: 250px; 
+          max-height: 350px; // Increased slightly for mobile wrapping
         }
       }
     }
-  }
-}
-
-/* 6. RESPONSIVE */
-@media (max-width: 1024px) {
-  .methods-grid { 
-    grid-template-columns: repeat(2, 1fr); 
-  }
-  .main-grid { 
-    grid-template-columns: 1fr; 
-    gap: 40px;
-  }
-}
-
-@media (max-width: 768px) {
-  .contact-hero {
-    padding: 100px 0 80px;
-    border-radius: 0 0 40px 40px;
-  }
-  .methods-grid { 
-    grid-template-columns: 1fr; 
-    margin-top: -40px;
-  }
-  .form-wrapper { 
-    padding: 40px 24px; 
-    border-radius: 28px;
-    
-    .contact-form .form-row { 
-      grid-template-columns: 1fr; 
-      gap: 0;
-    } 
-  }
-  .map-section .map-wrapper {
-    height: 400px;
   }
 }

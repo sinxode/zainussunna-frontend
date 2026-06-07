@@ -18,6 +18,14 @@
   animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 
+  @include respond-to(tablet-portrait) {
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    min-width: auto;
+    animation: slideInBottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   .toast-icon { flex-shrink: 0; }
   .toast-message { font-weight: 600; font-size: 0.95rem; color: $blue-deep; margin: 0; flex: 1; }
   .toast-close { background: none; border: none; color: $text-secondary; cursor: pointer; padding: 4px; display: flex; &:hover { color: $blue-deep; } }
@@ -40,6 +48,11 @@
 @keyframes slideInRight {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInBottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes toastProgress {

@@ -2,18 +2,34 @@
 
 .program-page {
   padding-bottom: 120px;
+
+  @include respond-to(mobile) {
+    padding-bottom: 60px;
+  }
 }
 
 /* HEADER SECTION */
 .programs-header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 120px;
   background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
   padding: 120px 40px 100px;
   border-radius: 0 0 60px 60px;
   box-shadow: $shadow-lg;
   position: relative;
   overflow: hidden;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 24px 80px;
+    margin-bottom: 80px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 80px 20px 60px;
+    margin-bottom: 60px;
+    border-radius: 0 0 32px 32px;
+  }
 
   &::before {
     content: "";
@@ -40,6 +56,12 @@
     font-size: 0.9rem;
     margin-bottom: 24px;
     font-family: $font-heading;
+
+    @include respond-to(mobile) {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+    }
+
     a {
       color: rgba($text-inverse, 0.8);
       text-decoration: none;
@@ -52,9 +74,13 @@
   h1 { 
     font-size: clamp(2.5rem, 5.5vw, 4.5rem); 
     color: $text-inverse; 
-    font-weight: 800; 
+    font-weight: 700; 
     margin: 0; 
     letter-spacing: -0.03em;
+
+    @include respond-to(mobile) {
+      font-size: 2.25rem;
+    }
   }
   
   p { 
@@ -64,6 +90,11 @@
     margin: 20px auto 0; 
     line-height: 1.6; 
     font-weight: 400;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+      margin-top: 15px;
+    }
   }
 }
 
@@ -72,12 +103,20 @@
   margin-top: -55px;
   position: relative;
   z-index: 10;
+
+  @include respond-to(mobile) {
+    margin-top: -30px;
+  }
   
   .container {
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
+
+    @include respond-to(mobile) {
+      gap: 10px;
+    }
   }
 
   .tab-btn {
@@ -98,6 +137,21 @@
     box-shadow: $shadow-glass;
     position: relative;
     z-index: 1;
+
+    @include respond-to(tablet-portrait) {
+      padding: 15px 25px;
+      font-size: 0.95rem;
+      gap: 10px;
+    }
+
+    @include respond-to(mobile) {
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      border-radius: 50px;
+      flex: 1;
+      justify-content: center;
+      min-width: 160px;
+    }
 
     &::after {
       content: '';
@@ -141,6 +195,10 @@
 /* DETAIL SECTION */
 .program-detail {
   padding: 100px 0;
+
+  @include respond-to(tablet-portrait) {
+    padding: 60px 0;
+  }
   
   .container {
     animation: panelReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -153,9 +211,29 @@
     align-items: center;
     margin-bottom: 100px;
 
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: 1fr;
+      gap: 60px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .detail-text {
+      @include respond-to(tablet-landscape) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
     .subtitle { @extend .overline; }
-    h2 { font-size: 3.5rem; color: $blue-deep; margin-bottom: 30px; letter-spacing: -0.02em; }
-    .description { font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; color: $text-secondary; }
+    h2 { font-size: 3.5rem; color: $blue-deep; margin-bottom: 30px; letter-spacing: -0.02em; 
+      @include respond-to(tablet-portrait) { font-size: 2.5rem; }
+      @include respond-to(mobile) { font-size: 2rem; margin-bottom: 20px; }
+    }
+    .description { font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; color: $text-secondary; 
+      @include respond-to(mobile) { font-size: 1rem; margin-bottom: 30px; }
+    }
     
     .detail-image {
       position: relative;
@@ -167,6 +245,7 @@
       }
       &::after {
         content: ''; position: absolute; inset: -20px; border: 2px solid rgba($gold-warm, 0.2); border-radius: 40px; z-index: -1; transform: rotate(-2deg);
+        @include respond-to(mobile) { display: none; }
       }
       &:hover img { transform: scale(1.02); }
     }
@@ -181,12 +260,27 @@
 /* FEATURES */
 .features-section {
   margin-bottom: 100px;
-  h3 { font-size: 2.25rem; color: $blue-deep; margin-bottom: 50px; text-align: center; letter-spacing: -0.01em; }
+
+  @include respond-to(mobile) {
+    margin-bottom: 60px;
+  }
+
+  h3 { font-size: 2.25rem; color: $blue-deep; margin-bottom: 50px; text-align: center; letter-spacing: -0.01em; 
+    @include respond-to(mobile) { font-size: 1.75rem; margin-bottom: 30px; }
+  }
   
   .features-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+
+    @include respond-to(tablet-landscape) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to(tablet-portrait) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .feature-card {
@@ -229,8 +323,21 @@
   padding: 80px;
   border-radius: 40px;
   border: 1px solid rgba($blue-slate, 0.05);
+
+  @include respond-to(tablet-landscape) {
+    grid-template-columns: 1fr;
+    padding: 40px;
+    gap: 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
   
-  h3 { font-size: 2rem; color: $blue-deep; margin-bottom: 35px; letter-spacing: -0.01em; }
+  h3 { font-size: 2rem; color: $blue-deep; margin-bottom: 35px; letter-spacing: -0.01em; 
+    @include respond-to(mobile) { font-size: 1.5rem; margin-bottom: 20px; }
+  }
   
   ul {
     list-style: none;
@@ -247,6 +354,11 @@
         flex-shrink: 0;
         margin-top: 4px;
       }
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+      }
     }
   }
 }
@@ -255,8 +367,14 @@
 .faq-section {
   padding: 120px 0;
   background: $bg-white;
+
+  @include respond-to(mobile) {
+    padding: 60px 0;
+  }
   
-  h2 { font-size: 2.75rem; text-align: center; margin-bottom: 60px; color: $blue-deep; letter-spacing: -0.02em; }
+  h2 { font-size: 2.75rem; text-align: center; margin-bottom: 60px; color: $blue-deep; letter-spacing: -0.02em; 
+    @include respond-to(mobile) { font-size: 2rem; margin-bottom: 30px; }
+  }
   
   .faq-list { 
     max-width: 850px; 
@@ -274,6 +392,11 @@
     transition: all 0.3s ease;
     border: 1px solid transparent;
 
+    @include respond-to(mobile) {
+      padding: 20px;
+      border-radius: 16px;
+    }
+
     .faq-question { 
       display: flex; 
       justify-content: space-between; 
@@ -281,6 +404,10 @@
       font-weight: 700; 
       color: $blue-deep; 
       font-size: 1.15rem;
+
+      @include respond-to(mobile) {
+        font-size: 1rem;
+      }
       
       svg { color: $gold-warm; transition: transform 0.3s ease; }
     }
@@ -293,6 +420,10 @@
       color: $text-secondary;
       line-height: 1.7;
       font-size: 1.05rem;
+
+      @include respond-to(mobile) {
+        font-size: 0.95rem;
+      }
     }
 
     &:hover {
@@ -323,8 +454,19 @@
   color: white;
   margin-top: 60px;
 
-  h2 { color: $text-inverse; font-size: 3.5rem; margin-bottom: 20px; letter-spacing: -0.02em; }
-  p { color: rgba($text-inverse, 0.8); margin-bottom: 40px; font-size: 1.25rem; }
+  @include respond-to(tablet-portrait) {
+    padding: 60px 30px;
+    margin-top: 40px;
+  }
+
+  h2 { color: $text-inverse; font-size: 3.5rem; margin-bottom: 20px; letter-spacing: -0.02em; 
+    @include respond-to(tablet-portrait) { font-size: 2.25rem; }
+    @include respond-to(mobile) { font-size: 1.85rem; }
+  }
+  p { color: rgba($text-inverse, 0.8); margin-bottom: 40px; font-size: 1.25rem; 
+    @include respond-to(tablet-portrait) { font-size: 1.1rem; }
+    @include respond-to(mobile) { font-size: 1rem; margin-bottom: 30px; }
+  }
 
   &::before {
     content: '';
@@ -337,20 +479,4 @@
     position: relative;
     z-index: 2;
   }
-}
-
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .detail-header { grid-template-columns: 1fr; gap: 60px; text-align: center; }
-  .detail-header .detail-text { display: flex; flex-direction: column; align-items: center; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .two-column { grid-template-columns: 1fr; padding: 40px; }
-}
-
-@media (max-width: 768px) {
-  .programs-header { padding: 80px 20px 60px; }
-  .detail-header h2 { font-size: 2.5rem; }
-  .program-tabs .tab-btn { padding: 15px 25px; font-size: 0.9rem; }
-  .features-grid { grid-template-columns: 1fr; }
-  .cta-section { padding: 60px 30px; h2 { font-size: 2.25rem; } p { font-size: 1.1rem; } }
 }

@@ -106,7 +106,7 @@ function Home() {
           <div className="hero-content">
             <span className="overline animate-item delay-1">Empowering Future Scholars</span>
             <h1 className="animate-item delay-2">
-              Shaping Minds through <br/> <span>Structured Islamic Education</span>
+              Shaping Minds through <span>Structured Islamic Education</span>
             </h1>
             <p className="animate-item delay-3">
               Zainussunna Academy is committed to delivering a structured, research-oriented Islamic curriculum designed for holistic student excellence and spiritual growth.
