@@ -42,6 +42,10 @@
     flex-direction: column;
   }
 
+  .footer-main {
+    width: 100%;
+  }
+
   .footer-top {
     display: grid;
     grid-template-columns: 2fr 1fr 1.2fr 1.5fr;
@@ -314,7 +318,7 @@
   }
 }
 
-// Responsive Breakpoints
+// Tablet Responsive
 @include respond-to(tablet-landscape) {
   .footer {
     .footer-top {
@@ -339,6 +343,8 @@
       gap: 40px;
       
       .footer-brand { 
+        display: flex;
+        flex-direction: column;
         align-items: center;
         .brand-header a { justify-content: center; }
         .brand-description { max-width: 100%; margin-left: auto; margin-right: auto; }
@@ -366,12 +372,13 @@
   }
 }
 
+// Mobile Specific Refinements
 @include respond-to(mobile) {
   .footer {
     padding: 60px 0 30px !important;
+    text-align: center;
 
     .footer-top {
-      // THE CENTERED 2-COLUMN ROW FOR MOBILE REQUEST
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -380,7 +387,7 @@
         margin-bottom: 40px;
         .brand-header {
           a {
-            flex-direction: row; // Request: Logo and name in same row
+            flex-direction: row; 
             gap: 12px;
           }
           .brand-logo { width: 50px; }
@@ -392,65 +399,71 @@
         }
       }
 
-      // Hack to make Links and Contact appear in same row on mobile
-      // We will use a flex container for them
-      .footer-links, .footer-contact {
-        width: 100%;
-      }
-
-      .footer-links ul, .footer-contact .contact-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr; // Request: Explore and Contact in same row
-        gap: 20px;
+      // 2-column info row for Explore and Get in Touch
+      .footer-info-wrapper {
+        display: flex;
+        justify-content: space-between;
         width: 100%;
         max-width: 500px;
-        margin: 0 auto;
+        margin-bottom: 40px;
+        gap: 10px;
       }
 
-      // Re-adjusting the grid behavior for the specific section titles
-      // This is a bit complex without structural changes, but we can mimic it
+      .footer-links, .footer-contact {
+        flex: 1;
+        
+        h4 { font-size: 1.1rem; margin-bottom: 20px; }
+        h4::after { left: 50%; transform: translateX(-50%); }
+      }
+
+      // Links in one column
+      .footer-links ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      // Contact items in one column (Stacked vertically)
+      .footer-contact .contact-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        
+        li {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 5px;
+          font-size: 0.85rem;
+          
+          .contact-icon { margin-top: 0; }
+          span, a { text-align: center; }
+        }
+      }
       
       .footer-newsletter {
-        margin-top: 40px;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 400px;
+
+        h4 { margin-bottom: 15px; }
+
         .newsletter-form .input-wrapper {
-          border-radius: 100px;
-          input { text-align: center; }
+          border-radius: 100px; // Full radius for input
+          padding: 6px;
+          input { text-align: center; padding-left: 20px; }
+          button { border-radius: 100px; width: 48px; height: 48px; flex-shrink: 0; } // Full radius for button
         }
       }
     }
-  }
-}
 
-// FINAL MOBILE REFINEMENT FOR THE "EXPLORE/CONTACT IN SAME ROW" REQUEST
-@include respond-to(mobile) {
-  .footer-top {
-    display: block !important; // Switch to block for custom layout
-
-    .footer-brand { width: 100%; margin-bottom: 40px; }
-    
-    // Create the two-column row for Explore & Contact
-    .footer-links, .footer-contact {
-      display: inline-block;
-      vertical-align: top;
-      width: 48%;
-      margin-bottom: 40px;
-      text-align: center;
-    }
-
-    .footer-links { margin-right: 4%; }
-
-    .footer-contact .contact-list li {
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.85rem;
-      .contact-icon { margin-top: 0; }
-    }
-
-    .footer-newsletter {
-      display: block;
-      width: 100%;
-      clear: both;
+    .footer-bottom {
+      margin-top: 20px;
+      padding-top: 20px;
+      .copyright { font-size: 0.85rem; }
+      .legal-links { gap: 10px; }
     }
   }
 }

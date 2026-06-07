@@ -37,34 +37,35 @@ function Footer() {
             </div>
           </div>
 
-          {/* Links Section */}
-          <div className="footer-links">
-            <h4>Explore</h4>
-            <ul>
-              <li><Link to="/about">About Academy</Link></li>
-              <li><Link to="/programs">Academic Programs</Link></li>
-              <li><Link to="/faculty">Our Faculty</Link></li>
-              <li><Link to="/admissions">Admissions</Link></li>
-            </ul>
-          </div>
+          {/* Middle Row - Explore and Get in Touch in 2-column layout */}
+          <div className="footer-info-wrapper">
+            <div className="footer-links">
+              <h4>Explore</h4>
+              <ul>
+                <li><Link to="/about">About Academy</Link></li>
+                <li><Link to="/programs">Academic Programs</Link></li>
+                <li><Link to="/faculty">Our Faculty</Link></li>
+                <li><Link to="/admissions">Admissions</Link></li>
+              </ul>
+            </div>
 
-          {/* Contact Section */}
-          <div className="footer-contact">
-            <h4>Get in Touch</h4>
-            <ul className="contact-list">
-              <li>
-                <MapPin size={18} className="contact-icon" />
-                <span>Vadakkekkad, Thrissur, Kerala</span>
-              </li>
-              <li>
-                <Phone size={18} className="contact-icon" />
-                <a href="tel:+919037601403">+91 90376 01403</a>
-              </li>
-              <li>
-                <Mail size={18} className="contact-icon" />
-                <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
-              </li>
-            </ul>
+            <div className="footer-contact">
+              <h4>Get in Touch</h4>
+              <ul className="contact-list">
+                <li>
+                  <MapPin size={18} className="contact-icon" />
+                  <span>Vadakkekkad, Thrissur, Kerala</span>
+                </li>
+                <li>
+                  <Phone size={18} className="contact-icon" />
+                  <a href="tel:+919037601403">+91 90376 01403</a>
+                </li>
+                <li>
+                  <Mail size={18} className="contact-icon" />
+                  <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Newsletter Section */}
