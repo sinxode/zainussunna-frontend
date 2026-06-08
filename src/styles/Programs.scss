@@ -351,13 +351,17 @@
       max-height: 0; 
       overflow: hidden; 
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-      margin-top: 0;
-      color: $text-secondary;
-      line-height: 1.7;
-      font-size: 1.05rem;
+      
+      p {
+        margin: 20px 0 0;
+        color: $text-secondary;
+        line-height: 1.7;
+        font-size: 1.05rem;
 
-      @include respond-to(mobile) {
-        font-size: 0.95rem;
+        @include respond-to(mobile) {
+          font-size: 0.95rem;
+          margin-top: 15px;
+        }
       }
     }
 
@@ -372,7 +376,7 @@
       border-color: $gold-warm; 
       box-shadow: $shadow-lg;
       
-      .faq-answer { max-height: 300px; margin-top: 20px; }
+      .faq-answer { max-height: 400px; }
       .faq-question svg { transform: rotate(180deg); color: $blue-deep; }
     }
   }

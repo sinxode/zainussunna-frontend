@@ -45,16 +45,26 @@ class ApiService {
     );
   }
 
-  // Utility to format image URLs
+  // Utility to format image URLs with cache busting
   getImageUrl(path) {
     if (!path) return null;
-    if (path.startsWith("http") || path.startsWith("data:")) return path;
+    if (path.startsWith("data:")) return path;
 
-    // Get the base domain (everything before /api/)
-    // This handles both https://api.zainussunnaacademy.com/api/core 
-    // and http://127.0.0.1:8000/api/core
-    const baseDomain = this.baseUrl.split("/api/")[0];
-    return `${baseDomain}${path.startsWith("/") ? "" : "/"}${path}`;
+    let finalUrl = path;
+    if (!path.startsWith("http")) {
+      // Get the base domain (everything before /api/)
+      const baseDomain = this.baseUrl.split("/api/")[0];
+      finalUrl = `${baseDomain}${path.startsWith("/") ? "" : "/"}${path}`;
+    }
+
+    // Add cache buster for production images to prevent stale rendering
+    // Only apply to backend-hosted images (containing /media/)
+    if (finalUrl.includes("/media/")) {
+      const separator = finalUrl.includes("?") ? "&" : "?";
+      return `${finalUrl}${separator}t=${new Date().getTime()}`;
+    }
+
+    return finalUrl;
   }
 
   getHeaders(includeAuth = true) {

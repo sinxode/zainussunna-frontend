@@ -244,7 +244,9 @@ function Programs() {
                     <span>{item.q}</span>
                     {openFaq === i ? <Minus size={20} /> : <Plus size={20} />}
                   </div>
-                  <div className="faq-answer">{item.a}</div>
+                  <div className="faq-answer">
+                    <p>{item.a}</p>
+                  </div>
                 </div>
               ))}
             </div>
