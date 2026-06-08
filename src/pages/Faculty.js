@@ -74,7 +74,7 @@ function Faculty() {
         {/* 2. FACULTY LISTING */}
         <section className={`faculty-listing-section ${gridVisible ? "animate-in" : ""}`} ref={gridRef}>
           <div className="container">
-            <div className="section-header text-center animate-item delay-1">
+            <div className="section-header animate-item delay-1">
               <span className="overline">Academic Leaders</span>
               <h2>Preserving Scholarly Tradition</h2>
               <p>Our instructors bring years of expertise in classical Islamic sciences and modern research methodologies.</p>
@@ -92,7 +92,7 @@ function Faculty() {
                     <div className="card-inner">
                       <div className="photo-container">
                         <img
-                          src={faculty.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                          src={faculty.photo || require("../assets/images/profile image.png")}
                           alt={faculty.name}
                         />
                         <div className="photo-overlay">

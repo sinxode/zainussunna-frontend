@@ -62,7 +62,7 @@
   .section-header {
     margin-bottom: 80px;
     h2 { font-size: 3rem; margin-bottom: 20px; }
-    p { max-width: 650px; margin: 0 auto; font-size: 1.15rem; }
+    p { max-width: 650px; margin: 0; font-size: 1.15rem; text-align: left; }
     
     @include respond-to(mobile) {
       margin-bottom: 50px;
