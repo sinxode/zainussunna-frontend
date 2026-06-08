@@ -92,7 +92,7 @@ function Faculty() {
                     <div className="card-inner">
                       <div className="photo-container">
                         <img
-                          src={faculty.photo || require("../assets/images/nasar.png")}
+                          src={faculty.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                           alt={faculty.name}
                         />
                         <div className="photo-overlay">
