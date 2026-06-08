@@ -45,6 +45,18 @@ class ApiService {
     );
   }
 
+  // Utility to format image URLs
+  getImageUrl(path) {
+    if (!path) return null;
+    if (path.startsWith("http") || path.startsWith("data:")) return path;
+
+    // Get the base domain (everything before /api/)
+    // This handles both https://api.zainussunnaacademy.com/api/core 
+    // and http://127.0.0.1:8000/api/core
+    const baseDomain = this.baseUrl.split("/api/")[0];
+    return `${baseDomain}${path.startsWith("/") ? "" : "/"}${path}`;
+  }
+
   getHeaders(includeAuth = true) {
     const headers = {
       "Content-Type": "application/json",

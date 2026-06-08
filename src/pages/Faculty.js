@@ -21,11 +21,18 @@ function Faculty() {
       try {
         setLoading(true);
         const data = await api.getFaculty();
+        let list = [];
         if (data.results) {
-          setFacultyList(data.results);
+          list = data.results;
         } else if (Array.isArray(data)) {
-          setFacultyList(data);
+          list = data;
         }
+        
+        const formattedList = list.map(item => ({
+          ...item,
+          photo: api.getImageUrl(item.photo)
+        }));
+        setFacultyList(formattedList);
         setError(null);
       } catch (err) {
         setError("Failed to load faculty. Please try again later.");

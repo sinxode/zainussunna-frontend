@@ -51,7 +51,10 @@ function Gallery() {
       try {
         setLoading(true);
         const data = await api.getGalleryItems();
-        const results = data.results || data || [];
+        const results = (data.results || data || []).map(item => ({
+          ...item,
+          image: api.getImageUrl(item.image)
+        }));
         if (results.length === 0) {
           throw new Error("No gallery items found");
         }

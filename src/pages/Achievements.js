@@ -48,7 +48,10 @@ function Achievements() {
       try {
         setLoading(true);
         const data = await api.getAchievements();
-        const results = data.results || data || [];
+        const results = (data.results || data || []).map(item => ({
+          ...item,
+          image: api.getImageUrl(item.image || item.images)
+        }));
         if (results.length === 0) {
           throw new Error("No achievements found");
         }
@@ -199,7 +202,7 @@ function Achievements() {
                 >
                   <div className="card-image">
                     <img
-                      src={item.image || item.images || require("../assets/images/achievements1.jpeg")}
+                      src={item.image || require("../assets/images/achievements1.jpeg")}
                       alt={item.title}
                     />
                   </div>
@@ -295,7 +298,7 @@ function Achievements() {
               </button>
               <div className="modal-image">
                 <img
-                  src={active.image || active.images || require("../assets/images/achievements1.jpeg")}
+                  src={active.image || require("../assets/images/achievements1.jpeg")}
                   alt={active.title}
                 />
               </div>
