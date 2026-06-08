@@ -350,6 +350,7 @@
     .faq-answer { 
       max-height: 0; 
       overflow: hidden; 
+      opacity: 0;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
       
       p {
@@ -376,7 +377,11 @@
       border-color: $gold-warm; 
       box-shadow: $shadow-lg;
       
-      .faq-answer { max-height: 400px; }
+      .faq-answer { 
+        max-height: 1000px !important; 
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
       .faq-question svg { transform: rotate(180deg); color: $blue-deep; }
     }
   }

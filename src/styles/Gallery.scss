@@ -4,11 +4,6 @@
   width: 100%;
   min-height: 100vh;
   background-color: $bg-main;
-  padding-bottom: 120px;
-
-  @include respond-to(mobile) {
-    padding-bottom: 60px;
-  }
 }
 
 /* 1. HEADER SECTION */
