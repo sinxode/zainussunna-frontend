@@ -833,6 +833,94 @@ hr {
 }
 
 /* --------------------
+   12. STANDARD PAGE HEADERS (Identical Heights)
+-------------------- */
+.page-header-standard {
+  text-align: center;
+  margin-bottom: 80px;
+  background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
+  padding: 120px 40px 60px;
+  border-radius: 0 0 60px 60px;
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+
+  @include respond-to(tablet-portrait) {
+    padding: 100px 24px 50px;
+    margin-bottom: 60px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  @include respond-to(mobile) {
+    padding: 90px 20px 40px;
+    margin-bottom: 40px;
+    border-radius: 0 0 32px 32px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .breadcrumbs {
+    color: rgba($text-inverse, 0.6);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    font-family: $font-heading;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include respond-to(mobile) {
+      font-size: 0.75rem;
+      margin-bottom: 12px;
+    }
+
+    a {
+      color: rgba($text-inverse, 0.8);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      &:hover { color: $gold-warm; }
+    }
+    span { color: rgba($text-inverse, 0.4); margin: 0 10px; }
+  }
+
+  h1, h2 { 
+    font-size: clamp(2rem, 4.5vw, 3.5rem); 
+    color: $text-inverse; 
+    font-weight: 700; 
+    margin: 0; 
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+
+    @include respond-to(mobile) {
+      font-size: 1.85rem;
+    }
+  }
+  
+  p { 
+    font-size: 1.1rem; 
+    color: rgba($text-inverse, 0.8); 
+    max-width: 700px; 
+    margin: 15px auto 0; 
+    line-height: 1.6; 
+    font-weight: 400;
+
+    @include respond-to(mobile) {
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+  }
+}
+
+/* --------------------
    13. SCROLL REVEAL ANIMATIONS (Principal Architect Fix)
 -------------------- */
 .animate-item {

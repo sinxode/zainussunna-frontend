@@ -9,7 +9,7 @@ function Footer() {
       <div className="container">
         {/* Top Section - Brand and Info */}
         <div className="footer-top">
-          {/* Brand Section */}
+          {/* 1. Brand Section */}
           <div className="footer-brand">
             <div className="brand-header">
               <Link to="/">
@@ -37,38 +37,37 @@ function Footer() {
             </div>
           </div>
 
-          {/* Middle Row - Explore and Get in Touch in 2-column layout */}
-          <div className="footer-info-wrapper">
-            <div className="footer-links">
-              <h4>Explore</h4>
-              <ul>
-                <li><Link to="/about">About Academy</Link></li>
-                <li><Link to="/programs">Academic Programs</Link></li>
-                <li><Link to="/faculty">Our Faculty</Link></li>
-                <li><Link to="/admissions">Admissions</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-contact">
-              <h4>Get in Touch</h4>
-              <ul className="contact-list">
-                <li>
-                  <MapPin size={18} className="contact-icon" />
-                  <span>Vadakkekkad, Thrissur, Kerala</span>
-                </li>
-                <li>
-                  <Phone size={18} className="contact-icon" />
-                  <a href="tel:+919037601403">+91 90376 01403</a>
-                </li>
-                <li>
-                  <Mail size={18} className="contact-icon" />
-                  <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
-                </li>
-              </ul>
-            </div>
+          {/* 2. Links Section */}
+          <div className="footer-links">
+            <h4>Explore</h4>
+            <ul>
+              <li><Link to="/about">About Academy</Link></li>
+              <li><Link to="/programs">Academic Programs</Link></li>
+              <li><Link to="/faculty">Our Faculty</Link></li>
+              <li><Link to="/admissions">Admissions</Link></li>
+            </ul>
           </div>
 
-          {/* Newsletter Section */}
+          {/* 3. Contact Section */}
+          <div className="footer-contact">
+            <h4>Get in Touch</h4>
+            <ul className="contact-list">
+              <li>
+                <MapPin size={18} className="contact-icon" />
+                <span>Vadakkekkad, Thrissur, Kerala</span>
+              </li>
+              <li>
+                <Phone size={18} className="contact-icon" />
+                <a href="tel:+919037601403">+91 90376 01403</a>
+              </li>
+              <li>
+                <Mail size={18} className="contact-icon" />
+                <a href="mailto:info@zainussunna.com">info@zainussunna.com</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* 4. Newsletter Section */}
           <div className="footer-newsletter">
             <h4>Stay Updated</h4>
             <p>Subscribe for the latest news and academic updates.</p>

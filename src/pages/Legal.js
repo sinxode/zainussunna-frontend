@@ -34,13 +34,7 @@ function Legal() {
   }, [slug]);
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Loading message="Loading Policy..." />
-        <Footer />
-      </>
-    );
+    return <Loading message="Loading Policy..." />;
   }
 
   if (error || !content) {

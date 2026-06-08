@@ -1,74 +1,191 @@
 @import "global";
 
-.loading-overlay {
+.loading-page-overlay {
+  position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  width: 100%;
+  z-index: 9999;
+  background-color: $bg-main;
+  overflow: hidden;
 
-  @include respond-to(mobile) {
-    min-height: 300px;
+  .loading-container {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
   }
-  
-  .loading-content {
-    text-align: center;
+
+  // Background Glows
+  .bg-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+    opacity: 0.15;
     
-    .spinner-wrapper {
+    &.orb-1 {
+      top: -100px;
+      right: -100px;
+      background: $gold-warm;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+    
+    &.orb-2 {
+      bottom: -100px;
+      left: -100px;
+      background: $blue-primary;
+      animation: floatOrb 10s ease-in-out infinite reverse;
+    }
+  }
+
+  .loading-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba($blue-deep, 0.05);
+    border-radius: 32px;
+    padding: 60px 40px;
+    box-shadow: 
+      0 10px 30px -5px rgba($blue-deep, 0.05),
+      0 20px 60px -10px rgba($blue-deep, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      padding: 40px 20px;
+    }
+  }
+
+  // Visual Elements
+  .visual-orchestra {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+
+    .pulse-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid $gold-warm;
+      opacity: 0;
+      
+      &.ring-1 {
+        width: 100%;
+        height: 100%;
+        animation: modernPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      &.ring-2 {
+        width: 80%;
+        height: 80%;
+        animation: modernPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.4s;
+      }
+      &.ring-3 {
+        width: 60%;
+        height: 60%;
+        animation: modernPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.8s;
+      }
+    }
+
+    .icon-center {
       position: relative;
-      display: inline-flex;
+      z-index: 2;
+      color: $blue-deep;
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      
-      .spinner-icon {
-        color: $gold-warm;
-        animation: rotate 2s linear infinite;
-        z-index: 2;
 
-        @include respond-to(mobile) {
-          width: 32px;
-          height: 32px;
-        }
+      .main-spinner {
+        animation: smoothRotate 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        color: $blue-deep;
       }
-      
-      .pulse-ring {
-        position: absolute;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: rgba($gold-warm, 0.1);
-        animation: pulseRing 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        z-index: 1;
 
-        @include respond-to(mobile) {
-          width: 48px;
-          height: 48px;
-        }
+      .sparkle-accent {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        color: $gold-warm;
+        animation: sparkleFade 1.5s ease-in-out infinite;
       }
     }
-    
-    .loading-message {
+  }
+
+  // Text Content
+  .text-content {
+    width: 100%;
+
+    .loading-title {
       font-family: $font-heading;
+      font-size: 1.25rem;
       font-weight: 700;
       color: $blue-deep;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-size: 0.9rem;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
 
-      @include respond-to(mobile) {
-        font-size: 0.8rem;
+    .progress-bar-container {
+      width: 140px;
+      height: 4px;
+      background: rgba($blue-deep, 0.05);
+      border-radius: 10px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+
+      .progress-bar-fill {
+        width: 40%;
+        height: 100%;
+        background: $gold-warm;
+        border-radius: 10px;
+        animation: progressSlide 1.5s ease-in-out infinite;
       }
+    }
+
+    .loading-subtitle {
+      font-family: $font-body;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba($blue-deep, 0.4);
     }
   }
 }
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+// Animations
+@keyframes smoothRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes pulseRing {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+@keyframes modernPulse {
+  0% { transform: scale(0.8); opacity: 0.6; border-width: 2px; }
+  100% { transform: scale(1.6); opacity: 0; border-width: 0.5px; }
+}
+
+@keyframes sparkleFade {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes progressSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, 20px); }
 }

@@ -158,13 +158,7 @@ function Gallery() {
   };
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Loading message="Curating Gallery..." />
-        <Footer />
-      </>
-    );
+    return <Loading message="Curating Gallery..." />;
   }
 
   return (

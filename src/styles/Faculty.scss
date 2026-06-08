@@ -7,33 +7,9 @@
 
 /* 1. HERO SECTION */
 .faculty-hero {
-  text-align: center;
-  background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
-  padding: 140px 40px 120px;
-  border-radius: 0 0 60px 60px;
-  box-shadow: $shadow-lg;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 100px;
-
-  @include respond-to(tablet-portrait) {
-    padding: 120px 24px 100px;
-    border-radius: 0 0 40px 40px;
-    margin-bottom: 80px;
-  }
-
-  @include respond-to(mobile) {
-    padding: 100px 20px 80px;
-    border-radius: 0 0 32px 32px;
-    margin-bottom: 60px;
-  }
+  @extend .page-header-standard;
 
   .hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-
     .hero-grid-pattern {
       position: absolute;
       inset: 0;
@@ -65,50 +41,14 @@
     }
   }
 
-  .container {
-    position: relative;
-    z-index: 2;
-  }
-
-  .breadcrumbs {
-    color: rgba($text-inverse, 0.6);
-    font-size: 0.9rem;
-    margin-bottom: 24px;
-    font-family: $font-heading;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    a {
-      color: rgba($text-inverse, 0.8);
-      transition: color 0.3s ease;
-      &:hover { color: $gold-warm; }
-    }
-    span { color: rgba($text-inverse, 0.4); margin: 0 10px; }
-  }
-
   .overline {
     @extend .overline;
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
     color: $gold-warm;
     margin-bottom: 20px;
-  }
-
-  h1 {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-    color: $text-inverse;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.03em;
-  }
-
-  p {
-    font-size: 1.25rem;
-    color: rgba($text-inverse, 0.85);
-    max-width: 750px;
-    margin: 24px auto 0;
-    line-height: 1.6;
+    position: relative;
+    z-index: 2;
   }
 }
 

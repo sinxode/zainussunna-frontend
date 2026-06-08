@@ -133,7 +133,7 @@ function Home() {
             </div>
             <div className="metric animate-item delay-2">
               <div className="m-val">{hifzCount}+</div>
-              <p>Hafiz Graduated</p>
+              <p>Huffaz</p>
             </div>
             <div className="metric animate-item delay-3">
               <div className="m-val">{facultyCount}+</div>

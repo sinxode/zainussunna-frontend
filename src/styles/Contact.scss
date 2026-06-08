@@ -13,31 +13,10 @@
 
 /* 1. HERO HEADER */
 .contact-hero {
-  text-align: center;
-  margin-bottom: 0; // Removed margin to handle spacing via grid
-  background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
-  padding: 160px 40px 120px; // Increased top padding for navbar clearance
-  border-radius: 0 0 60px 60px;
-  box-shadow: $shadow-lg;
-  position: relative;
-  overflow: hidden;
-
-  @include respond-to(tablet-portrait) {
-    padding: 140px 24px 100px;
-    border-radius: 0 0 40px 40px;
-  }
-
-  @include respond-to(mobile) {
-    padding: 120px 20px 80px;
-    border-radius: 0 0 32px 32px;
-  }
+  @extend .page-header-standard;
+  margin-bottom: 0; // Keeping grid overlap behavior
 
   .hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-
     .hero-grid-pattern {
       position: absolute;
       inset: 0;
@@ -66,66 +45,6 @@
       right: -100px;
       border-radius: 50%;
       filter: blur(50px);
-    }
-  }
-
-  .container {
-    position: relative;
-    z-index: 2;
-  }
-
-  .breadcrumbs {
-    color: rgba($text-inverse, 0.6);
-    font-size: 0.9rem;
-    margin-bottom: 24px;
-    font-family: $font-heading;
-    display: flex;
-    justify-content: center;
-
-    @include respond-to(mobile) {
-      font-size: 0.8rem;
-      margin-bottom: 15px;
-    }
-
-    a {
-      color: rgba($text-inverse, 0.8);
-      text-decoration: none;
-      transition: color 0.3s ease;
-      &:hover { color: $gold-warm; }
-    }
-    span {
-      color: rgba($text-inverse, 0.4);
-      margin: 0 8px;
-      &.active {
-        color: rgba($text-inverse, 0.9);
-        font-weight: 600;
-      }
-    }
-  }
-
-  h1 {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-    color: $text-inverse;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.03em;
-
-    @include respond-to(mobile) {
-      font-size: 2.25rem;
-    }
-  }
-  
-  p {
-    font-size: 1.25rem;
-    color: rgba($text-inverse, 0.85);
-    max-width: 700px;
-    margin: 20px auto 0;
-    line-height: 1.6;
-    font-weight: 400;
-
-    @include respond-to(mobile) {
-      font-size: 1rem;
-      margin-top: 15px;
     }
   }
 }

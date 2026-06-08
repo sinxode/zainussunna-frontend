@@ -115,7 +115,7 @@ function Achievements() {
 
   const stats = [
     { number: "50+", label: "Graduates" },
-    { number: "10+", label: "Huffaz" },
+    { number: "20+", label: "Huffaz" },
     { number: "18+", label: "Years" },
     { number: "100%", label: "Success" },
   ];
@@ -128,13 +128,7 @@ function Achievements() {
   ];
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Loading message="Fetching Achievements..." />
-        <Footer />
-      </>
-    );
+    return <Loading message="Fetching Achievements..." />;
   }
 
   return (
@@ -284,7 +278,7 @@ function Achievements() {
                   alt="Hifz Program"
                 />
                 <div className="image-badge">
-                  <span className="badge-number">10+</span>
+                  <span className="badge-number">20+</span>
                   <span className="badge-text">Huffaz</span>
                 </div>
               </div>

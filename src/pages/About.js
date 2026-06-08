@@ -403,42 +403,6 @@ function About() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className={`faq-section ${valuesVisible ? "animate-in" : ""}`} style={{ padding: '120px 0', background: '#fff' }}>
-          <div className="container">
-            <div className="section-header text-center" style={{ marginBottom: '60px' }}>
-              <span className="overline">Academy FAQ</span>
-              <h2>Common Questions</h2>
-              <p>Find answers to common inquiries about our institution and methodology.</p>
-            </div>
-            <div className="faq-list" style={{ maxWidth: '850px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {[
-                {
-                  q: "Is Zainussunna Academy accredited?",
-                  a: "Zainussunna Academy follows a traditional Islamic curriculum rooted in classical scholarship. While we are an independent institution focused on authentic religious education, our 'Integrated Sharee'a' program is designed to provide students with the academic rigor required for higher studies in Islamic universities globally."
-                },
-                {
-                  q: "What makes the 'Integrated' approach different?",
-                  a: "Our integrated approach combines deep, textual study of classical Islamic sciences (Dars) with modern research methodologies and character building (Tarbiyah). We ensure students are not only knowledgeable in tradition but also intellectually equipped to navigate and guide in the modern world."
-                },
-                {
-                  q: "Are there separate facilities for male and female students?",
-                  a: "Currently, Zainussunna Academy operates as a male-only residential/day academy for its primary tracks. However, we are actively working towards launching specialized online and part-time programs for female seekers of knowledge in the near future."
-                }
-              ].map((item, i) => (
-                <div key={i} className="faq-item" style={{ background: '#F9F9F7', borderRadius: '24px', padding: '30px 40px', border: '1px solid rgba(58, 80, 107, 0.05)' }}>
-                  <div className="faq-question" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, color: '#0B132B', fontSize: '1.15rem' }}>
-                    <span>{item.q}</span>
-                  </div>
-                  <div className="faq-answer" style={{ marginTop: '15px', color: '#50667F', lineHeight: '1.7', fontSize: '1.05rem' }}>
-                    {item.a}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section
           className={`section-cta ${ctaVisible ? "animate-in" : ""}`}

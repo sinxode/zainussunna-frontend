@@ -20,6 +20,8 @@ function App() {
   const [introCompleted, setIntroCompleted] = useState(false);
 
   useEffect(() => {
+    // Intro auto-trigger disabled per user request
+    /*
     const hasSeen = sessionStorage.getItem("hasSeenIntro");
     if (!hasSeen) {
       setShowIntro(true);
@@ -27,6 +29,8 @@ function App() {
     } else {
       setIntroCompleted(true);
     }
+    */
+    setIntroCompleted(true);
     setLoading(false);
   }, []);
 

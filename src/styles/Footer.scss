@@ -42,13 +42,9 @@
     flex-direction: column;
   }
 
-  .footer-main {
-    width: 100%;
-  }
-
   .footer-top {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.2fr 1.5fr;
+    grid-template-columns: 2fr 1fr 1.2fr 1.5fr; // ORIGINAL 4 COLUMN GRID
     gap: 50px;
     width: 100%;
     margin-bottom: 60px;
@@ -65,9 +61,7 @@
           transition: transform 0.3s ease;
           text-decoration: none;
 
-          &:hover {
-            transform: translateY(-2px);
-          }
+          &:hover { transform: translateY(-2px); }
         }
 
         .brand-logo {
@@ -303,9 +297,7 @@
         text-decoration: none;
         transition: all 0.3s ease;
         
-        &:hover { 
-          color: $gold-warm; 
-        }
+        &:hover { color: $gold-warm; }
       }
 
       .separator {
@@ -318,77 +310,45 @@
   }
 }
 
-// Tablet Responsive
+// Tablets (keep 4 grid or 2x2 depending on user preference, 4 grid was requested as default)
 @include respond-to(tablet-landscape) {
-  .footer {
-    .footer-top {
-      grid-template-columns: 1.5fr 1fr 1fr;
-      .footer-newsletter {
-        grid-column: span 3;
-        max-width: 500px;
-      }
-    }
+  .footer .footer-top {
+    grid-template-columns: 2fr 1fr 1.2fr 1.5fr; // Explicitly keeping 4 grid
+    gap: 30px;
   }
 }
 
 @include respond-to(tablet-portrait) {
-  .footer {
-    padding: 80px 0 30px !important;
-    text-align: center;
-    
-    .container { align-items: center; }
-
-    .footer-top {
-      grid-template-columns: 1fr;
-      gap: 40px;
-      
-      .footer-brand { 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        .brand-header a { justify-content: center; }
-        .brand-description { max-width: 100%; margin-left: auto; margin-right: auto; }
-        .social-links { justify-content: center; }
-      }
-
-      .footer-links, .footer-contact, .footer-newsletter {
-        h4::after { left: 50%; transform: translateX(-50%); }
-      }
-
-      .footer-contact .contact-list li {
-        justify-content: center;
-      }
-
-      .footer-newsletter .newsletter-form .input-wrapper {
-        max-width: 400px;
-        margin: 0 auto;
-      }
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      .legal-links { justify-content: center; }
-    }
+  .footer .footer-top {
+    grid-template-columns: 1fr 1fr; // 2x2 for medium tablets
+    gap: 40px;
   }
 }
 
-// Mobile Specific Refinements
+// STRICTLY FOR MOBILE
 @include respond-to(mobile) {
   .footer {
     padding: 60px 0 30px !important;
     text-align: center;
 
     .footer-top {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr; // Enable 2 columns for Explore/Contact row
+      gap: 30px;
       align-items: center;
 
       .footer-brand {
-        margin-bottom: 40px;
+        grid-column: span 2; // Spans full width
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
         .brand-header {
           a {
-            flex-direction: row; 
+            flex-direction: row; // Request: Logo and name in same row
             gap: 12px;
+            justify-content: center;
           }
           .brand-logo { width: 50px; }
           .brand-text {
@@ -397,73 +357,53 @@
             h3 { font-size: 0.75rem; }
           }
         }
+        .brand-description { max-width: 100%; text-align: center; }
+        .social-links { justify-content: center; }
       }
 
-      // 2-column info row for Explore and Get in Touch
-      .footer-info-wrapper {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 500px;
-        margin-bottom: 40px;
-        gap: 10px;
-      }
-
+      // SIDE BY SIDE ROW FOR EXPLORE AND CONTACT
       .footer-links, .footer-contact {
-        flex: 1;
+        grid-column: span 1;
+        margin-bottom: 20px;
         
         h4 { font-size: 1.1rem; margin-bottom: 20px; }
         h4::after { left: 50%; transform: translateX(-50%); }
-      }
 
-      // Links in one column
-      .footer-links ul {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
+        ul, .contact-list {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+          padding: 0;
+        }
 
-      // Contact items in one column (Stacked vertically)
-      .footer-contact .contact-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        
-        li {
+        .contact-list li {
           flex-direction: column;
           align-items: center;
           text-align: center;
           gap: 5px;
           font-size: 0.85rem;
-          
           .contact-icon { margin-top: 0; }
-          span, a { text-align: center; }
         }
       }
-      
-      .footer-newsletter {
-        margin-top: 20px;
-        width: 100%;
-        max-width: 400px;
 
-        h4 { margin-bottom: 15px; }
+      .footer-newsletter {
+        grid-column: span 2; // Spans full width
+        margin-top: 20px;
 
         .newsletter-form .input-wrapper {
-          border-radius: 100px; // Full radius for input
+          border-radius: 100px;
           padding: 6px;
-          input { text-align: center; padding-left: 20px; }
-          button { border-radius: 100px; width: 48px; height: 48px; flex-shrink: 0; } // Full radius for button
+          input { text-align: center; }
+          button { border-radius: 100px; width: 48px; height: 48px; flex-shrink: 0; }
         }
       }
     }
 
     .footer-bottom {
-      margin-top: 20px;
-      padding-top: 20px;
-      .copyright { font-size: 0.85rem; }
-      .legal-links { gap: 10px; }
+      flex-direction: column;
+      gap: 15px;
+      .legal-links { justify-content: center; gap: 10px; }
     }
   }
 }

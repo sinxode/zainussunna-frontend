@@ -37,13 +37,7 @@ function Faculty() {
   }, []);
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Loading message="Introducing our Faculty..." />
-        <Footer />
-      </>
-    );
+    return <Loading message="Introducing our Faculty..." />;
   }
 
   return (

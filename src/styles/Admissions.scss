@@ -13,26 +13,7 @@
 
 /* 1. HEADER SECTION */
 .admission-header {
-  text-align: center;
-  margin-bottom: 80px;
-  background: linear-gradient(135deg, $blue-deep 0%, $blue-slate 100%);
-  padding: 120px 40px 100px;
-  border-radius: 0 0 60px 60px;
-  box-shadow: $shadow-lg;
-  position: relative;
-  overflow: hidden;
-
-  @include respond-to(tablet-portrait) {
-    padding: 100px 24px 80px;
-    margin-bottom: 60px;
-    border-radius: 0 0 40px 40px;
-  }
-
-  @include respond-to(mobile) {
-    padding: 80px 20px 60px;
-    margin-bottom: 40px;
-    border-radius: 0 0 32px 32px;
-  }
+  @extend .page-header-standard;
 
   .hero-bg {
     position: absolute;
@@ -74,59 +55,6 @@
   .container {
     position: relative;
     z-index: 2;
-  }
-
-  .breadcrumbs {
-    color: rgba($text-inverse, 0.6);
-    font-size: 0.9rem;
-    margin-bottom: 24px;
-    font-family: $font-heading;
-    
-    @include respond-to(mobile) {
-      font-size: 0.8rem;
-      margin-bottom: 15px;
-    }
-
-    a {
-      color: rgba($text-inverse, 0.8);
-      text-decoration: none;
-      transition: color 0.3s ease;
-      &:hover { color: $gold-warm; }
-    }
-    span {
-      color: rgba($text-inverse, 0.4);
-      margin: 0 8px;
-      &.active {
-        color: rgba($text-inverse, 0.9);
-        font-weight: 600;
-      }
-    }
-  }
-
-  h1 { 
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem); 
-    color: $text-inverse; 
-    font-weight: 700; 
-    margin: 0; 
-    letter-spacing: -0.03em;
-
-    @include respond-to(mobile) {
-      font-size: 2.25rem;
-    }
-  }
-  
-  p { 
-    font-size: 1.25rem; 
-    color: rgba($text-inverse, 0.85); 
-    max-width: 700px; 
-    margin: 20px auto 0; 
-    line-height: 1.6; 
-    font-weight: 400;
-
-    @include respond-to(mobile) {
-      font-size: 1rem;
-      margin-top: 15px;
-    }
   }
 }
 
@@ -835,20 +763,25 @@
 }
 
 .custom-checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-top: 15px;
+  margin-top: 10px;
   background: rgba($blue-slate, 0.02);
-  padding: 20px 25px;
-  border-radius: 16px;
-  border: 1px solid rgba($blue-slate, 0.05);
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid rgba($blue-slate, 0.08);
+
+  @include respond-to(tablet-portrait) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 20px;
+    gap: 16px;
+  }
 
   @include respond-to(mobile) {
-    padding: 15px;
-    gap: 12px;
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px;
+    gap: 16px;
   }
 
   .checkbox-item {
@@ -857,7 +790,8 @@
     position: relative;
     cursor: pointer;
     user-select: none;
-    gap: 10px;
+    gap: 12px;
+    padding: 4px 0;
 
     input {
       position: absolute;
@@ -891,10 +825,10 @@
         content: "";
         position: absolute;
         display: none;
-        left: 6px;
-        top: 2px;
-        width: 6px;
-        height: 11px;
+        left: 6.5px;
+        top: 2.5px;
+        width: 5px;
+        height: 10px;
         border: solid $blue-deep;
         border-width: 0 2.5px 2.5px 0;
         transform: rotate(45deg);
@@ -905,6 +839,7 @@
       font-size: 1rem;
       font-weight: 600;
       color: $text-primary;
+      white-space: nowrap;
 
       @include respond-to(mobile) {
         font-size: 0.95rem;
@@ -914,6 +849,7 @@
     &:hover {
       .checkbox-box {
         border-color: $gold-warm;
+        box-shadow: 0 0 0 4px rgba($gold-warm, 0.1);
       }
     }
   }

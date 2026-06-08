@@ -316,16 +316,8 @@ export default function Admission() {
     form.schoolCollege &&
     form.languages.length > 0 &&
     (program === "shareea"
-      ? form.skills &&
-        form.interests &&
-        form.lastBook &&
-        form.careerNote &&
-        form.expectations
-      : form.arabicFluent &&
-        form.hifzBefore &&
-        form.thahfeezSkills &&
-        form.thahfeezInterests &&
-        (form.hifzBefore === "no" || form.hifzAmount !== ""));
+      ? form.skills && form.lastBook
+      : form.arabicFluent && form.hifzBefore && (form.hifzBefore === "no" || form.hifzAmount));
 
   const step3Valid =
     form.guardianName &&
@@ -895,38 +887,11 @@ export default function Admission() {
                             </div>
 
                             <div className="form-field">
-                              <label>Major Areas of Interest *</label>
-                              <input
-                                placeholder="E.g., Hadith, Arabic literature *"
-                                value={form.interests}
-                                onChange={(e) => update("interests", e.target.value)}
-                              />
-                            </div>
-
-                            <div className="form-field">
                               <label>Last book read *</label>
                               <input
                                 placeholder="Title and author of book read *"
                                 value={form.lastBook}
                                 onChange={(e) => update("lastBook", e.target.value)}
-                              />
-                            </div>
-
-                            <div className="form-field">
-                              <label>Brief career aspiration note *</label>
-                              <input
-                                placeholder="What is your career goal *"
-                                value={form.careerNote}
-                                onChange={(e) => update("careerNote", e.target.value)}
-                              />
-                            </div>
-
-                            <div className="form-field full-width">
-                              <label>Expectations from our Academy *</label>
-                              <textarea
-                                placeholder="What do you expect to achieve from Zainussunna Academy? *"
-                                value={form.expectations}
-                                onChange={(e) => update("expectations", e.target.value)}
                               />
                             </div>
 
@@ -993,24 +958,6 @@ export default function Admission() {
                                 />
                               </div>
                             )}
-
-                            <div className="form-field">
-                              <label>Key Skills *</label>
-                              <input
-                                placeholder="E.g., Recitation, Pronunciation *"
-                                value={form.thahfeezSkills}
-                                onChange={(e) => update("thahfeezSkills", e.target.value)}
-                              />
-                            </div>
-
-                            <div className="form-field">
-                              <label>Interests *</label>
-                              <input
-                                placeholder="Personal interests *"
-                                value={form.thahfeezInterests}
-                                onChange={(e) => update("thahfeezInterests", e.target.value)}
-                              />
-                            </div>
 
                             <div className="form-field full-width">
                               <label>Additional comments (Optional)</label>
