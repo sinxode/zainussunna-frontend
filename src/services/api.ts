@@ -4,7 +4,18 @@ import {
   Expense, CommissionPayout, FinancialSummary, AuditLog
 } from '../types';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api/v1';
+const getApiBase = (): string => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return (import.meta.env.VITE_API_URL || '') + '/api/v1';
+    }
+    if (host.endsWith('.vercel.app')) {
+      return 'https://zainussunna-calendar-backend.vercel.app/api/v1';
+    }
+  }
+  return (import.meta.env.VITE_API_URL || 'https://api-calendar.zainussunnaacademy.com') + '/api/v1';
+};
 
 class ApiService {
   private getAuthHeader(): Record<string, string> {
@@ -13,7 +24,7 @@ class ApiService {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE}${endpoint}`;
+    const url = `${getApiBase()}${endpoint}`;
     const headers = {
       'Content-Type': 'application/json',
       ...this.getAuthHeader(),
@@ -70,7 +81,7 @@ class ApiService {
     if (!refresh) return false;
 
     try {
-      const res = await fetch(`${API_BASE}/auth/refresh/`, {
+      const res = await fetch(`${getApiBase()}/auth/refresh/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refresh }),
@@ -344,7 +355,7 @@ class ApiService {
   }
 
   getExportUrl(campaignId: number, format: 'excel' | 'csv' | 'pdf', type: string = 'full'): string {
-    return `${API_BASE}/reports/export/?campaign=${campaignId}&format=${format}&type=${type}`;
+    return `${getApiBase()}/reports/export/?campaign=${campaignId}&format=${format}&type=${type}`;
   }
 
   // --- Audit Logs ---
