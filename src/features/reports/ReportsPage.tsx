@@ -76,12 +76,16 @@ export const ReportsPage: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
           <div>
-            <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Total Actual Collections</div>
+            <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
+              {parseFloat(fin?.external_collections || '0') > 0 ? 'Total Campaign Received' : 'Total Actual Collections'}
+            </div>
             <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#10B981' }}>
-              {formatINR(fin?.total_collections || 0, true)}
+              {formatINR(fin?.total_received || fin?.total_collections || 0, true)}
             </div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
-              Cash: {formatINR(fin?.cash_collections || 0)} | GPay: {formatINR(fin?.gpay_collections || 0)}
+              {parseFloat(fin?.external_collections || '0') > 0
+                ? `Trips: ${formatINR(fin?.student_collections || fin?.total_collections || 0)} | External: ${formatINR(fin?.external_collections || 0)}`
+                : `Cash: ${formatINR(fin?.cash_collections || 0)} | GPay: ${formatINR(fin?.gpay_collections || 0)}`}
             </div>
           </div>
 
@@ -205,6 +209,13 @@ export const ReportsPage: React.FC = () => {
           >
             <Download size={15} />
             <span>Download Expenses CSV</span>
+          </button>
+          <button
+            className="zcm-btn zcm-btn--secondary"
+            onClick={() => handleDownload('csv', 'external_collections')}
+          >
+            <Download size={15} />
+            <span>Download External Collections CSV</span>
           </button>
         </div>
       </div>

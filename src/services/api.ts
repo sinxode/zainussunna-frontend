@@ -1,7 +1,8 @@
 import {
   User, AuthResponse, Campaign, Student, Place,
   ReceiptBook, Trip, InventorySummary, InventoryMovement,
-  Expense, CommissionPayout, FinancialSummary, AuditLog
+  Expense, CommissionPayout, FinancialSummary, AuditLog,
+  ExternalCollection
 } from '../types';
 
 const getApiBase = (): string => {
@@ -356,6 +357,44 @@ class ApiService {
 
   getExportUrl(campaignId: number, format: 'excel' | 'csv' | 'pdf', type: string = 'full'): string {
     return `${getApiBase()}/reports/export/?campaign=${campaignId}&format=${format}&type=${type}`;
+  }
+
+  // --- External Collections ---
+  async getExternalCollections(params: Record<string, string | number> = {}): Promise<ExternalCollection[] | { results: ExternalCollection[] }> {
+    const strParams = Object.entries(params).reduce((acc, [k, v]) => ({ ...acc, [k]: String(v) }), {});
+    const qs = new URLSearchParams(strParams).toString();
+    return this.request<ExternalCollection[] | { results: ExternalCollection[] }>(`/external-collections/${qs ? `?${qs}` : ''}`);
+  }
+
+  async createExternalCollection(data: {
+    campaign: number;
+    received_from: string;
+    amount: string | number;
+    date_received: string;
+    notes?: string;
+  }): Promise<ExternalCollection> {
+    return this.request<ExternalCollection>('/external-collections/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateExternalCollection(id: number, data: Partial<{
+    received_from: string;
+    amount: string | number;
+    date_received: string;
+    notes?: string;
+  }>): Promise<ExternalCollection> {
+    return this.request<ExternalCollection>(`/external-collections/${id}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteExternalCollection(id: number): Promise<void> {
+    return this.request<void>(`/external-collections/${id}/`, {
+      method: 'DELETE',
+    });
   }
 
   // --- Audit Logs ---

@@ -196,10 +196,29 @@ export interface CommissionPayout {
   created_at: string;
 }
 
+export interface ExternalCollection {
+  id: number;
+  campaign: number;
+  campaign_year?: number;
+  received_from: string;
+  amount: string;
+  date_received: string;
+  notes: string;
+  created_by: number | null;
+  created_by_name?: string;
+  updated_by: number | null;
+  updated_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface FinancialSummary {
   campaign_id: number;
   campaign_year: number;
   campaign_status: CampaignStatus;
+  student_collections?: string;
+  external_collections?: string;
+  total_received?: string;
   total_collections: string;
   cash_collections: string;
   gpay_collections: string;

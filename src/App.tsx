@@ -13,6 +13,7 @@ import { InventoryPage } from './features/inventory/InventoryPage';
 import { StudentsPage } from './features/students/StudentsPage';
 import { ReceiptBooksPage } from './features/receipt-books/ReceiptBooksPage';
 import { ExpensesPage } from './features/expenses/ExpensesPage';
+import { ExternalCollectionsPage } from './features/external-collections/ExternalCollectionsPage';
 import { CommissionPage } from './features/commission/CommissionPage';
 import { ReportsPage } from './features/reports/ReportsPage';
 import { SettingsPage } from './features/settings/SettingsPage';
@@ -98,6 +99,7 @@ export function App() {
                   <Route path="students" element={<StudentsPage />} />
                   <Route path="receipt-books" element={<ReceiptBooksPage />} />
                   <Route path="expenses" element={<ExpensesPage />} />
+                  <Route path="external-collections" element={<ExternalCollectionsPage />} />
                   <Route path="commission" element={<CommissionPage />} />
                   <Route path="reports" element={<ReportsPage />} />
                   <Route path="settings" element={<SettingsPage />} />

@@ -109,9 +109,13 @@ export const DashboardPage: React.FC = () => {
       {/* Primary Financial Metric Cards */}
       <div className="zcm-stat-grid">
         <StatCard
-          title="Total Collections"
-          value={formatINR(fin?.total_collections || 0)}
-          subtitle={`Cash: ${formatINR(fin?.cash_collections || 0)} | GPay: ${formatINR(fin?.gpay_collections || 0)}`}
+          title={parseFloat(fin?.external_collections || '0') > 0 ? "Total Campaign Funds" : "Total Collections"}
+          value={formatINR(fin?.total_received || fin?.total_collections || 0)}
+          subtitle={
+            parseFloat(fin?.external_collections || '0') > 0
+              ? `Trips: ${formatINR(fin?.student_collections || fin?.total_collections || 0)} | Ext: ${formatINR(fin?.external_collections || 0)}`
+              : `Cash: ${formatINR(fin?.cash_collections || 0)} | GPay: ${formatINR(fin?.gpay_collections || 0)}`
+          }
           icon={TrendingUp}
           variant="success"
         />
