@@ -121,6 +121,7 @@ export interface InventorySummary {
   calendars_sold: number;
   calendars_in_field: number;
   calendars_returned: number;
+  calendars_external?: number;
   adjustments: number;
   available_stock: number;
 }
@@ -202,6 +203,7 @@ export interface ExternalCollection {
   campaign_year?: number;
   received_from: string;
   amount: string;
+  calendars_given: number;
   date_received: string;
   notes: string;
   created_by: number | null;

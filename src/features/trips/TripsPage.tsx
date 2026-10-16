@@ -8,6 +8,7 @@ import {
   CheckCircle,
   AlertTriangle,
   Ban,
+  Trash2,
   Clock,
   UserPlus,
   X,
@@ -42,6 +43,8 @@ export const TripsPage: React.FC = () => {
   const [voidModalOpen, setVoidModalOpen] = useState(false);
   const [selectedTripToVoid, setSelectedTripToVoid] = useState<Trip | null>(null);
   const [voidReason, setVoidReason] = useState('');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedTripToDelete, setSelectedTripToDelete] = useState<Trip | null>(null);
 
   // New trip dispatch form state
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | ''>('');
@@ -258,6 +261,27 @@ export const TripsPage: React.FC = () => {
     },
     onError: (err: any) => {
       error(err.message || 'Failed to void trip.');
+    },
+  });
+
+  // Delete Trip Mutation
+  const deleteTripMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedTripToDelete) throw new Error('No trip selected to delete.');
+      return api.deleteTrip(selectedTripToDelete.id);
+    },
+    onSuccess: () => {
+      success(`Trip #${selectedTripToDelete?.id} permanently deleted.`);
+      setDeleteModalOpen(false);
+      setSelectedTripToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['commission-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
+    },
+    onError: (err: any) => {
+      error(err.message || 'Failed to delete trip.');
     },
   });
 
@@ -509,6 +533,18 @@ export const TripsPage: React.FC = () => {
                           Accept
                         </button>
                       )}
+                      <button
+                        className="zcm-btn zcm-btn--danger zcm-btn--sm"
+                        onClick={() => {
+                          setSelectedTripToDelete(trip);
+                          setDeleteModalOpen(true);
+                        }}
+                        disabled={activeCampaign?.status === 'closed'}
+                        title="Delete Trip"
+                        style={{ padding: '0.35rem 0.55rem' }}
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -1011,6 +1047,62 @@ export const TripsPage: React.FC = () => {
             value={voidReason}
             onChange={(e) => setVoidReason(e.target.value)}
           />
+        </div>
+      </Modal>
+
+      {/* DELETE TRIP MODAL */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title={`Delete Trip #${selectedTripToDelete?.id || ''}`}
+        footer={
+          <>
+            <button
+              className="zcm-btn zcm-btn--secondary"
+              onClick={() => setDeleteModalOpen(false)}
+              disabled={deleteTripMutation.isPending}
+            >
+              Cancel
+            </button>
+            <button
+              className="zcm-btn zcm-btn--danger"
+              onClick={() => deleteTripMutation.mutate()}
+              disabled={deleteTripMutation.isPending}
+            >
+              {deleteTripMutation.isPending ? 'Deleting...' : 'Delete Trip'}
+            </button>
+          </>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          <p style={{ fontSize: '0.875rem', color: '#CBD5E1', lineHeight: 1.5 }}>
+            Are you sure you want to permanently delete Trip <strong>#{selectedTripToDelete?.id}</strong> to{' '}
+            <strong style={{ color: '#F8FAFC' }}>{selectedTripToDelete?.place_name}</strong> conducted on{' '}
+            <strong>{formatIndianDate(selectedTripToDelete?.trip_date || '')}</strong>?
+          </p>
+
+          <div style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '0.75rem', fontSize: '0.8125rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+              <div><span style={{ color: '#64748B' }}>Status:</span> <strong style={{ color: '#F8FAFC' }}>{selectedTripToDelete?.status?.toUpperCase()}</strong></div>
+              <div><span style={{ color: '#64748B' }}>Issued:</span> <strong style={{ color: '#F8FAFC' }}>{selectedTripToDelete?.calendars_issued} calendars</strong></div>
+              {selectedTripToDelete?.status === 'settled' && (
+                <>
+                  <div><span style={{ color: '#64748B' }}>Sold:</span> <strong style={{ color: '#10B981' }}>{selectedTripToDelete?.calendars_sold} calendars</strong></div>
+                  <div><span style={{ color: '#64748B' }}>Collected:</span> <strong style={{ color: '#10B981' }}>{formatINR(selectedTripToDelete?.total_collection)}</strong></div>
+                </>
+              )}
+            </div>
+            {selectedTripToDelete?.trip_students && selectedTripToDelete.trip_students.length > 0 && (
+              <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ color: '#64748B' }}>Assigned Students: </span>
+                <span style={{ color: '#CBD5E1' }}>{selectedTripToDelete.trip_students.map(s => s.student_name).join(', ')}</span>
+              </div>
+            )}
+          </div>
+
+          <div style={{ fontSize: '0.8125rem', color: '#F87171', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '0.75rem', borderRadius: '8px', lineHeight: 1.4 }}>
+            ⚠️ <strong>Reconciliation Impact:</strong> Deleting this trip will reverse all inventory allocations, delete associated expenses, and recalculate participating students' net collections and commissions. An audit log will record this deletion.
+          </div>
         </div>
       </Modal>
     </div>

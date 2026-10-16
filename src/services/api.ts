@@ -285,6 +285,12 @@ class ApiService {
     });
   }
 
+  async deleteTrip(id: number): Promise<void> {
+    return this.request<void>(`/trips/${id}/`, {
+      method: 'DELETE',
+    });
+  }
+
   // --- Inventory ---
   async getInventorySummary(campaignId?: number): Promise<InventorySummary> {
     const qs = campaignId ? `?campaign=${campaignId}` : '';
@@ -370,6 +376,7 @@ class ApiService {
     campaign: number;
     received_from: string;
     amount: string | number;
+    calendars_given?: number;
     date_received: string;
     notes?: string;
   }): Promise<ExternalCollection> {
@@ -382,6 +389,7 @@ class ApiService {
   async updateExternalCollection(id: number, data: Partial<{
     received_from: string;
     amount: string | number;
+    calendars_given?: number;
     date_received: string;
     notes?: string;
   }>): Promise<ExternalCollection> {

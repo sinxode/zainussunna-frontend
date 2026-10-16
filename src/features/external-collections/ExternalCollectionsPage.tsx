@@ -11,7 +11,7 @@ import {
   TrendingUp,
   Users,
   AlertCircle,
-  FileSpreadsheet
+  PackageMinus
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useCampaign } from '../../context/CampaignContext';
@@ -43,6 +43,7 @@ export const ExternalCollectionsPage: React.FC = () => {
   // Form State
   const [receivedFrom, setReceivedFrom] = useState('');
   const [amount, setAmount] = useState('');
+  const [calendarsGiven, setCalendarsGiven] = useState('0');
   const [dateReceived, setDateReceived] = useState(() => new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState('');
 
@@ -60,18 +61,27 @@ export const ExternalCollectionsPage: React.FC = () => {
     enabled: !!activeCampaignId,
   });
 
+  // Fetch Inventory Summary to know available stock
+  const { data: invSummary } = useQuery({
+    queryKey: ['inventory-summary', activeCampaignId],
+    queryFn: () => (activeCampaignId ? api.getInventorySummary(activeCampaignId) : null),
+    enabled: !!activeCampaignId,
+  });
+
   const collections: ExternalCollection[] = Array.isArray(collectionsData)
     ? collectionsData
     : collectionsData?.results || [];
 
   // Summary Metrics
   const totalAmount = collections.reduce((sum, item) => sum + parseFloat(item.amount || '0'), 0);
+  const totalCalendarsGiven = collections.reduce((sum, item) => sum + (item.calendars_given || 0), 0);
   const averageAmount = collections.length > 0 ? totalAmount / collections.length : 0;
 
   // Reset form
   const resetForm = () => {
     setReceivedFrom('');
     setAmount('');
+    setCalendarsGiven('0');
     setDateReceived(new Date().toISOString().split('T')[0]);
     setNotes('');
     setSelectedItem(null);
@@ -82,6 +92,7 @@ export const ExternalCollectionsPage: React.FC = () => {
     setSelectedItem(item);
     setReceivedFrom(item.received_from);
     setAmount(item.amount);
+    setCalendarsGiven(String(item.calendars_given || 0));
     setDateReceived(item.date_received);
     setNotes(item.notes || '');
     setEditModalOpen(true);
@@ -100,22 +111,26 @@ export const ExternalCollectionsPage: React.FC = () => {
       if (!receivedFrom.trim()) throw new Error('Person name (received from) is required.');
       const numAmount = parseFloat(amount);
       if (isNaN(numAmount) || numAmount <= 0) throw new Error('Amount must be greater than zero.');
+      const numCalendars = parseInt(calendarsGiven, 10);
+      if (isNaN(numCalendars) || numCalendars < 0) throw new Error('Calendars given must be 0 or more.');
       if (!dateReceived) throw new Error('Date received is required.');
 
       return api.createExternalCollection({
         campaign: activeCampaignId,
         received_from: receivedFrom.trim(),
         amount: numAmount.toFixed(2),
+        calendars_given: numCalendars,
         date_received: dateReceived,
         notes: notes.trim(),
       });
     },
     onSuccess: (data) => {
-      success(`External collection of ${formatINR(data.amount)} from ${data.received_from} recorded.`);
+      success(`External collection of ${formatINR(data.amount)} (${data.calendars_given || 0} calendars given) recorded.`);
       setAddModalOpen(false);
       resetForm();
       queryClient.invalidateQueries({ queryKey: ['external-collections'] });
       queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
       queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
     },
     onError: (err: any) => {
@@ -130,11 +145,14 @@ export const ExternalCollectionsPage: React.FC = () => {
       if (!receivedFrom.trim()) throw new Error('Person name (received from) is required.');
       const numAmount = parseFloat(amount);
       if (isNaN(numAmount) || numAmount <= 0) throw new Error('Amount must be greater than zero.');
+      const numCalendars = parseInt(calendarsGiven, 10);
+      if (isNaN(numCalendars) || numCalendars < 0) throw new Error('Calendars given must be 0 or more.');
       if (!dateReceived) throw new Error('Date received is required.');
 
       return api.updateExternalCollection(selectedItem.id, {
         received_from: receivedFrom.trim(),
         amount: numAmount.toFixed(2),
+        calendars_given: numCalendars,
         date_received: dateReceived,
         notes: notes.trim(),
       });
@@ -145,6 +163,7 @@ export const ExternalCollectionsPage: React.FC = () => {
       resetForm();
       queryClient.invalidateQueries({ queryKey: ['external-collections'] });
       queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
       queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
     },
     onError: (err: any) => {
@@ -164,6 +183,7 @@ export const ExternalCollectionsPage: React.FC = () => {
       resetForm();
       queryClient.invalidateQueries({ queryKey: ['external-collections'] });
       queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
       queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
     },
     onError: (err: any) => {
@@ -178,7 +198,7 @@ export const ExternalCollectionsPage: React.FC = () => {
         <div>
           <h1 className="zcm-page-header__title">External Collections</h1>
           <div className="zcm-page-header__sub">
-            Track direct donor contributions and external funds for {activeCampaign?.name || 'Active Campaign'}
+            Track direct donor contributions & calendars distributed outside student receipt books for {activeCampaign?.name || 'Active Campaign'}
           </div>
         </div>
 
@@ -214,12 +234,12 @@ export const ExternalCollectionsPage: React.FC = () => {
         >
           <AlertCircle size={20} />
           <div>
-            <strong>Campaign is Closed:</strong> External collections cannot be added or modified for closed campaigns to preserve financial finality.
+            <strong>Campaign is Closed:</strong> External collections cannot be added or modified for closed campaigns to preserve financial and inventory finality.
           </div>
         </div>
       )}
 
-      {/* Financial Rule Notice */}
+      {/* Financial & Inventory Rule Notice */}
       <div
         style={{
           background: 'rgba(16, 185, 129, 0.08)',
@@ -239,7 +259,7 @@ export const ExternalCollectionsPage: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <ShieldCheck size={18} style={{ color: '#10B981', flexShrink: 0 }} />
           <span>
-            <strong>Isolated Financial Flow:</strong> External collections count towards total campaign funds and net profit, but are <strong>strictly excluded</strong> from student trip collections, student net calculations, and student commissions.
+            <strong>Isolated Financial Flow & Stock Deduction:</strong> Calendars given to donors are <strong>deducted from campaign available stock</strong>. Collections count towards total campaign funds and net profit, but are <strong>strictly excluded</strong> from student trip collections and student commissions.
           </span>
         </div>
       </div>
@@ -249,17 +269,17 @@ export const ExternalCollectionsPage: React.FC = () => {
         <StatCard
           title="Total External Collections"
           value={formatINR(totalAmount, true)}
-          subtitle={`${collections.length} direct receipt${collections.length === 1 ? '' : 's'}`}
+          subtitle={`${collections.length} direct contribution${collections.length === 1 ? '' : 's'}`}
           icon={Coins}
           variant="success"
         />
 
         <StatCard
-          title="Direct Contributions Count"
-          value={collections.length}
-          subtitle="Non-student direct entries"
-          icon={Users}
-          variant="default"
+          title="Calendars Given to Donors"
+          value={`${totalCalendarsGiven}`}
+          subtitle="Subtracted from campaign stock"
+          icon={PackageMinus}
+          variant="warning"
         />
 
         <StatCard
@@ -267,7 +287,7 @@ export const ExternalCollectionsPage: React.FC = () => {
           value={formatINR(averageAmount, true)}
           subtitle="Per direct contributor"
           icon={TrendingUp}
-          variant="warning"
+          variant="default"
         />
 
         <StatCard
@@ -345,6 +365,7 @@ export const ExternalCollectionsPage: React.FC = () => {
                 <th>Date Received</th>
                 <th>Received From</th>
                 <th className="zcm-text-right">Amount (₹)</th>
+                <th className="zcm-text-center">Calendars Given</th>
                 <th>Notes / Details</th>
                 <th>Recorded By</th>
                 <th>Last Modified</th>
@@ -354,13 +375,13 @@ export const ExternalCollectionsPage: React.FC = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '2.5rem', color: '#64748B' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '2.5rem', color: '#64748B' }}>
                     Loading external collections...
                   </td>
                 </tr>
               ) : collections.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
                     No external collections recorded yet for this campaign.
                   </td>
                 </tr>
@@ -376,6 +397,15 @@ export const ExternalCollectionsPage: React.FC = () => {
                       <strong style={{ color: '#10B981', fontSize: '0.95rem' }}>
                         {formatINR(item.amount, true)}
                       </strong>
+                    </td>
+                    <td className="zcm-text-center zcm-num">
+                      {item.calendars_given > 0 ? (
+                        <span className="zcm-badge zcm-badge--warning" style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                          {item.calendars_given} calendars
+                        </span>
+                      ) : (
+                        <span style={{ color: '#64748B' }}>0</span>
+                      )}
                     </td>
                     <td>
                       {item.notes ? (
@@ -440,8 +470,9 @@ export const ExternalCollectionsPage: React.FC = () => {
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         title="Record External Collection"
+        size="lg"
         footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', width: '100%' }}>
+          <>
             <button
               className="zcm-btn zcm-btn--secondary"
               onClick={() => setAddModalOpen(false)}
@@ -456,24 +487,23 @@ export const ExternalCollectionsPage: React.FC = () => {
             >
               {addMutation.isPending ? 'Saving...' : 'Save Collection'}
             </button>
-          </div>
+          </>
         }
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label className="zcm-label">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="zcm-form-group">
+            <label>
               Campaign <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
               type="text"
               disabled
               value={`${activeCampaign?.name || ''} (${activeCampaign?.year || ''})`}
-              style={{ background: '#1E293B', color: '#94A3B8' }}
             />
           </div>
 
-          <div>
-            <label className="zcm-label">
+          <div className="zcm-form-group">
+            <label>
               Received From (Person / Contributor) <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
@@ -485,9 +515,9 @@ export const ExternalCollectionsPage: React.FC = () => {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <label className="zcm-label">
+          <div className="zcm-form-grid-3">
+            <div className="zcm-form-group">
+              <label>
                 Amount (INR ₹) <span style={{ color: '#EF4444' }}>*</span>
               </label>
               <input
@@ -500,8 +530,24 @@ export const ExternalCollectionsPage: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label className="zcm-label">
+            <div className="zcm-form-group">
+              <label>
+                Calendars Given <span style={{ color: '#EF4444' }}>*</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                placeholder="e.g. 25"
+                value={calendarsGiven}
+                onChange={(e) => setCalendarsGiven(e.target.value)}
+              />
+              <div className="zcm-help-text">
+                Subtracted from stock (Avail: {invSummary?.available_stock || 0})
+              </div>
+            </div>
+
+            <div className="zcm-form-group">
+              <label>
                 Date Received <span style={{ color: '#EF4444' }}>*</span>
               </label>
               <input
@@ -512,8 +558,8 @@ export const ExternalCollectionsPage: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <label className="zcm-label">Notes / Description (Optional)</label>
+          <div className="zcm-form-group">
+            <label>Notes / Description (Optional)</label>
             <textarea
               rows={3}
               placeholder="Direct bank transfer, cheque details, or patron background notes..."
@@ -522,8 +568,8 @@ export const ExternalCollectionsPage: React.FC = () => {
             />
           </div>
 
-          <div style={{ fontSize: '0.78125rem', color: '#94A3B8', background: '#0F172A', padding: '0.75rem', borderRadius: '6px' }}>
-            ℹ️ Entry will be linked to your user account (<strong>Recorded by: {useAuth().user?.display_name || 'Admin'}</strong>) and added to campaign gross funds.
+          <div style={{ fontSize: '0.78125rem', color: '#94A3B8', background: '#0F172A', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            ℹ️ Entry will be linked to your user account (<strong>Recorded by: {useAuth().user?.display_name || 'Admin'}</strong>). The {parseInt(calendarsGiven, 10) || 0} calendars will be deducted from available campaign inventory.
           </div>
         </div>
       </Modal>
@@ -533,8 +579,9 @@ export const ExternalCollectionsPage: React.FC = () => {
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         title={`Correct External Collection #${selectedItem?.id || ''}`}
+        size="lg"
         footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', width: '100%' }}>
+          <>
             <button
               className="zcm-btn zcm-btn--secondary"
               onClick={() => setEditModalOpen(false)}
@@ -549,16 +596,16 @@ export const ExternalCollectionsPage: React.FC = () => {
             >
               {editMutation.isPending ? 'Updating...' : 'Save Correction'}
             </button>
-          </div>
+          </>
         }
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ fontSize: '0.8125rem', color: '#F59E0B', background: 'rgba(245, 158, 11, 0.1)', padding: '0.75rem', borderRadius: '6px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ fontSize: '0.8125rem', color: '#F59E0B', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.25)', padding: '0.75rem', borderRadius: '8px', marginBottom: '0.5rem' }}>
             ⚠️ All corrections are permanently recorded in the system <strong>Audit Log</strong> with timestamps and user details.
           </div>
 
-          <div>
-            <label className="zcm-label">
+          <div className="zcm-form-group">
+            <label>
               Received From <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
@@ -568,9 +615,9 @@ export const ExternalCollectionsPage: React.FC = () => {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <label className="zcm-label">
+          <div className="zcm-form-grid-3">
+            <div className="zcm-form-group">
+              <label>
                 Amount (INR ₹) <span style={{ color: '#EF4444' }}>*</span>
               </label>
               <input
@@ -582,8 +629,23 @@ export const ExternalCollectionsPage: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label className="zcm-label">
+            <div className="zcm-form-group">
+              <label>
+                Calendars Given <span style={{ color: '#EF4444' }}>*</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={calendarsGiven}
+                onChange={(e) => setCalendarsGiven(e.target.value)}
+              />
+              <div className="zcm-help-text">
+                Current: {selectedItem?.calendars_given || 0} cal | Avail: {invSummary?.available_stock || 0}
+              </div>
+            </div>
+
+            <div className="zcm-form-group">
+              <label>
                 Date Received <span style={{ color: '#EF4444' }}>*</span>
               </label>
               <input
@@ -594,8 +656,8 @@ export const ExternalCollectionsPage: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <label className="zcm-label">Notes / Description</label>
+          <div className="zcm-form-group">
+            <label>Notes / Description</label>
             <textarea
               rows={3}
               value={notes}
@@ -611,7 +673,7 @@ export const ExternalCollectionsPage: React.FC = () => {
         onClose={() => setDeleteModalOpen(false)}
         title="Confirm Deletion"
         footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', width: '100%' }}>
+          <>
             <button
               className="zcm-btn zcm-btn--secondary"
               onClick={() => setDeleteModalOpen(false)}
@@ -626,15 +688,15 @@ export const ExternalCollectionsPage: React.FC = () => {
             >
               {deleteMutation.isPending ? 'Deleting...' : 'Delete Voucher'}
             </button>
-          </div>
+          </>
         }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <p style={{ color: '#CBD5E1' }}>
-            Are you sure you want to delete External Collection entry <strong>#{selectedItem?.id}</strong> received from <strong>{selectedItem?.received_from}</strong> for <strong>{formatINR(selectedItem?.amount || 0, true)}</strong>?
+          <p style={{ color: '#CBD5E1', lineHeight: 1.5 }}>
+            Are you sure you want to delete External Collection entry <strong>#{selectedItem?.id}</strong> received from <strong>{selectedItem?.received_from}</strong> for <strong>{formatINR(selectedItem?.amount || 0, true)}</strong> ({selectedItem?.calendars_given || 0} calendars)?
           </p>
-          <div style={{ fontSize: '0.8125rem', color: '#F87171', background: 'rgba(239, 68, 68, 0.1)', padding: '0.75rem', borderRadius: '6px' }}>
-            ⚠️ This will deduct {formatINR(selectedItem?.amount || 0, true)} from the campaign's total funds and net profit. An audit log snapshot of this deletion will be recorded.
+          <div style={{ fontSize: '0.8125rem', color: '#F87171', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '0.75rem', borderRadius: '8px' }}>
+            ⚠️ This will deduct {formatINR(selectedItem?.amount || 0, true)} from the campaign's total funds and release {selectedItem?.calendars_given || 0} calendars back to available campaign inventory. An audit log snapshot of this deletion will be recorded.
           </div>
         </div>
       </Modal>
