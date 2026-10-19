@@ -225,7 +225,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Secondary Financial & Inventory Ledger Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
         {/* Expenses Breakdown */}
         <div className="zcm-card">
           <div className="zcm-card__header">

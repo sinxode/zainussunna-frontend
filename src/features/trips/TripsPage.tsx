@@ -334,60 +334,58 @@ export const TripsPage: React.FC = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="zcm-card" style={{ padding: '1rem', marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 240px', position: 'relative' }}>
-            <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
-            <input
-              type="text"
-              placeholder="Search by destination, student name, receipt book..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: '2.5rem', width: '100%' }}
-            />
-          </div>
-
-          <div style={{ width: 160 }}>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ width: '100%' }}
-              aria-label="Filter by trip status"
-            >
-              <option value="">All Statuses</option>
-              <option value="in_progress">In Progress</option>
-              <option value="settled">Settled</option>
-              <option value="voided">Voided</option>
-            </select>
-          </div>
-
-          <div style={{ width: 180 }}>
-            <select
-              value={reviewFilter}
-              onChange={(e) => setReviewFilter(e.target.value)}
-              style={{ width: '100%' }}
-              aria-label="Filter by review status"
-            >
-              <option value="">All Review States</option>
-              <option value="no_review_needed">No Review Needed</option>
-              <option value="needs_review">Needs Review</option>
-              <option value="reviewed_and_accepted">Reviewed & Accepted</option>
-            </select>
-          </div>
-
-          {(searchQuery || statusFilter || reviewFilter) && (
-            <button
-              className="zcm-btn zcm-btn--secondary zcm-btn--sm"
-              onClick={() => {
-                setSearchQuery('');
-                setStatusFilter('');
-                setReviewFilter('');
-              }}
-            >
-              Clear Filters
-            </button>
-          )}
+      <div className="zcm-filter-bar">
+        <div className="zcm-filter-search">
+          <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
+          <input
+            type="text"
+            placeholder="Search destination, student, book..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ paddingLeft: '2.5rem', width: '100%' }}
+          />
         </div>
+
+        <div className="zcm-filter-select">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ width: '100%' }}
+            aria-label="Filter by trip status"
+          >
+            <option value="">All Statuses</option>
+            <option value="in_progress">In Progress</option>
+            <option value="settled">Settled</option>
+            <option value="voided">Voided</option>
+          </select>
+        </div>
+
+        <div className="zcm-filter-select">
+          <select
+            value={reviewFilter}
+            onChange={(e) => setReviewFilter(e.target.value)}
+            style={{ width: '100%' }}
+            aria-label="Filter by review status"
+          >
+            <option value="">All Review States</option>
+            <option value="no_review_needed">No Review Needed</option>
+            <option value="needs_review">Needs Review</option>
+            <option value="reviewed_and_accepted">Reviewed & Accepted</option>
+          </select>
+        </div>
+
+        {(searchQuery || statusFilter || reviewFilter) && (
+          <button
+            className="zcm-btn zcm-btn--secondary zcm-btn--sm zcm-filter-btn"
+            onClick={() => {
+              setSearchQuery('');
+              setStatusFilter('');
+              setReviewFilter('');
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
 
       {/* Trips Table */}

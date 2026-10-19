@@ -74,7 +74,7 @@ export const ReportsPage: React.FC = () => {
           </Badge>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem' }}>
           <div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
               {parseFloat(fin?.external_collections || '0') > 0 ? 'Total Campaign Received' : 'Total Actual Collections'}

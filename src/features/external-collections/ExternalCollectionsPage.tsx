@@ -300,52 +300,52 @@ export const ExternalCollectionsPage: React.FC = () => {
       </div>
 
       {/* Filters Toolbar */}
-      <div className="zcm-card" style={{ padding: '1rem', marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 240px', position: 'relative' }}>
-            <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
-            <input
-              type="text"
-              placeholder="Search by donor name or notes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: '2.5rem', width: '100%' }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.78125rem', color: '#94A3B8' }}>From:</span>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              style={{ padding: '0.45rem 0.75rem', width: '150px' }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.78125rem', color: '#94A3B8' }}>To:</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              style={{ padding: '0.45rem 0.75rem', width: '150px' }}
-            />
-          </div>
-
-          {(searchQuery || startDate || endDate) && (
-            <button
-              className="zcm-btn zcm-btn--secondary zcm-btn--sm"
-              onClick={() => {
-                setSearchQuery('');
-                setStartDate('');
-                setEndDate('');
-              }}
-            >
-              Clear Filters
-            </button>
-          )}
+      <div className="zcm-filter-bar">
+        <div className="zcm-filter-search">
+          <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
+          <input
+            type="text"
+            placeholder="Search by donor name or notes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ paddingLeft: '2.5rem', width: '100%' }}
+          />
         </div>
+
+        <div className="zcm-filter-select" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.78125rem', color: '#94A3B8', whiteSpace: 'nowrap' }}>From:</span>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            style={{ padding: '0.45rem 0.75rem', width: '100%' }}
+            aria-label="Filter from date"
+          />
+        </div>
+
+        <div className="zcm-filter-select" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.78125rem', color: '#94A3B8', whiteSpace: 'nowrap' }}>To:</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            style={{ padding: '0.45rem 0.75rem', width: '100%' }}
+            aria-label="Filter to date"
+          />
+        </div>
+
+        {(searchQuery || startDate || endDate) && (
+          <button
+            className="zcm-btn zcm-btn--secondary zcm-btn--sm zcm-filter-btn"
+            onClick={() => {
+              setSearchQuery('');
+              setStartDate('');
+              setEndDate('');
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
 
       {/* Table Card */}

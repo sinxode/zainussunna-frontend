@@ -170,49 +170,47 @@ export const ExpensesPage: React.FC = () => {
       </div>
 
       {/* Filters Toolbar */}
-      <div className="zcm-card" style={{ padding: '1rem', marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 240px', position: 'relative' }}>
-            <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
-            <input
-              type="text"
-              placeholder="Search expenses by description or notes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: '2.5rem', width: '100%' }}
-            />
-          </div>
-
-          <div style={{ width: 180 }}>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              style={{ width: '100%' }}
-              aria-label="Filter by expense category"
-            >
-              <option value="">All Categories</option>
-              <option value="printing">Printing</option>
-              <option value="bus_fare">Bus Fare</option>
-              <option value="food">Food</option>
-              <option value="packaging">Packaging</option>
-              <option value="transport">Transport</option>
-              <option value="distribution_materials">Distribution Materials</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          {(searchQuery || categoryFilter) && (
-            <button
-              className="zcm-btn zcm-btn--secondary zcm-btn--sm"
-              onClick={() => {
-                setSearchQuery('');
-                setCategoryFilter('');
-              }}
-            >
-              Clear Filters
-            </button>
-          )}
+      <div className="zcm-filter-bar">
+        <div className="zcm-filter-search">
+          <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
+          <input
+            type="text"
+            placeholder="Search expenses by description or notes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ paddingLeft: '2.5rem', width: '100%' }}
+          />
         </div>
+
+        <div className="zcm-filter-select">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            style={{ width: '100%' }}
+            aria-label="Filter by expense category"
+          >
+            <option value="">All Categories</option>
+            <option value="printing">Printing</option>
+            <option value="bus_fare">Bus Fare</option>
+            <option value="food">Food</option>
+            <option value="packaging">Packaging</option>
+            <option value="transport">Transport</option>
+            <option value="distribution_materials">Distribution Materials</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        {(searchQuery || categoryFilter) && (
+          <button
+            className="zcm-btn zcm-btn--secondary zcm-btn--sm zcm-filter-btn"
+            onClick={() => {
+              setSearchQuery('');
+              setCategoryFilter('');
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
 
       {/* Expenses Table */}

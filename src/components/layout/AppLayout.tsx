@@ -95,15 +95,25 @@ export const AppLayout: React.FC = () => {
               <div className="zcm-brand-sub">Calendar Manager</div>
             </div>
           </div>
-          <button
-            type="button"
-            className="zcm-sidebar-collapse-btn"
-            onClick={toggleDesktopCollapse}
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-label="Toggle sidebar collapse"
-          >
-            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <button
+              type="button"
+              className="zcm-sidebar-collapse-btn"
+              onClick={toggleDesktopCollapse}
+              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label="Toggle sidebar collapse"
+            >
+              {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            </button>
+            <button
+              type="button"
+              className="zcm-sidebar-mobile-close"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close sidebar"
+            >
+              <X size={17} />
+            </button>
+          </div>
         </div>
 
         <nav className="zcm-sidebar__nav">
@@ -218,12 +228,12 @@ export const AppLayout: React.FC = () => {
               {isSuperAdmin ? (
                 <span className="zcm-badge zcm-badge--success" title="Full application permissions">
                   <ShieldCheck size={11} />
-                  Super Administrator
+                  <span className="zcm-role-badge-text">Super Administrator</span>
                 </span>
               ) : (
                 <span className="zcm-badge zcm-badge--neutral" title="Operational staff permissions">
                   <UserCheck size={11} />
-                  Administrator
+                  <span className="zcm-role-badge-text">Administrator</span>
                 </span>
               )}
             </div>
@@ -233,6 +243,56 @@ export const AppLayout: React.FC = () => {
         <main className="zcm-content">
           <Outlet />
         </main>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <nav className="zcm-bottom-nav" aria-label="Quick Mobile Navigation">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `zcm-bottom-nav__item ${isActive ? 'zcm-bottom-nav__item--active' : ''}`
+            }
+          >
+            <LayoutDashboard size={18} />
+            <span>Overview</span>
+          </NavLink>
+          <NavLink
+            to="/trips"
+            className={({ isActive }) =>
+              `zcm-bottom-nav__item ${isActive ? 'zcm-bottom-nav__item--active' : ''}`
+            }
+          >
+            <Compass size={18} />
+            <span>Trips</span>
+          </NavLink>
+          <NavLink
+            to="/inventory"
+            className={({ isActive }) =>
+              `zcm-bottom-nav__item ${isActive ? 'zcm-bottom-nav__item--active' : ''}`
+            }
+          >
+            <PackageOpen size={18} />
+            <span>Stock</span>
+          </NavLink>
+          <NavLink
+            to="/external-collections"
+            className={({ isActive }) =>
+              `zcm-bottom-nav__item ${isActive ? 'zcm-bottom-nav__item--active' : ''}`
+            }
+          >
+            <Coins size={18} />
+            <span>Collections</span>
+          </NavLink>
+          <button
+            type="button"
+            className={`zcm-bottom-nav__item ${mobileMenuOpen ? 'zcm-bottom-nav__item--active' : ''}`}
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open full menu"
+          >
+            <Menu size={18} />
+            <span>More</span>
+          </button>
+        </nav>
       </div>
     </div>
   );

@@ -41,19 +41,19 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      minHeight: '100dvh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       background: 'radial-gradient(ellipse at 50% 25%, #131E33 0%, #070B14 70%)',
-      padding: '1.5rem',
+      padding: '1rem',
     }}>
       <div style={{
         background: '#111827',
         width: '100%',
         maxWidth: 390,
-        borderRadius: 10,
-        padding: '2.25rem 2rem',
+        borderRadius: '16px',
+        padding: '2rem 1.5rem',
         border: '1px solid #1E293B',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)',
       }}>

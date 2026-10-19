@@ -75,8 +75,20 @@ $shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.45);
 $glass-bg: rgba(17, 24, 39, 0.88);
 $glass-backdrop: blur(16px);
 
-// Breakpoints
-$bp-mobile: 640px;
-$bp-tablet: 768px;
-$bp-desktop: 1024px;
-$bp-wide: 1280px;
+// Responsive Breakpoints
+$bp-xs: 480px;      // Compact phones (iPhone SE, small Androids)
+$bp-mobile: 640px;  // Standard phones & phablets
+$bp-sm: 640px;
+$bp-tablet: 768px;  // Small tablets (iPad Mini, 7-8" tablets)
+$bp-md: 768px;
+$bp-desktop: 1024px;// Laptops & standard landscape tablets
+$bp-lg: 1024px;
+$bp-wide: 1280px;   // Standard desktop monitors
+$bp-xl: 1280px;
+$bp-2xl: 1536px;    // Wide screens / 4K
+
+// Touch & Ergonomics Tokens
+$touch-target-min: 44px; // Standard iOS/Android accessible touch target
+$header-height-mobile: 52px;
+$header-height-desktop: 56px;
+$bottom-nav-height: 60px;

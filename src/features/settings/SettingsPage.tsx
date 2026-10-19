@@ -277,7 +277,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Settings Navigation Tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #1E293B', paddingBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #1E293B', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
         <button
           className={`zcm-btn zcm-btn--sm ${activeTab === 'campaign' ? 'zcm-btn--primary' : 'zcm-btn--secondary'}`}
           onClick={() => setActiveTab('campaign')}

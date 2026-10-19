@@ -83,8 +83,8 @@ export const StudentsPage: React.FC = () => {
       </div>
 
       {/* Search Toolbar */}
-      <div className="zcm-card" style={{ padding: '1rem', marginBottom: '1.25rem' }}>
-        <div style={{ position: 'relative', maxWidth: 400 }}>
+      <div className="zcm-filter-bar">
+        <div className="zcm-filter-search" style={{ maxWidth: 420 }}>
           <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
           <input
             type="text"
