@@ -74,7 +74,20 @@ class ApiService {
       throw new Error(errorMsg);
     }
 
-    return response.json();
+    if (response.status === 204 || response.status === 205) {
+      return null as unknown as T;
+    }
+
+    const text = await response.text();
+    if (!text || !text.trim()) {
+      return null as unknown as T;
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return text as unknown as T;
+    }
   }
 
   private async refreshToken(): Promise<boolean> {
@@ -285,9 +298,10 @@ class ApiService {
     });
   }
 
-  async deleteTrip(id: number): Promise<void> {
-    return this.request<void>(`/trips/${id}/`, {
+  async deleteTrip(id: number, reason?: string): Promise<{ success: boolean; message: string; trip_id: number }> {
+    return this.request<{ success: boolean; message: string; trip_id: number }>(`/trips/${id}/`, {
       method: 'DELETE',
+      body: reason ? JSON.stringify({ reason }) : undefined,
     });
   }
 

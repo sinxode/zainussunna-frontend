@@ -45,6 +45,8 @@ export const TripsPage: React.FC = () => {
   const [voidReason, setVoidReason] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedTripToDelete, setSelectedTripToDelete] = useState<Trip | null>(null);
+  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // New trip dispatch form state
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | ''>('');
@@ -266,22 +268,26 @@ export const TripsPage: React.FC = () => {
 
   // Delete Trip Mutation
   const deleteTripMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedTripToDelete) throw new Error('No trip selected to delete.');
-      return api.deleteTrip(selectedTripToDelete.id);
+    mutationFn: async ({ tripId, reason }: { tripId: number; reason: string }) => {
+      return api.deleteTrip(tripId, reason);
     },
-    onSuccess: () => {
-      success(`Trip #${selectedTripToDelete?.id} permanently deleted.`);
+    onSuccess: (res, vars) => {
+      success(res?.message || `Trip #${vars.tripId} permanently deleted.`);
       setDeleteModalOpen(false);
       setSelectedTripToDelete(null);
+      setDeleteReason('');
+      setDeleteError(null);
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
       queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
       queryClient.invalidateQueries({ queryKey: ['commission-summary'] });
       queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
     },
     onError: (err: any) => {
-      error(err.message || 'Failed to delete trip.');
+      const msg = err.message || 'Failed to delete trip.';
+      setDeleteError(msg);
+      error(msg);
     },
   });
 
@@ -537,6 +543,8 @@ export const TripsPage: React.FC = () => {
                         className="zcm-btn zcm-btn--danger zcm-btn--sm"
                         onClick={() => {
                           setSelectedTripToDelete(trip);
+                          setDeleteReason('');
+                          setDeleteError(null);
                           setDeleteModalOpen(true);
                         }}
                         disabled={activeCampaign?.status === 'closed'}
@@ -1053,20 +1061,36 @@ export const TripsPage: React.FC = () => {
       {/* DELETE TRIP MODAL */}
       <Modal
         isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
+        onClose={() => {
+          if (!deleteTripMutation.isPending) {
+            setDeleteModalOpen(false);
+            setDeleteError(null);
+          }
+        }}
         title={`Delete Trip #${selectedTripToDelete?.id || ''}`}
         footer={
           <>
             <button
               className="zcm-btn zcm-btn--secondary"
-              onClick={() => setDeleteModalOpen(false)}
+              onClick={() => {
+                setDeleteModalOpen(false);
+                setDeleteError(null);
+              }}
               disabled={deleteTripMutation.isPending}
             >
               Cancel
             </button>
             <button
               className="zcm-btn zcm-btn--danger"
-              onClick={() => deleteTripMutation.mutate()}
+              onClick={() => {
+                if (selectedTripToDelete) {
+                  setDeleteError(null);
+                  deleteTripMutation.mutate({
+                    tripId: selectedTripToDelete.id,
+                    reason: deleteReason,
+                  });
+                }
+              }}
               disabled={deleteTripMutation.isPending}
             >
               {deleteTripMutation.isPending ? 'Deleting...' : 'Delete Trip'}
@@ -1100,9 +1124,34 @@ export const TripsPage: React.FC = () => {
             )}
           </div>
 
-          <div style={{ fontSize: '0.8125rem', color: '#F87171', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '0.75rem', borderRadius: '8px', lineHeight: 1.4 }}>
-            ⚠️ <strong>Reconciliation Impact:</strong> Deleting this trip will reverse all inventory allocations, delete associated expenses, and recalculate participating students' net collections and commissions. An audit log will record this deletion.
+          {selectedTripToDelete?.status === 'in_progress' && (
+            <div style={{ fontSize: '0.8125rem', color: '#38BDF8', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', padding: '0.75rem', borderRadius: '8px', lineHeight: 1.4 }}>
+              ℹ️ <strong>Stock Restoration:</strong> All {selectedTripToDelete?.calendars_issued} issued calendars will be immediately returned to available campaign stock.
+            </div>
+          )}
+
+          {selectedTripToDelete?.status === 'settled' && (
+            <div style={{ fontSize: '0.8125rem', color: '#F87171', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '0.75rem', borderRadius: '8px', lineHeight: 1.4 }}>
+              ⚠️ <strong>Settlement Reversal:</strong> Deleting this settled trip will reverse all recorded collections ({formatINR(selectedTripToDelete?.total_collection)}), restore unsold stock, and recalculate participating students' net collections and commissions.
+            </div>
+          )}
+
+          <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+            <label style={{ fontSize: '0.8125rem', color: '#94A3B8' }}>Reason for Deletion (Optional)</label>
+            <input
+              type="text"
+              placeholder="e.g. Duplicate entry, wrong date entered, or cancelled trip"
+              value={deleteReason}
+              onChange={(e) => setDeleteReason(e.target.value)}
+              disabled={deleteTripMutation.isPending}
+            />
           </div>
+
+          {deleteError && (
+            <div style={{ fontSize: '0.8125rem', color: '#EF4444', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '0.75rem', borderRadius: '8px', lineHeight: 1.4 }}>
+              ❌ <strong>Deletion Failed:</strong> {deleteError}
+            </div>
+          )}
         </div>
       </Modal>
     </div>
