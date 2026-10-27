@@ -15,7 +15,9 @@ import {
   FileText,
   DollarSign,
   ShieldAlert,
-  ArrowRight
+  ArrowRight,
+  Edit3,
+  ChevronDown
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useCampaign } from '../../context/CampaignContext';
@@ -71,6 +73,34 @@ export const TripsPage: React.FC = () => {
   const [settleEndingLeaf, setSettleEndingLeaf] = useState<number | ''>('');
   const [settleVoidedLeaves, setSettleVoidedLeaves] = useState('');
   const [settleNotes, setSettleNotes] = useState('');
+
+  // Edit trip modal & action dropdown state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedTripToEdit, setSelectedTripToEdit] = useState<Trip | null>(null);
+  const [openActionDropdownId, setOpenActionDropdownId] = useState<number | null>(null);
+
+  // Edit form state
+  const [editPlaceId, setEditPlaceId] = useState<number | ''>('');
+  const [editTripDate, setEditTripDate] = useState('');
+  const [editDepartureTime, setEditDepartureTime] = useState('09:00');
+  const [editStudentIds, setEditStudentIds] = useState<number[]>([]);
+  const [editCalendarsIssued, setEditCalendarsIssued] = useState<number>(0);
+  const [editBookId, setEditBookId] = useState<number | ''>('');
+  const [editStartingLeaf, setEditStartingLeaf] = useState<number | ''>('');
+  const [editBusFare, setEditBusFare] = useState<string>('0');
+  const [editNotes, setEditNotes] = useState('');
+
+  // Settled-specific edit state
+  const [editReturnTime, setEditReturnTime] = useState('');
+  const [editCalendarsSold, setEditCalendarsSold] = useState<number>(0);
+  const [editCalendarsReturned, setEditCalendarsReturned] = useState<number>(0);
+  const [editCash, setEditCash] = useState<string>('0');
+  const [editGpay, setEditGpay] = useState<string>('0');
+  const [editFood, setEditFood] = useState<string>('0');
+  const [editEndingLeaf, setEditEndingLeaf] = useState<number | ''>('');
+  const [editVoidedLeaves, setEditVoidedLeaves] = useState('');
+  const [editDiscrepancyNotes, setEditDiscrepancyNotes] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
 
   // Queries
   const { data: tripsData, isLoading: tripsLoading } = useQuery({
@@ -291,6 +321,109 @@ export const TripsPage: React.FC = () => {
     },
   });
 
+  // Open Edit Modal
+  const openEditModal = (trip: Trip) => {
+    setSelectedTripToEdit(trip);
+    setEditError(null);
+    setEditPlaceId(trip.place);
+    setEditTripDate(trip.trip_date);
+    setEditDepartureTime(trip.departure_time ? trip.departure_time.slice(0, 5) : '09:00');
+    setEditStudentIds(trip.trip_students.map((ts) => ts.student));
+    setEditCalendarsIssued(trip.calendars_issued);
+    setEditBookId(trip.receipt_book || '');
+    setEditStartingLeaf(trip.receipt_starting_leaf ?? '');
+    setEditBusFare(String(trip.bus_fare || '0'));
+    setEditNotes(trip.discrepancy_notes || '');
+
+    if (trip.status === 'settled') {
+      setEditReturnTime(trip.return_time ? trip.return_time.slice(0, 5) : '');
+      setEditCalendarsSold(trip.calendars_sold || 0);
+      setEditCalendarsReturned(trip.calendars_returned || 0);
+      setEditCash(String(trip.cash_collection || '0'));
+      setEditGpay(String(trip.gpay_collection || '0'));
+      setEditFood(String(trip.food_expense || '0'));
+      setEditEndingLeaf(trip.receipt_ending_leaf ?? '');
+      setEditVoidedLeaves(trip.voided_leaves || '');
+      setEditDiscrepancyNotes(trip.discrepancy_notes || '');
+    }
+
+    setOpenActionDropdownId(null);
+    setEditModalOpen(true);
+  };
+
+  const toggleEditStudent = (id: number) => {
+    if (editStudentIds.includes(id)) {
+      setEditStudentIds(editStudentIds.filter((sid) => sid !== id));
+    } else {
+      if (editStudentIds.length >= 3) {
+        warning('Maximum of 3 students can be assigned to a trip.');
+        return;
+      }
+      setEditStudentIds([...editStudentIds, id]);
+    }
+  };
+
+  // Update Trip Mutation
+  const updateTripMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedTripToEdit) throw new Error('No trip selected to edit.');
+
+      const payload: any = {
+        place: editPlaceId ? Number(editPlaceId) : undefined,
+        trip_date: editTripDate,
+        departure_time: editDepartureTime ? `${editDepartureTime}:00` : null,
+        student_ids: editStudentIds,
+        calendars_issued: Number(editCalendarsIssued),
+        bus_fare: editBusFare || '0.00',
+        receipt_book: editBookId ? Number(editBookId) : null,
+        receipt_starting_leaf: editStartingLeaf !== '' ? Number(editStartingLeaf) : null,
+        notes: editNotes,
+      };
+
+      if (selectedTripToEdit.status === 'settled') {
+        payload.return_time = editReturnTime ? `${editReturnTime}:00` : null;
+        payload.calendars_sold = Number(editCalendarsSold);
+        payload.calendars_returned = Number(editCalendarsReturned);
+        payload.cash_collection = editCash || '0.00';
+        payload.gpay_collection = editGpay || '0.00';
+        payload.food_expense = editFood || '0.00';
+        payload.receipt_ending_leaf = editEndingLeaf !== '' ? Number(editEndingLeaf) : null;
+        payload.voided_leaves = editVoidedLeaves;
+        payload.discrepancy_notes = editDiscrepancyNotes;
+      }
+
+      return api.updateTrip(selectedTripToEdit.id, payload);
+    },
+    onSuccess: (data) => {
+      success(`Trip #${data.id} updated successfully.`);
+      setEditModalOpen(false);
+      setSelectedTripToEdit(null);
+      setEditError(null);
+      queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['commission-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['reports-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
+    },
+    onError: (err: any) => {
+      const msg = err.message || 'Failed to update trip.';
+      setEditError(msg);
+      error(msg);
+    },
+  });
+
+  // Calculations preview for editing a settled trip
+  const editTotalCollection = parseFloat(editCash || '0') + parseFloat(editGpay || '0');
+  const editExpectedMinCollection = editCalendarsSold * parseFloat(activeCampaign?.min_expected_collection_per_calendar || '20');
+  const editShortfall = Math.max(0, editExpectedMinCollection - editTotalCollection);
+  const editStockDiscrepancy = selectedTripToEdit
+    ? editCalendarsIssued - (editCalendarsSold + editCalendarsReturned)
+    : 0;
+  const editTotalExpenses = parseFloat(editBusFare || '0') + parseFloat(editFood || '0');
+  const editNetTripCollection = editTotalCollection - editTotalExpenses;
+  const editHasWarnings = editShortfall > 0 || editStockDiscrepancy !== 0 || editNetTripCollection < 0;
+
   // Calculations preview for settlement
   const totalEnteredCollection = parseFloat(settleCash || '0') + parseFloat(settleGpay || '0');
   const minPricePerCalendar = parseFloat(activeCampaign?.min_expected_collection_per_calendar || '20');
@@ -501,7 +634,8 @@ export const TripsPage: React.FC = () => {
                     )}
                   </td>
                   <td className="zcm-text-right">
-                    <div style={{ display: 'flex', gap: '0.35rem', justifyContent: 'flex-end' }}>
+                    <div style={{ display: 'flex', gap: '0.35rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+                      {/* In-Progress Trips: Quick Settle & Edit */}
                       {trip.status === 'in_progress' && (
                         <>
                           <button
@@ -512,45 +646,149 @@ export const TripsPage: React.FC = () => {
                           </button>
                           <button
                             className="zcm-btn zcm-btn--secondary zcm-btn--sm"
-                            onClick={() => {
-                              setSelectedTripToVoid(trip);
-                              setVoidModalOpen(true);
-                            }}
-                            title="Void Trip"
+                            onClick={() => openEditModal(trip)}
+                            title="Edit Trip Details"
                           >
-                            <Ban size={14} style={{ color: '#EF4444' }} />
+                            <Edit3 size={13} />
+                            <span>Edit</span>
                           </button>
                         </>
                       )}
-                      {trip.review_status === 'needs_review' && (
+
+                      {/* Settled Trips: Quick Edit & Accept */}
+                      {trip.status === 'settled' && (
+                        <>
+                          <button
+                            className="zcm-btn zcm-btn--secondary zcm-btn--sm"
+                            onClick={() => openEditModal(trip)}
+                            title="Edit Settled Trip"
+                          >
+                            <Edit3 size={13} />
+                            <span>Edit</span>
+                          </button>
+                          {trip.review_status === 'needs_review' && (
+                            <button
+                              className="zcm-btn zcm-btn--secondary zcm-btn--sm"
+                              onClick={() => {
+                                api.reviewTrip(trip.id, 'reviewed_and_accepted', 'Accepted by supervisor')
+                                  .then(() => {
+                                    success(`Trip #${trip.id} review accepted.`);
+                                    queryClient.invalidateQueries({ queryKey: ['trips'] });
+                                  });
+                              }}
+                              title="Accept Discrepancy"
+                            >
+                              Accept
+                            </button>
+                          )}
+                        </>
+                      )}
+
+                      {/* Actions Dropdown Option for both Progressing and Settled Trips */}
+                      <div className="zcm-dropdown">
                         <button
                           className="zcm-btn zcm-btn--secondary zcm-btn--sm"
-                          onClick={() => {
-                            api.reviewTrip(trip.id, 'reviewed_and_accepted', 'Accepted by supervisor')
-                              .then(() => {
-                                success(`Trip #${trip.id} review accepted.`);
-                                queryClient.invalidateQueries({ queryKey: ['trips'] });
-                              });
-                          }}
-                          title="Accept Discrepancy"
+                          onClick={() => setOpenActionDropdownId(openActionDropdownId === trip.id ? null : trip.id)}
+                          title="More actions"
+                          style={{ padding: '0.35rem 0.55rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                          aria-expanded={openActionDropdownId === trip.id}
                         >
-                          Accept
+                          <span>Actions</span>
+                          <ChevronDown size={12} />
                         </button>
-                      )}
-                      <button
-                        className="zcm-btn zcm-btn--danger zcm-btn--sm"
-                        onClick={() => {
-                          setSelectedTripToDelete(trip);
-                          setDeleteReason('');
-                          setDeleteError(null);
-                          setDeleteModalOpen(true);
-                        }}
-                        disabled={activeCampaign?.status === 'closed'}
-                        title="Delete Trip"
-                        style={{ padding: '0.35rem 0.55rem' }}
-                      >
-                        <Trash2 size={13} />
-                      </button>
+
+                        {openActionDropdownId === trip.id && (
+                          <>
+                            <div
+                              style={{ position: 'fixed', inset: 0, zIndex: 45 }}
+                              onClick={() => setOpenActionDropdownId(null)}
+                            />
+                            <div className="zcm-dropdown__menu">
+                              {trip.status === 'in_progress' && (
+                                <>
+                                  <button
+                                    className="zcm-dropdown__item zcm-dropdown__item--success"
+                                    onClick={() => {
+                                      setOpenActionDropdownId(null);
+                                      openSettleModal(trip);
+                                    }}
+                                  >
+                                    <CheckCircle size={14} />
+                                    <span>Settle Return</span>
+                                  </button>
+                                  <button
+                                    className="zcm-dropdown__item"
+                                    onClick={() => {
+                                      setOpenActionDropdownId(null);
+                                      openEditModal(trip);
+                                    }}
+                                  >
+                                    <Edit3 size={14} />
+                                    <span>Edit Trip</span>
+                                  </button>
+                                  <button
+                                    className="zcm-dropdown__item"
+                                    onClick={() => {
+                                      setOpenActionDropdownId(null);
+                                      setSelectedTripToVoid(trip);
+                                      setVoidModalOpen(true);
+                                    }}
+                                  >
+                                    <Ban size={14} style={{ color: '#F87171' }} />
+                                    <span>Void Trip</span>
+                                  </button>
+                                </>
+                              )}
+
+                              {trip.status === 'settled' && (
+                                <>
+                                  <button
+                                    className="zcm-dropdown__item"
+                                    onClick={() => {
+                                      setOpenActionDropdownId(null);
+                                      openEditModal(trip);
+                                    }}
+                                  >
+                                    <Edit3 size={14} />
+                                    <span>Edit Settlement</span>
+                                  </button>
+                                  {trip.review_status === 'needs_review' && (
+                                    <button
+                                      className="zcm-dropdown__item zcm-dropdown__item--success"
+                                      onClick={() => {
+                                        setOpenActionDropdownId(null);
+                                        api.reviewTrip(trip.id, 'reviewed_and_accepted', 'Accepted by supervisor')
+                                          .then(() => {
+                                            success(`Trip #${trip.id} review accepted.`);
+                                            queryClient.invalidateQueries({ queryKey: ['trips'] });
+                                          });
+                                      }}
+                                    >
+                                      <CheckCircle size={14} />
+                                      <span>Accept Discrepancy</span>
+                                    </button>
+                                  )}
+                                </>
+                              )}
+
+                              <button
+                                className="zcm-dropdown__item zcm-dropdown__item--danger"
+                                onClick={() => {
+                                  setOpenActionDropdownId(null);
+                                  setSelectedTripToDelete(trip);
+                                  setDeleteReason('');
+                                  setDeleteError(null);
+                                  setDeleteModalOpen(true);
+                                }}
+                                disabled={activeCampaign?.status === 'closed'}
+                              >
+                                <Trash2 size={14} />
+                                <span>Delete Trip</span>
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -1151,6 +1389,388 @@ export const TripsPage: React.FC = () => {
             </div>
           )}
         </div>
+      </Modal>
+
+      {/* EDIT TRIP MODAL (FOR BOTH IN-PROGRESS & SETTLED TRIPS) */}
+      <Modal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title={`Edit Trip #${selectedTripToEdit?.id} (${selectedTripToEdit?.status === 'in_progress' ? 'In Progress' : 'Settled'})`}
+        size="lg"
+        footer={
+          <>
+            <button
+              className="zcm-btn zcm-btn--secondary"
+              onClick={() => setEditModalOpen(false)}
+              disabled={updateTripMutation.isPending}
+            >
+              Cancel
+            </button>
+            <button
+              className="zcm-btn zcm-btn--primary"
+              onClick={() => updateTripMutation.mutate()}
+              disabled={
+                updateTripMutation.isPending ||
+                (selectedTripToEdit?.status === 'settled' && editHasWarnings && !editDiscrepancyNotes.trim())
+              }
+            >
+              {updateTripMutation.isPending ? 'Saving Changes...' : 'Save Changes'}
+            </button>
+          </>
+        }
+      >
+        {selectedTripToEdit && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Context Header */}
+            <div
+              style={{
+                background: '#0B111E',
+                border: '1px solid #1E293B',
+                borderRadius: 8,
+                padding: '0.75rem 1rem',
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '0.75rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <Badge variant={selectedTripToEdit.status === 'settled' ? 'success' : 'warning'}>
+                  {selectedTripToEdit.status === 'settled' ? 'SETTLED' : 'IN PROGRESS'}
+                </Badge>
+                <strong style={{ color: '#F8FAFC', fontSize: '0.9rem' }}>
+                  Trip #{selectedTripToEdit.id} – {selectedTripToEdit.place_name}
+                </strong>
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: '#94A3B8' }}>
+                Campaign: <strong style={{ color: '#F8FAFC' }}>{activeCampaign?.name || activeCampaignId}</strong>
+              </div>
+            </div>
+
+            {/* Error banner if update failed */}
+            {editError && (
+              <div
+                style={{
+                  fontSize: '0.8125rem',
+                  color: '#EF4444',
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '8px',
+                  lineHeight: 1.4,
+                }}
+              >
+                ❌ <strong>Error updating trip:</strong> {editError}
+              </div>
+            )}
+
+            {/* IF SETTLED: SHOW SETTLEMENT SECTION FIRST */}
+            {selectedTripToEdit.status === 'settled' && (
+              <>
+                <div style={{ borderBottom: '1px solid #1E293B', paddingBottom: '0.4rem', marginTop: '0.25rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#38BDF8' }}>
+                    1. Settlement Financial & Inventory Reconciliations
+                  </h4>
+                </div>
+
+                {/* Sold & Returned & Return Time */}
+                <div className="zcm-form-grid-3">
+                  <div className="zcm-form-group">
+                    <label>Calendars Sold *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editCalendarsSold}
+                      onChange={(e) => setEditCalendarsSold(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="zcm-form-group">
+                    <label>Calendars Returned *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editCalendarsReturned}
+                      onChange={(e) => setEditCalendarsReturned(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="zcm-form-group">
+                    <label>Return Time</label>
+                    <input
+                      type="time"
+                      value={editReturnTime}
+                      onChange={(e) => setEditReturnTime(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Collections & Food Expense */}
+                <div className="zcm-form-grid-3">
+                  <div className="zcm-form-group">
+                    <label>Cash Collected (₹) *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={editCash}
+                      onChange={(e) => setEditCash(e.target.value)}
+                    />
+                  </div>
+                  <div className="zcm-form-group">
+                    <label>Google Pay / UPI (₹) *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={editGpay}
+                      onChange={(e) => setEditGpay(e.target.value)}
+                    />
+                  </div>
+                  <div className="zcm-form-group">
+                    <label>Food Expense (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={editFood}
+                      onChange={(e) => setEditFood(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Receipt Ending Leaf & Voided Leaves */}
+                <div className="zcm-form-grid-2">
+                  <div className="zcm-form-group">
+                    <label>Ending Receipt Leaf</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 50"
+                      value={editEndingLeaf}
+                      onChange={(e) => setEditEndingLeaf(e.target.value ? Number(e.target.value) : '')}
+                    />
+                    <div className="zcm-help-text">
+                      Starting leaf is #{editStartingLeaf || 'None'}
+                    </div>
+                  </div>
+                  <div className="zcm-form-group">
+                    <label>Voided / Spoiled Leaves</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 14, 28"
+                      value={editVoidedLeaves}
+                      onChange={(e) => setEditVoidedLeaves(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Live Reconciliation Preview Box */}
+                <div
+                  style={{
+                    background: '#0B111E',
+                    border: '1px solid #1E293B',
+                    borderRadius: 8,
+                    padding: '0.85rem 1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                    fontSize: '0.8125rem',
+                  }}
+                >
+                  <div style={{ fontWeight: 600, borderBottom: '1px solid #1E293B', paddingBottom: '0.4rem', color: '#F8FAFC' }}>
+                    Recalculation & Financial Preview
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.25rem' }}>
+                    <span style={{ color: '#94A3B8' }}>Total Collection (Cash + GPay):</span>
+                    <strong className="zcm-num" style={{ color: '#34D399' }}>{formatINR(editTotalCollection, true)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.25rem' }}>
+                    <span style={{ color: '#94A3B8' }}>Expected Min Collection ({editCalendarsSold} × ₹{parseFloat(activeCampaign?.min_expected_collection_per_calendar || '20')}):</span>
+                    <span className="zcm-num">{formatINR(editExpectedMinCollection, true)}</span>
+                  </div>
+                  {editShortfall > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#FBBF24', fontWeight: 600 }}>
+                      <span>Shortfall Below Expected:</span>
+                      <span className="zcm-num">-{formatINR(editShortfall, true)}</span>
+                    </div>
+                  )}
+                  {editStockDiscrepancy !== 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#F87171', fontWeight: 600 }}>
+                      <span>Stock Discrepancy (Issued vs Sold+Returned):</span>
+                      <span>{editStockDiscrepancy} calendars missing/unaccounted</span>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1E293B', paddingTop: '0.4rem' }}>
+                    <span style={{ color: '#94A3B8' }}>Net Trip Generated (After Fare & Food):</span>
+                    <strong className="zcm-num" style={{ color: editNetTripCollection >= 0 ? '#34D399' : '#EF4444' }}>
+                      {formatINR(editNetTripCollection, true)}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="zcm-form-group">
+                  <label>
+                    Settlement Notes & Discrepancy Explanation {editHasWarnings ? '*' : '(Optional)'}
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Provide explanatory notes for any collection shortfall or leaf discrepancy..."
+                    value={editDiscrepancyNotes}
+                    onChange={(e) => setEditDiscrepancyNotes(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ borderBottom: '1px solid #1E293B', paddingBottom: '0.4rem', marginTop: '0.5rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#94A3B8' }}>
+                    2. Dispatch Logistics & Student Participants
+                  </h4>
+                </div>
+              </>
+            )}
+
+            {/* COMMON / DISPATCH PARAMETERS */}
+            <div className="zcm-form-grid-2">
+              <div className="zcm-form-group">
+                <label>Destination Place *</label>
+                <select
+                  value={editPlaceId}
+                  onChange={(e) => setEditPlaceId(Number(e.target.value))}
+                >
+                  <option value="">Select a place...</option>
+                  {places.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="zcm-form-group">
+                <label>Bus Fare Advanced (₹) *</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={editBusFare}
+                  onChange={(e) => setEditBusFare(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Student Picker (1 to 3) */}
+            <div className="zcm-form-group">
+              <label>Participating Students (Select 1 to 3) *</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                {editStudentIds.map((id) => {
+                  const st = students.find((s) => s.id === id);
+                  return (
+                    <span key={id} className="zcm-badge zcm-badge--success" style={{ padding: '0.25rem 0.55rem' }}>
+                      {st?.name || `Student #${id}`}
+                      <X size={13} style={{ cursor: 'pointer', marginLeft: 4 }} onClick={() => toggleEditStudent(id)} />
+                    </span>
+                  );
+                })}
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.35rem',
+                  maxHeight: 120,
+                  overflowY: 'auto',
+                  padding: '0.5rem',
+                  background: '#0B111E',
+                  border: '1px solid #1E293B',
+                  borderRadius: 6,
+                }}
+              >
+                {students.map((st) => {
+                  const isSelected = editStudentIds.includes(st.id);
+                  return (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => toggleEditStudent(st.id)}
+                      className={`zcm-btn zcm-btn--sm ${isSelected ? 'zcm-btn--primary' : 'zcm-btn--secondary'}`}
+                      style={{ fontSize: '0.75rem', padding: '0.2rem 0.45rem' }}
+                    >
+                      {st.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Date, Departure Time, Calendars Issued */}
+            <div className="zcm-form-grid-3">
+              <div className="zcm-form-group">
+                <label>Trip Date *</label>
+                <input
+                  type="date"
+                  value={editTripDate}
+                  onChange={(e) => setEditTripDate(e.target.value)}
+                />
+              </div>
+              <div className="zcm-form-group">
+                <label>Departure Time</label>
+                <input
+                  type="time"
+                  value={editDepartureTime}
+                  onChange={(e) => setEditDepartureTime(e.target.value)}
+                />
+              </div>
+              <div className="zcm-form-group">
+                <label>Calendars Issued *</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={editCalendarsIssued}
+                  onChange={(e) => setEditCalendarsIssued(Number(e.target.value))}
+                />
+              </div>
+            </div>
+
+            {/* Receipt Book & Starting Leaf */}
+            <div className="zcm-form-grid-2">
+              <div className="zcm-form-group">
+                <label>Receipt Book</label>
+                <select
+                  value={editBookId}
+                  onChange={(e) => setEditBookId(e.target.value ? Number(e.target.value) : '')}
+                >
+                  <option value="">No Receipt Book Selected</option>
+                  {books.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.label} (Leaves #{b.first_leaf}-#{b.last_leaf})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="zcm-form-group">
+                <label>Starting Leaf Number</label>
+                <input
+                  type="number"
+                  value={editStartingLeaf}
+                  onChange={(e) => setEditStartingLeaf(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="e.g. 1"
+                />
+              </div>
+            </div>
+
+            {/* Notes if in_progress */}
+            {selectedTripToEdit.status === 'in_progress' && (
+              <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                <label>Dispatch Notes (Optional)</label>
+                <textarea
+                  rows={2}
+                  placeholder="Special instructions or notes for this trip..."
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
     </div>
   );

@@ -277,6 +277,13 @@ class ApiService {
     });
   }
 
+  async updateTrip(id: number, data: any): Promise<Trip> {
+    return this.request<Trip>(`/trips/${id}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
   async settleTrip(id: number, data: any): Promise<Trip> {
     return this.request<Trip>(`/trips/${id}/settle/`, {
       method: 'POST',
