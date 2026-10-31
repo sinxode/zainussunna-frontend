@@ -58,8 +58,9 @@ export const TripsPage: React.FC = () => {
   const [departureTime, setDepartureTime] = useState('09:00');
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   const [calendarsIssued, setCalendarsIssued] = useState<number>(50);
-  const [selectedBookId, setSelectedBookId] = useState<number | ''>('');
-  const [startingLeaf, setStartingLeaf] = useState<number | ''>('');
+  const [dispatchReceiptBooks, setDispatchReceiptBooks] = useState<Array<{ receipt_book: number | ''; starting_leaf: number | '' }>>([
+    { receipt_book: '', starting_leaf: '' },
+  ]);
   const [busFare, setBusFare] = useState<string>('0');
   const [dispatchNotes, setDispatchNotes] = useState('');
 
@@ -70,8 +71,13 @@ export const TripsPage: React.FC = () => {
   const [settleCash, setSettleCash] = useState<string>('0');
   const [settleGpay, setSettleGpay] = useState<string>('0');
   const [settleFood, setSettleFood] = useState<string>('0');
-  const [settleEndingLeaf, setSettleEndingLeaf] = useState<number | ''>('');
-  const [settleVoidedLeaves, setSettleVoidedLeaves] = useState('');
+  const [settleReceiptBooks, setSettleReceiptBooks] = useState<Array<{
+    receipt_book: number;
+    receipt_book_label?: string;
+    starting_leaf: number | null;
+    ending_leaf: number | '';
+    voided_leaves: string;
+  }>>([]);
   const [settleNotes, setSettleNotes] = useState('');
 
   // Edit trip modal & action dropdown state
@@ -81,12 +87,18 @@ export const TripsPage: React.FC = () => {
 
   // Edit form state
   const [editPlaceId, setEditPlaceId] = useState<number | ''>('');
+  const [newEditPlaceName, setNewEditPlaceName] = useState('');
+  const [showEditNewPlaceInput, setShowEditNewPlaceInput] = useState(false);
   const [editTripDate, setEditTripDate] = useState('');
   const [editDepartureTime, setEditDepartureTime] = useState('09:00');
   const [editStudentIds, setEditStudentIds] = useState<number[]>([]);
   const [editCalendarsIssued, setEditCalendarsIssued] = useState<number>(0);
-  const [editBookId, setEditBookId] = useState<number | ''>('');
-  const [editStartingLeaf, setEditStartingLeaf] = useState<number | ''>('');
+  const [editReceiptBooks, setEditReceiptBooks] = useState<Array<{
+    receipt_book: number | '';
+    starting_leaf: number | '';
+    ending_leaf?: number | '';
+    voided_leaves?: string;
+  }>>([]);
   const [editBusFare, setEditBusFare] = useState<string>('0');
   const [editNotes, setEditNotes] = useState('');
 
@@ -97,8 +109,6 @@ export const TripsPage: React.FC = () => {
   const [editCash, setEditCash] = useState<string>('0');
   const [editGpay, setEditGpay] = useState<string>('0');
   const [editFood, setEditFood] = useState<string>('0');
-  const [editEndingLeaf, setEditEndingLeaf] = useState<number | ''>('');
-  const [editVoidedLeaves, setEditVoidedLeaves] = useState('');
   const [editDiscrepancyNotes, setEditDiscrepancyNotes] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
 
@@ -153,13 +163,33 @@ export const TripsPage: React.FC = () => {
     }
   }, [searchParams, trips]);
 
-  // When receipt book changes in dispatch, suggest next leaf
-  const handleReceiptBookChange = (bookId: number) => {
-    setSelectedBookId(bookId);
-    const book = books.find((b) => b.id === bookId);
-    if (book) {
-      setStartingLeaf(book.next_suggested_leaf);
-    }
+  // Manage dispatch receipt book rows
+  const handleDispatchReceiptBookChange = (index: number, bookId: number | '') => {
+    setDispatchReceiptBooks((prev) => {
+      const next = [...prev];
+      const book = books.find((b) => b.id === bookId);
+      next[index] = {
+        receipt_book: bookId,
+        starting_leaf: book ? (book.next_suggested_leaf ?? book.first_leaf) : '',
+      };
+      return next;
+    });
+  };
+
+  const handleDispatchStartingLeafChange = (index: number, val: number | '') => {
+    setDispatchReceiptBooks((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], starting_leaf: val };
+      return next;
+    });
+  };
+
+  const addDispatchReceiptBookRow = () => {
+    setDispatchReceiptBooks((prev) => [...prev, { receipt_book: '', starting_leaf: '' }]);
+  };
+
+  const removeDispatchReceiptBookRow = (index: number) => {
+    setDispatchReceiptBooks((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Toggle student selection (1 to 3 students)
@@ -179,14 +209,43 @@ export const TripsPage: React.FC = () => {
   const dispatchMutation = useMutation({
     mutationFn: async () => {
       let placeId = selectedPlaceId;
-      if (showNewPlaceInput && newPlaceName.trim()) {
-        const createdPlace = await api.createPlace(newPlaceName.trim());
-        placeId = createdPlace.id;
+      if (showNewPlaceInput) {
+        const cleanName = newPlaceName.trim();
+        if (!cleanName) {
+          throw new Error('Please enter a destination place name.');
+        }
+        // Match existing place case-insensitively
+        const existing = places.find((p) => p.name.trim().toLowerCase() === cleanName.toLowerCase());
+        if (existing) {
+          placeId = existing.id;
+        } else {
+          try {
+            const createdPlace = await api.createPlace(cleanName);
+            placeId = createdPlace.id;
+            queryClient.invalidateQueries({ queryKey: ['places'] });
+          } catch (err: any) {
+            throw new Error(`Failed to create place: ${err.message || 'Unknown error'}`);
+          }
+        }
       }
 
       if (!placeId) throw new Error('Please select or create a destination place.');
       if (selectedStudentIds.length === 0) throw new Error('Select between 1 and 3 students.');
       if (calendarsIssued <= 0) throw new Error('Enter valid calendars to issue.');
+
+      // Validate receipt books
+      const validBooks = dispatchReceiptBooks.filter((rb) => rb.receipt_book !== '');
+      const bookIds = validBooks.map((rb) => rb.receipt_book);
+      if (new Set(bookIds).size !== bookIds.length) {
+        throw new Error('Duplicate receipt books selected. Each receipt book can only be added once to a trip.');
+      }
+
+      const receiptBooksPayload = validBooks.map((rb) => ({
+        receipt_book: Number(rb.receipt_book),
+        starting_leaf: rb.starting_leaf !== '' ? Number(rb.starting_leaf) : null,
+      }));
+
+      const primaryBook = receiptBooksPayload[0] || null;
 
       return api.dispatchTrip({
         campaign: activeCampaignId,
@@ -195,8 +254,9 @@ export const TripsPage: React.FC = () => {
         departure_time: departureTime ? `${departureTime}:00` : null,
         student_ids: selectedStudentIds,
         calendars_issued: calendarsIssued,
-        receipt_book: selectedBookId || null,
-        receipt_starting_leaf: startingLeaf || null,
+        receipt_books: receiptBooksPayload,
+        receipt_book: primaryBook ? primaryBook.receipt_book : null,
+        receipt_starting_leaf: primaryBook ? primaryBook.starting_leaf : null,
         bus_fare: busFare || '0.00',
         notes: dispatchNotes,
       });
@@ -220,8 +280,7 @@ export const TripsPage: React.FC = () => {
     setShowNewPlaceInput(false);
     setSelectedStudentIds([]);
     setCalendarsIssued(50);
-    setSelectedBookId('');
-    setStartingLeaf('');
+    setDispatchReceiptBooks([{ receipt_book: '', starting_leaf: '' }]);
     setBusFare('0');
     setDispatchNotes('');
   };
@@ -237,9 +296,33 @@ export const TripsPage: React.FC = () => {
     setSettleCash(String(trip.calendars_issued * minPrice));
     setSettleGpay('0');
     setSettleFood('0');
-    setSettleEndingLeaf(trip.receipt_starting_leaf ? trip.receipt_starting_leaf + trip.calendars_issued - 1 : '');
-    setSettleVoidedLeaves('');
     setSettleNotes('');
+
+    // Setup multiple receipt books for settlement
+    if (trip.trip_receipt_books && trip.trip_receipt_books.length > 0) {
+      setSettleReceiptBooks(
+        trip.trip_receipt_books.map((trb) => ({
+          receipt_book: trb.receipt_book,
+          receipt_book_label: trb.receipt_book_label,
+          starting_leaf: trb.starting_leaf,
+          ending_leaf: trb.ending_leaf ?? '',
+          voided_leaves: trb.voided_leaves || '',
+        }))
+      );
+    } else if (trip.receipt_book) {
+      setSettleReceiptBooks([
+        {
+          receipt_book: trip.receipt_book,
+          receipt_book_label: trip.receipt_book_label || undefined,
+          starting_leaf: trip.receipt_starting_leaf,
+          ending_leaf: trip.receipt_ending_leaf ?? (trip.receipt_starting_leaf ? trip.receipt_starting_leaf + trip.calendars_issued - 1 : ''),
+          voided_leaves: trip.voided_leaves || '',
+        },
+      ]);
+    } else {
+      setSettleReceiptBooks([]);
+    }
+
     setSettleModalOpen(true);
   };
 
@@ -247,6 +330,16 @@ export const TripsPage: React.FC = () => {
   const settleMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTripToSettle) throw new Error('No trip selected to settle.');
+
+      const receiptBooksPayload = settleReceiptBooks.map((rb) => ({
+        receipt_book: rb.receipt_book,
+        starting_leaf: rb.starting_leaf,
+        ending_leaf: rb.ending_leaf !== '' ? Number(rb.ending_leaf) : null,
+        voided_leaves: rb.voided_leaves || '',
+      }));
+
+      const primary = receiptBooksPayload[0] || null;
+
       return api.settleTrip(selectedTripToSettle.id, {
         return_time: settleReturnTime ? `${settleReturnTime}:00` : null,
         calendars_sold: Number(settleCalendarsSold),
@@ -254,10 +347,11 @@ export const TripsPage: React.FC = () => {
         cash_collection: settleCash || '0.00',
         gpay_collection: settleGpay || '0.00',
         food_expense: settleFood || '0.00',
-        receipt_book: selectedTripToSettle.receipt_book,
-        receipt_starting_leaf: selectedTripToSettle.receipt_starting_leaf,
-        receipt_ending_leaf: settleEndingLeaf || null,
-        voided_leaves: settleVoidedLeaves,
+        receipt_books: receiptBooksPayload,
+        receipt_book: primary ? primary.receipt_book : (selectedTripToSettle.receipt_book || null),
+        receipt_starting_leaf: primary ? primary.starting_leaf : (selectedTripToSettle.receipt_starting_leaf || null),
+        receipt_ending_leaf: primary ? primary.ending_leaf : null,
+        voided_leaves: primary ? primary.voided_leaves : '',
         discrepancy_notes: settleNotes,
       });
     },
@@ -326,14 +420,37 @@ export const TripsPage: React.FC = () => {
     setSelectedTripToEdit(trip);
     setEditError(null);
     setEditPlaceId(trip.place);
+    setNewEditPlaceName('');
+    setShowEditNewPlaceInput(false);
     setEditTripDate(trip.trip_date);
     setEditDepartureTime(trip.departure_time ? trip.departure_time.slice(0, 5) : '09:00');
     setEditStudentIds(trip.trip_students.map((ts) => ts.student));
     setEditCalendarsIssued(trip.calendars_issued);
-    setEditBookId(trip.receipt_book || '');
-    setEditStartingLeaf(trip.receipt_starting_leaf ?? '');
     setEditBusFare(String(trip.bus_fare || '0'));
     setEditNotes(trip.discrepancy_notes || '');
+
+    // Setup multiple receipt books for editing
+    if (trip.trip_receipt_books && trip.trip_receipt_books.length > 0) {
+      setEditReceiptBooks(
+        trip.trip_receipt_books.map((trb) => ({
+          receipt_book: trb.receipt_book,
+          starting_leaf: trb.starting_leaf ?? '',
+          ending_leaf: trb.ending_leaf ?? '',
+          voided_leaves: trb.voided_leaves || '',
+        }))
+      );
+    } else if (trip.receipt_book) {
+      setEditReceiptBooks([
+        {
+          receipt_book: trip.receipt_book,
+          starting_leaf: trip.receipt_starting_leaf ?? '',
+          ending_leaf: trip.receipt_ending_leaf ?? '',
+          voided_leaves: trip.voided_leaves || '',
+        },
+      ]);
+    } else {
+      setEditReceiptBooks([{ receipt_book: '', starting_leaf: '', ending_leaf: '', voided_leaves: '' }]);
+    }
 
     if (trip.status === 'settled') {
       setEditReturnTime(trip.return_time ? trip.return_time.slice(0, 5) : '');
@@ -342,13 +459,56 @@ export const TripsPage: React.FC = () => {
       setEditCash(String(trip.cash_collection || '0'));
       setEditGpay(String(trip.gpay_collection || '0'));
       setEditFood(String(trip.food_expense || '0'));
-      setEditEndingLeaf(trip.receipt_ending_leaf ?? '');
-      setEditVoidedLeaves(trip.voided_leaves || '');
       setEditDiscrepancyNotes(trip.discrepancy_notes || '');
     }
 
     setOpenActionDropdownId(null);
     setEditModalOpen(true);
+  };
+
+  const handleEditReceiptBookChange = (index: number, bookId: number | '') => {
+    setEditReceiptBooks((prev) => {
+      const next = [...prev];
+      const book = books.find((b) => b.id === bookId);
+      next[index] = {
+        ...next[index],
+        receipt_book: bookId,
+        starting_leaf: book ? (book.next_suggested_leaf ?? book.first_leaf) : '',
+      };
+      return next;
+    });
+  };
+
+  const handleEditStartingLeafChange = (index: number, val: number | '') => {
+    setEditReceiptBooks((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], starting_leaf: val };
+      return next;
+    });
+  };
+
+  const handleEditEndingLeafChange = (index: number, val: number | '') => {
+    setEditReceiptBooks((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], ending_leaf: val };
+      return next;
+    });
+  };
+
+  const handleEditVoidedLeavesChange = (index: number, val: string) => {
+    setEditReceiptBooks((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], voided_leaves: val };
+      return next;
+    });
+  };
+
+  const addEditReceiptBookRow = () => {
+    setEditReceiptBooks((prev) => [...prev, { receipt_book: '', starting_leaf: '', ending_leaf: '', voided_leaves: '' }]);
+  };
+
+  const removeEditReceiptBookRow = (index: number) => {
+    setEditReceiptBooks((prev) => prev.filter((_, i) => i !== index));
   };
 
   const toggleEditStudent = (id: number) => {
@@ -368,15 +528,52 @@ export const TripsPage: React.FC = () => {
     mutationFn: async () => {
       if (!selectedTripToEdit) throw new Error('No trip selected to edit.');
 
+      let placeId = editPlaceId;
+      if (showEditNewPlaceInput) {
+        const cleanName = newEditPlaceName.trim();
+        if (!cleanName) {
+          throw new Error('Please enter a destination place name.');
+        }
+        const existing = places.find((p) => p.name.trim().toLowerCase() === cleanName.toLowerCase());
+        if (existing) {
+          placeId = existing.id;
+        } else {
+          try {
+            const createdPlace = await api.createPlace(cleanName);
+            placeId = createdPlace.id;
+            queryClient.invalidateQueries({ queryKey: ['places'] });
+          } catch (err: any) {
+            throw new Error(`Failed to create place: ${err.message || 'Unknown error'}`);
+          }
+        }
+      }
+
+      // Validate receipt books
+      const validBooks = editReceiptBooks.filter((rb) => rb.receipt_book !== '');
+      const bookIds = validBooks.map((rb) => rb.receipt_book);
+      if (new Set(bookIds).size !== bookIds.length) {
+        throw new Error('Duplicate receipt books selected. Each receipt book can only be added once.');
+      }
+
+      const receiptBooksPayload = validBooks.map((rb) => ({
+        receipt_book: Number(rb.receipt_book),
+        starting_leaf: rb.starting_leaf !== '' ? Number(rb.starting_leaf) : null,
+        ending_leaf: rb.ending_leaf !== '' && rb.ending_leaf !== undefined ? Number(rb.ending_leaf) : null,
+        voided_leaves: rb.voided_leaves || '',
+      }));
+
+      const primary = receiptBooksPayload[0] || null;
+
       const payload: any = {
-        place: editPlaceId ? Number(editPlaceId) : undefined,
+        place: placeId ? Number(placeId) : undefined,
         trip_date: editTripDate,
         departure_time: editDepartureTime ? `${editDepartureTime}:00` : null,
         student_ids: editStudentIds,
         calendars_issued: Number(editCalendarsIssued),
         bus_fare: editBusFare || '0.00',
-        receipt_book: editBookId ? Number(editBookId) : null,
-        receipt_starting_leaf: editStartingLeaf !== '' ? Number(editStartingLeaf) : null,
+        receipt_books: receiptBooksPayload,
+        receipt_book: primary ? primary.receipt_book : null,
+        receipt_starting_leaf: primary ? primary.starting_leaf : null,
         notes: editNotes,
       };
 
@@ -387,8 +584,8 @@ export const TripsPage: React.FC = () => {
         payload.cash_collection = editCash || '0.00';
         payload.gpay_collection = editGpay || '0.00';
         payload.food_expense = editFood || '0.00';
-        payload.receipt_ending_leaf = editEndingLeaf !== '' ? Number(editEndingLeaf) : null;
-        payload.voided_leaves = editVoidedLeaves;
+        payload.receipt_ending_leaf = primary ? primary.ending_leaf : null,
+        payload.voided_leaves = primary ? primary.voided_leaves : '';
         payload.discrepancy_notes = editDiscrepancyNotes;
       }
 
@@ -605,7 +802,20 @@ export const TripsPage: React.FC = () => {
                     </div>
                   </td>
                   <td>
-                    {trip.receipt_book_label ? (
+                    {trip.trip_receipt_books && trip.trip_receipt_books.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8125rem' }}>
+                        {trip.trip_receipt_books.map((trb, idx) => (
+                          <div key={idx} style={{ lineHeight: '1.2' }}>
+                            <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{trb.receipt_book_label}</span>
+                            {trb.starting_leaf && (
+                              <span style={{ fontSize: '0.72rem', color: '#94A3B8', marginLeft: '0.35rem' }}>
+                                #{trb.starting_leaf} - #{trb.ending_leaf || '?'}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : trip.receipt_book_label ? (
                       <div style={{ fontSize: '0.8125rem' }}>
                         <div>{trip.receipt_book_label}</div>
                         {trip.receipt_starting_leaf && (
@@ -964,41 +1174,85 @@ export const TripsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Receipt Book & Starting Leaf */}
-          <div className="zcm-form-grid-3">
-            <div className="zcm-form-group">
-              <label>Receipt Book</label>
-              <select
-                value={selectedBookId}
-                onChange={(e) => handleReceiptBookChange(Number(e.target.value))}
+          {/* Multiple Receipt Books & Starting Leaf */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#F8FAFC' }}>
+                Receipt Book(s) & Starting Leaf
+              </label>
+              <button
+                type="button"
+                className="zcm-btn zcm-btn--secondary zcm-btn--sm"
+                onClick={addDispatchReceiptBookRow}
+                style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', color: '#38BDF8' }}
               >
-                <option value="">Select Receipt Book...</option>
-                {books.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.label} ({b.first_leaf}-{b.last_leaf})
-                  </option>
-                ))}
-              </select>
+                + Add Another Book
+              </button>
             </div>
-            <div className="zcm-form-group">
-              <label>Starting Leaf</label>
-              <input
-                type="number"
-                placeholder="e.g. 1"
-                value={startingLeaf}
-                onChange={(e) => setStartingLeaf(Number(e.target.value))}
-              />
-            </div>
-            <div className="zcm-form-group">
-              <label>Bus Fare Advanced (₹)</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={busFare}
-                onChange={(e) => setBusFare(e.target.value)}
-              />
-            </div>
+
+            {dispatchReceiptBooks.map((rb, idx) => (
+              <div
+                key={idx}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: dispatchReceiptBooks.length > 1 ? '1fr 140px 38px' : '1fr 140px',
+                  gap: '0.5rem',
+                  alignItems: 'end',
+                  background: '#0B111E',
+                  border: '1px solid #1E293B',
+                  borderRadius: 6,
+                  padding: '0.65rem 0.75rem',
+                }}
+              >
+                <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                  <label style={{ fontSize: '0.75rem' }}>Receipt Book {dispatchReceiptBooks.length > 1 ? `#${idx + 1}` : ''}</label>
+                  <select
+                    value={rb.receipt_book}
+                    onChange={(e) => handleDispatchReceiptBookChange(idx, e.target.value ? Number(e.target.value) : '')}
+                  >
+                    <option value="">Select Receipt Book...</option>
+                    {books.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.label} (Leaves #{b.first_leaf}-#{b.last_leaf})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                  <label style={{ fontSize: '0.75rem' }}>Starting Leaf</label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 1"
+                    value={rb.starting_leaf}
+                    onChange={(e) => handleDispatchStartingLeafChange(idx, e.target.value ? Number(e.target.value) : '')}
+                  />
+                </div>
+
+                {dispatchReceiptBooks.length > 1 && (
+                  <button
+                    type="button"
+                    className="zcm-btn zcm-btn--danger zcm-btn--sm"
+                    onClick={() => removeDispatchReceiptBookRow(idx)}
+                    title="Remove this receipt book"
+                    style={{ height: '38px', padding: '0 0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="zcm-form-group">
+            <label>Bus Fare Advanced (₹)</label>
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={busFare}
+              onChange={(e) => setBusFare(e.target.value)}
+            />
           </div>
 
           <div className="zcm-form-group">
@@ -1131,30 +1385,66 @@ export const TripsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Receipt Leaf Tracking */}
-            <div className="zcm-form-grid-2">
-              <div className="zcm-form-group">
-                <label>Ending Receipt Leaf</label>
-                <input
-                  type="number"
-                  placeholder="e.g. 50"
-                  value={settleEndingLeaf}
-                  onChange={(e) => setSettleEndingLeaf(Number(e.target.value))}
-                />
-                <div className="zcm-help-text">
-                  Starting leaf was #{selectedTripToSettle.receipt_starting_leaf || 'None'}
-                </div>
+            {/* Multiple Receipt Books Reconciliation */}
+            {settleReceiptBooks.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#F8FAFC' }}>
+                  Receipt Book Reconciliation ({settleReceiptBooks.length} Assigned)
+                </label>
+                {settleReceiptBooks.map((rb, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: '#0B111E',
+                      border: '1px solid #1E293B',
+                      borderRadius: 6,
+                      padding: '0.75rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#38BDF8' }}>
+                      📖 {rb.receipt_book_label || `Book #${rb.receipt_book}`} — Starting Leaf: #{rb.starting_leaf ?? 'Not set'}
+                    </div>
+                    <div className="zcm-form-grid-2">
+                      <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.75rem' }}>Ending Leaf</label>
+                        <input
+                          type="number"
+                          placeholder={`e.g. ${(rb.starting_leaf || 1) + 20}`}
+                          value={rb.ending_leaf}
+                          onChange={(e) => {
+                            const val = e.target.value ? Number(e.target.value) : '';
+                            setSettleReceiptBooks((prev) => {
+                              const next = [...prev];
+                              next[idx] = { ...next[idx], ending_leaf: val };
+                              return next;
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.75rem' }}>Voided / Spoiled Leaves</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 14, 28"
+                          value={rb.voided_leaves}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setSettleReceiptBooks((prev) => {
+                              const next = [...prev];
+                              next[idx] = { ...next[idx], voided_leaves: val };
+                              return next;
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="zcm-form-group">
-                <label>Voided / Spoiled Leaves</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 14, 28"
-                  value={settleVoidedLeaves}
-                  onChange={(e) => setSettleVoidedLeaves(e.target.value)}
-                />
-              </div>
-            </div>
+            )}
 
             {/* LIVE CALCULATION PREVIEW */}
             <div style={{
@@ -1538,30 +1828,7 @@ export const TripsPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Receipt Ending Leaf & Voided Leaves */}
-                <div className="zcm-form-grid-2">
-                  <div className="zcm-form-group">
-                    <label>Ending Receipt Leaf</label>
-                    <input
-                      type="number"
-                      placeholder="e.g. 50"
-                      value={editEndingLeaf}
-                      onChange={(e) => setEditEndingLeaf(e.target.value ? Number(e.target.value) : '')}
-                    />
-                    <div className="zcm-help-text">
-                      Starting leaf is #{editStartingLeaf || 'None'}
-                    </div>
-                  </div>
-                  <div className="zcm-form-group">
-                    <label>Voided / Spoiled Leaves</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 14, 28"
-                      value={editVoidedLeaves}
-                      onChange={(e) => setEditVoidedLeaves(e.target.value)}
-                    />
-                  </div>
-                </div>
+
 
                 {/* Live Reconciliation Preview Box */}
                 <div
@@ -1630,18 +1897,38 @@ export const TripsPage: React.FC = () => {
             {/* COMMON / DISPATCH PARAMETERS */}
             <div className="zcm-form-grid-2">
               <div className="zcm-form-group">
-                <label>Destination Place *</label>
-                <select
-                  value={editPlaceId}
-                  onChange={(e) => setEditPlaceId(Number(e.target.value))}
-                >
-                  <option value="">Select a place...</option>
-                  {places.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label>Destination Place *</label>
+                  <button
+                    type="button"
+                    className="zcm-btn zcm-btn--secondary zcm-btn--sm"
+                    onClick={() => setShowEditNewPlaceInput(!showEditNewPlaceInput)}
+                    style={{ border: 'none', padding: '0 0.25rem', color: '#38BDF8', fontSize: '0.75rem' }}
+                  >
+                    {showEditNewPlaceInput ? 'Choose existing place' : '+ Add new place'}
+                  </button>
+                </div>
+                {showEditNewPlaceInput ? (
+                  <input
+                    type="text"
+                    placeholder="Enter new destination name..."
+                    value={newEditPlaceName}
+                    onChange={(e) => setNewEditPlaceName(e.target.value)}
+                    autoFocus
+                  />
+                ) : (
+                  <select
+                    value={editPlaceId}
+                    onChange={(e) => setEditPlaceId(Number(e.target.value))}
+                  >
+                    <option value="">Select a place...</option>
+                    {places.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               <div className="zcm-form-group">
@@ -1730,31 +2017,102 @@ export const TripsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Receipt Book & Starting Leaf */}
-            <div className="zcm-form-grid-2">
-              <div className="zcm-form-group">
-                <label>Receipt Book</label>
-                <select
-                  value={editBookId}
-                  onChange={(e) => setEditBookId(e.target.value ? Number(e.target.value) : '')}
+            {/* Multiple Receipt Books & Leaf Allocation */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#F8FAFC' }}>
+                  Receipt Book(s) & Leaf Allocation
+                </label>
+                <button
+                  type="button"
+                  className="zcm-btn zcm-btn--secondary zcm-btn--sm"
+                  onClick={addEditReceiptBookRow}
+                  style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', color: '#38BDF8' }}
                 >
-                  <option value="">No Receipt Book Selected</option>
-                  {books.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.label} (Leaves #{b.first_leaf}-#{b.last_leaf})
-                    </option>
-                  ))}
-                </select>
+                  + Add Another Book
+                </button>
               </div>
-              <div className="zcm-form-group">
-                <label>Starting Leaf Number</label>
-                <input
-                  type="number"
-                  value={editStartingLeaf}
-                  onChange={(e) => setEditStartingLeaf(e.target.value ? Number(e.target.value) : '')}
-                  placeholder="e.g. 1"
-                />
-              </div>
+
+              {editReceiptBooks.map((rb, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    background: '#0B111E',
+                    border: '1px solid #1E293B',
+                    borderRadius: 6,
+                    padding: '0.75rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#38BDF8' }}>
+                      Receipt Book #{idx + 1}
+                    </span>
+                    {editReceiptBooks.length > 1 && (
+                      <button
+                        type="button"
+                        className="zcm-btn zcm-btn--danger zcm-btn--sm"
+                        onClick={() => removeEditReceiptBookRow(idx)}
+                        style={{ padding: '0.15rem 0.4rem', fontSize: '0.75rem' }}
+                      >
+                        <X size={13} style={{ marginRight: 2 }} /> Remove
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="zcm-form-grid-2">
+                    <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                      <label style={{ fontSize: '0.75rem' }}>Receipt Book</label>
+                      <select
+                        value={rb.receipt_book}
+                        onChange={(e) => handleEditReceiptBookChange(idx, e.target.value ? Number(e.target.value) : '')}
+                      >
+                        <option value="">Select Receipt Book...</option>
+                        {books.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.label} (Leaves #{b.first_leaf}-#{b.last_leaf})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                      <label style={{ fontSize: '0.75rem' }}>Starting Leaf</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 1"
+                        value={rb.starting_leaf}
+                        onChange={(e) => handleEditStartingLeafChange(idx, e.target.value ? Number(e.target.value) : '')}
+                      />
+                    </div>
+                  </div>
+
+                  {selectedTripToEdit.status === 'settled' && (
+                    <div className="zcm-form-grid-2">
+                      <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.75rem' }}>Ending Leaf</label>
+                        <input
+                          type="number"
+                          placeholder="e.g. 50"
+                          value={rb.ending_leaf ?? ''}
+                          onChange={(e) => handleEditEndingLeafChange(idx, e.target.value ? Number(e.target.value) : '')}
+                        />
+                      </div>
+                      <div className="zcm-form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.75rem' }}>Voided Leaves</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 14, 28"
+                          value={rb.voided_leaves || ''}
+                          onChange={(e) => handleEditVoidedLeavesChange(idx, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Notes if in_progress */}

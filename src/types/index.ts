@@ -80,6 +80,17 @@ export interface TripStudent {
   net_collection_share: string;
 }
 
+export interface TripReceiptBook {
+  id?: number;
+  receipt_book: number;
+  receipt_book_label?: string;
+  starting_leaf: number | null;
+  ending_leaf: number | null;
+  voided_leaves?: string;
+  first_leaf?: number;
+  last_leaf?: number;
+}
+
 export interface Trip {
   id: number;
   campaign: number;
@@ -114,6 +125,7 @@ export interface Trip {
   created_at: string;
   settled_at: string | null;
   trip_students: TripStudent[];
+  trip_receipt_books?: TripReceiptBook[];
 }
 
 export interface InventorySummary {
